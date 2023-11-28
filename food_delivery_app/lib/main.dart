@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/components/foodCard.dart';
 import 'package:food_delivery_app/screens/home.dart';
 
 void main() {
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/':(context) => const Home(),
+        //'/':(context) => const FoodCard(),
       },
     );
   }
