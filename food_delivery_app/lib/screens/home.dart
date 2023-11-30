@@ -36,41 +36,89 @@ class _HomeState extends State<Home> {
           vertical: 15,
         ),
         child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        "Explore Foods",
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
+            child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    const Text(
+                      "Explore Foods",
+                      style: TextStyle(
+                        fontSize: 18,
                       ),
-                      Text(
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text(
                         "View All",
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.amber,
                         ),
                       ),
-                    ]),
-                //const Row(),
-                Column(
-                    children: List.generate(10, (index) {
-                      return const FoodCard();
-                    })
+                    ),
+                  ]
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10, 
+                  vertical: 15
                 ),
-                // TextButton(
-                //   onPressed: () { },
-                //),
-              ],
-            ),
-          )
-        ),
+                 height: 180,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: List.generate(6, (index) {
+                      return const Card(
+                        elevation: 5,
+                        color: Colors.amber,
+                        child: Column(
+                          children: <Widget>[
+                            CircleAvatar(
+                              radius: 45.0,
+                              backgroundImage: AssetImage(
+                                "Assets/burger.jpg",
+                              ),
+                              backgroundColor: Colors.white,
+                            ),
+                            // Image.asset(
+                            //   "Assets/burger.jpg",
+                            //   width: 90,
+                            //   height: 100,
+                            // ),
+                            Text(
+                              "Burger",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }),
+                  ),
+              ),  
+              const Text(
+                "Most Popular",
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                ),
+              ),
+              Column(
+                children: List.generate(10, (index) {
+                  return const FoodCard();
+                })
+              ),
+              // TextButton(
+              //   onPressed: () { },
+              //),
+            ],
+          ),
+        )),
       ),
     );
   }
