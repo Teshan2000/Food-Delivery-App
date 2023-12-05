@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/components/appDrawer.dart';
 import 'package:food_delivery_app/components/foodCard.dart';
 
 class Home extends StatefulWidget {
@@ -30,6 +31,7 @@ class _HomeState extends State<Home> {
           // ),
         ],
       ),
+      drawer: const Appdrawer(),
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 15,
