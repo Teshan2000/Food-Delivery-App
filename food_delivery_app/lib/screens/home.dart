@@ -31,7 +31,55 @@ class _HomeState extends State<Home> {
           // ),
         ],
       ),
-      drawer: const Appdrawer(),
+      drawer: AppDrawer(
+        onProfilepressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Categories(),
+              ));
+        },
+        onCategoriesPressed: () {
+          Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) => const Categories(),
+            )
+          );
+        },
+        onFavoritesPressed: () {
+          Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) => const Favourites(),
+            )
+          );
+        },
+        onCartPressed: () {
+          Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) => const Categories(),
+            )
+          );
+        },
+        onOrdersPressed: () {
+          Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) => const Orders(),
+            )
+          );
+        },
+        onLogoutPressed: () {
+          Navigator.push(
+            context, 
+            MaterialPageRoute(
+              builder: (context) => const Categories(),
+            )
+          );
+        },
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 15,
