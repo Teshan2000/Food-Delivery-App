@@ -19,21 +19,30 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: Drawer(
+    return Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             const DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.amber,
               ),
-              child: Text(
-                'Peter Parker',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
+              child: UserAccountsDrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.amber
                 ),
+                accountName: Text(
+                  'Peter Parker',
+                ), 
+                accountEmail: Text(
+                  'peterparker22@gmail.com'
+                ),
+                currentAccountPicture: CircleAvatar(
+                  backgroundImage: AssetImage(
+                    'Assets/peter.jpg'
+                  ),
+                ),
+                currentAccountPictureSize: Size.square(50),
               ),
             ),
             ListTile(
@@ -80,7 +89,6 @@ class AppDrawer extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }

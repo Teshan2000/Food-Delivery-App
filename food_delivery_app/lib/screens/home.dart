@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/appDrawer.dart';
 import 'package:food_delivery_app/components/foodCard.dart';
+import 'package:food_delivery_app/screens/categories.dart';
+import 'package:food_delivery_app/screens/favourites.dart';
+import 'package:food_delivery_app/screens/orders.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -31,7 +34,7 @@ class _HomeState extends State<Home> {
           // ),
         ],
       ),
-      drawer: AppDrawer(
+      endDrawer: AppDrawer(
         onProfilepressed: () {
           Navigator.push(
               context,
