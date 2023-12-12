@@ -33,23 +33,21 @@ class FoodCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                        "Chicken Burger",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
+                          "Chicken Burger",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "Rs. 125",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                      )
-                      ]
-                      
-                    )
-                    
+                        Text(
+                          "Rs. 125",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        )
+                      ]                      
+                    )                    
                   ],
                 ),
               ),
