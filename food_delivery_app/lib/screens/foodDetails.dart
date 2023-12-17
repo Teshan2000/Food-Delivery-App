@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/screens/cart.dart';
 
 class FoodDetails extends StatefulWidget {
   const FoodDetails({super.key});
@@ -9,11 +10,11 @@ class FoodDetails extends StatefulWidget {
 
 class FoodDetailsState extends State<FoodDetails> {
   List<Map<String, dynamic>> ingredients = [
-    {"icon": Icons.breakfast_dining, "name": "Bread"},
-    {"icon": Icons.child_care, "name": "Chicken"},
-    {"icon": Icons.play_arrow, "name": "Cheese"},
-    {"icon": Icons.circle, "name": "Tomato"},
-    {"icon": Icons.forest, "name": "Salad"}
+    {"image": "🥪", "name": "Bread"},
+    {"image": "🥩", "name": "Chicken"},
+    {"image": "🧀", "name": "Cheese"},
+    {"image": "🍅", "name": "Tomato"},
+    {"image": "🥬", "name": "Salad"}
   ];
 
   @override
@@ -91,13 +92,18 @@ class FoodDetailsState extends State<FoodDetails> {
                                     //   width: 60,
                                     //   height: 60,
                                     // ),
-                                    Icon(
-                                      ingredients[index]['icon'],
-                                      color: Colors.white,
+                                    Text(
+                                      ingredients[index]['image'],
+                                      style: const TextStyle(fontSize: 26),
                                     ),
+                                    // Icon(
+                                    //   ingredients[index]['icon'],
+                                    //   color: Colors.white,
+                                    // ),
                                     const SizedBox(height: 8),
                                     Text(
                                       ingredients[index]['name'],
+                                      style: const TextStyle(fontSize: 16, color: Colors.white),
                                     )
                                   ],
                                 ),
@@ -120,73 +126,92 @@ class FoodDetailsState extends State<FoodDetails> {
                   borderRadius: BorderRadius.circular(40),
                 ),
               ),
-              child: const Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(
-                        '-',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white                    
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Chicken Burger',
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                            ),
+                            SizedBox(
+                              width: 120,
+                            ),
+                            Text(
+                              'Rs.95.00',
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                            ),
+                          ]
                         ),
                       ),
-                      Text(
-                        'Rs. 95.00',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white                    
+                    ]
+                  ),                  
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[                          
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                        height: 35,
+                        width: 135,
+                        decoration: ShapeDecoration(
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              '-',
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                            ),
+                            SizedBox(width: 28),
+                            Text(
+                              '2',
+                              style: TextStyle(fontSize: 16, color: Colors.black),
+                            ),
+                            SizedBox(width: 28),
+                            Text(
+                              '+',
+                              style: TextStyle(fontSize: 18, color: Colors.black),
+                            )
+                          ],
                         ),
                       ),
-                      Text(
-                        '+',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white                    
+                    ]
+                  ),                  
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Total',
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                            ),
+                            SizedBox(width: 180),
+                            Text(
+                              'Rs. 190.00',
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                            ),
+                          ]
                         ),
                       ),
                     ]
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        'Chicken Burger',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white                    
-                        ),
-                      ),
-                      Text(
-                        '2',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white                    
-                        ),
-                      )
-                    ]
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        'Total',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white                    
-                        ),
-                      ),
-                      Text(
-                        'Rs. 190.00',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white                    
-                        ),
-                      )
-                    ]
-                  )
                 ],
               ),
             ),
@@ -208,7 +233,11 @@ class FoodDetailsState extends State<FoodDetails> {
                 //     fontSize: 18,
                 //   )
                 // ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => const Cart(),
+                  ),);
+                },
                 child: const Text(
                   'Add to Cart',
                   style: TextStyle(color: Colors.white),
