@@ -103,7 +103,8 @@ class FoodDetailsState extends State<FoodDetails> {
                                     const SizedBox(height: 8),
                                     Text(
                                       ingredients[index]['name'],
-                                      style: const TextStyle(fontSize: 16, color: Colors.white),
+                                      style: const TextStyle(
+                                          fontSize: 16, color: Colors.white),
                                     )
                                   ],
                                 ),
@@ -130,88 +131,123 @@ class FoodDetailsState extends State<FoodDetails> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Chicken Burger',
-                              style: TextStyle(fontSize: 16, color: Colors.white),
-                            ),
-                            SizedBox(
-                              width: 120,
-                            ),
-                            Text(
-                              'Rs.95.00',
-                              style: TextStyle(fontSize: 16, color: Colors.white),
-                            ),
-                          ]
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 15),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Chicken Burger',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                ),
+                                SizedBox(
+                                  width: 120,
+                                ),
+                                Text(
+                                  'Rs.95.00',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                ),
+                              ]),
                         ),
-                      ),
-                    ]
-                  ),                  
+                      ]),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[                          
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                        height: 35,
-                        width: 135,
-                        decoration: ShapeDecoration(
-                          color: const Color.fromARGB(255, 255, 255, 255),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(40),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: 300,
+                          height: 3,
+                          decoration: ShapeDecoration(
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(90),
+                            ),
                           ),
                         ),
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              '-',
-                              style: TextStyle(fontSize: 16, color: Colors.black),
+                      ]),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 15),
+                          height: 35,
+                          width: 135,
+                          decoration: ShapeDecoration(
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(40),
                             ),
-                            SizedBox(width: 28),
-                            Text(
-                              '2',
-                              style: TextStyle(fontSize: 16, color: Colors.black),
-                            ),
-                            SizedBox(width: 28),
-                            Text(
-                              '+',
-                              style: TextStyle(fontSize: 18, color: Colors.black),
-                            )
-                          ],
+                          ),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                '-',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.black),
+                              ),
+                              SizedBox(width: 28),
+                              Text(
+                                '2',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.black),
+                              ),
+                              SizedBox(width: 28),
+                              Text(
+                                '+',
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.black),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    ]
-                  ),                  
+                      ]),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          width: 300,
+                          height: 3,
+                          decoration: ShapeDecoration(
+                            color: const Color.fromARGB(255, 255, 255, 255),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(90),
+                            ),
+                          ),
+                        ),
+                      ]),
                   const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Total',
-                              style: TextStyle(fontSize: 16, color: Colors.white),
-                            ),
-                            SizedBox(width: 180),
-                            Text(
-                              'Rs. 190.00',
-                              style: TextStyle(fontSize: 16, color: Colors.white),
-                            ),
-                          ]
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 15
+                          ),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Total',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                ),
+                                SizedBox(width: 180),
+                                Text(
+                                  'Rs. 190.00',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                ),
+                              ]
+                          ),
                         ),
-                      ),
-                    ]
-                  ),
+                      ]),
                 ],
               ),
             ),
@@ -234,9 +270,12 @@ class FoodDetailsState extends State<FoodDetails> {
                 //   )
                 // ),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => const Cart(),
-                  ),);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Cart(),
+                    ),
+                  );
                 },
                 child: const Text(
                   'Add to Cart',

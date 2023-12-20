@@ -8,7 +8,8 @@ class AppDrawer extends StatelessWidget {
   final Function() onOrdersPressed;
   final Function() onLogoutPressed;
 
-  const AppDrawer({super.key, 
+  const AppDrawer({
+    super.key,
     required this.onProfilepressed,
     required this.onCategoriesPressed,
     required this.onFavoritesPressed,
@@ -20,75 +21,70 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.amber,
-              ),
-              child: UserAccountsDrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.amber
-                ),
-                accountName: Text(
-                  'Peter Parker',
-                ), 
-                accountEmail: Text(
-                  'peterparker22@gmail.com'
-                ),
-                currentAccountPicture: CircleAvatar(
-                  backgroundImage: AssetImage(
-                    'Assets/peter.jpg'
-                  ),
-                ),
-                currentAccountPictureSize: Size.square(50),
-              ),
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.amber,
             ),
-            ListTile(
-              leading: const Icon(Icons.person_outline_outlined),
-              title: const Text(
-                'Profile',
+            child: UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: Colors.amber),
+              accountName: Text(
+                'Peter Parker',
+                style: TextStyle(fontSize: 18),
               ),
-              onTap: onProfilepressed,
-            ),
-            ListTile(
-              leading: const Icon(Icons.fastfood_outlined),
-              title: const Text(
-                'Categories',
+              accountEmail: Text('peterparker22@gmail.com'),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: AssetImage('Assets/peter.jpg'),
               ),
-              onTap: onCategoriesPressed,
+              currentAccountPictureSize: Size.square(50),
             ),
-            ListTile(
-              leading: const Icon(Icons.favorite_border_outlined),
-              title: const Text(
-                'Favorites',
-              ),
-              onTap: onFavoritesPressed,
+          ),
+          ListTile(
+            leading: const Icon(Icons.person_outline_outlined),
+            title: const Text(
+              'Profile',
             ),
-            ListTile(
-              leading: const Icon(Icons.shopping_cart_outlined),
-              title: const Text(
-                'Cart',
-              ),
-              onTap: onCartPressed,
+            onTap: onProfilepressed,
+          ),
+          ListTile(
+            leading: const Icon(Icons.fastfood_outlined),
+            title: const Text(
+              'Categories',
             ),
-            ListTile(
-              leading: const Icon(Icons.shopping_bag_outlined),
-              title: const Text(
-                'Orders',
-              ),
-              onTap: onOrdersPressed,
+            onTap: onCategoriesPressed,
+          ),
+          ListTile(
+            leading: const Icon(Icons.favorite_border_outlined),
+            title: const Text(
+              'Favorites',
             ),
-            ListTile(
-              leading: const Icon(Icons.exit_to_app),
-              title: const Text(
-                'Logout',
-              ),
-              onTap: onLogoutPressed,
+            onTap: onFavoritesPressed,
+          ),
+          ListTile(
+            leading: const Icon(Icons.shopping_cart_outlined),
+            title: const Text(
+              'Cart',
             ),
-          ],
-        ),
+            onTap: onCartPressed,
+          ),
+          ListTile(
+            leading: const Icon(Icons.shopping_bag_outlined),
+            title: const Text(
+              'Orders',
+            ),
+            onTap: onOrdersPressed,
+          ),
+          ListTile(
+            leading: const Icon(Icons.exit_to_app),
+            title: const Text(
+              'Logout',
+            ),
+            onTap: onLogoutPressed,
+          ),
+        ],
+      ),
     );
   }
 }
