@@ -21,7 +21,18 @@ class _HomeState extends State<Home> {
         title: const Text('Hello, Peter!'),
         actions: [
           IconButton(
-              onPressed: () async {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => AppDrawer(
+                    onProfilepressed: () {}, 
+                    onCategoriesPressed: () {}, 
+                    onFavoritesPressed: () {}, 
+                    onCartPressed: () {}, 
+                    onOrdersPressed: () {}, 
+                    onLogoutPressed: () {},
+                  ),
+                ),);
+              },
               icon: const Icon(
                 Icons.menu,
                 color: Colors.black,
