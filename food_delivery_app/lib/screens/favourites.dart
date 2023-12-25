@@ -9,12 +9,15 @@ class Favourites extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
-        title: const Text(
-          'Favourites'
+        title: const Center(
+          child: Text(
+            'Favourites'
+          ),
         ),
-        actions: const [
-          Icon(
-            Icons.favorite
+        actions: [
+          IconButton(
+            onPressed: () {}, 
+            icon: const Icon(Icons.favorite)
           )
         ],
       ),

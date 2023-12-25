@@ -13,6 +13,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  List<Map<String, dynamic>> categories = [
+    {"image": "🍕", "name": "Pizza"},
+    {"image": "🍔", "name": "Burger"},
+    {"image": "🌭", "name": "Hotdog"},
+    {"image": "🥪", "name": "Sandwich"},
+    {"image": "🌮", "name": "Taco"},
+    {"image": "🥐", "name": "Bun"},
+    {"image": "🍞", "name": "Bread"}
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,16 +32,19 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => AppDrawer(
-                    onProfilepressed: () {}, 
-                    onCategoriesPressed: () {}, 
-                    onFavoritesPressed: () {}, 
-                    onCartPressed: () {}, 
-                    onOrdersPressed: () {}, 
-                    onLogoutPressed: () {},
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AppDrawer(
+                      onProfilepressed: () {},
+                      onCategoriesPressed: () {},
+                      onFavoritesPressed: () {},
+                      onCartPressed: () {},
+                      onOrdersPressed: () {},
+                      onLogoutPressed: () {},
+                    ),
                   ),
-                ),);
+                );
               },
               icon: const Icon(
                 Icons.menu,
@@ -55,43 +68,38 @@ class _HomeState extends State<Home> {
         },
         onCategoriesPressed: () {
           Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: (context) => const Categories(),
-            )
-          );
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Categories(),
+              ));
         },
         onFavoritesPressed: () {
           Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: (context) => const Favourites(),
-            )
-          );
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Favourites(),
+              ));
         },
         onCartPressed: () {
           Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: (context) => const Categories(),
-            )
-          );
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Categories(),
+              ));
         },
         onOrdersPressed: () {
           Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: (context) => const Orders(),
-            )
-          );
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Orders(),
+              ));
         },
         onLogoutPressed: () {
           Navigator.push(
-            context, 
-            MaterialPageRoute(
-              builder: (context) => const Categories(),
-            )
-          );
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Categories(),
+              ));
         },
       ),
       body: Padding(
@@ -115,7 +123,14 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Categories(),
+                          ),
+                        );
+                      },
                       child: const Text(
                         "View All",
                         style: TextStyle(
@@ -124,47 +139,69 @@ class _HomeState extends State<Home> {
                         ),
                       ),
                     ),
-                  ]
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10, 
-                  vertical: 15
-                ),
-                 height: 180,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: List.generate(6, (index) {
-                      return const Card(
-                        elevation: 5,
-                        color: Colors.amber,
-                        child: Column(
-                          children: <Widget>[
-                            CircleAvatar(
-                              radius: 45.0,
-                              backgroundImage: AssetImage(
-                                "Assets/burger.jpg",
+                  ]),
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 10),
+                    height: 165,
+                    width: double.infinity,
+                    child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: List.generate(categories.length, (index) {
+                          return Column(children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 2),
+                              child: Container(
+                                width: 90,
+                                height: 145,
+                                decoration: ShapeDecoration(
+                                  color: const Color(0xFFFFC107),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(90),
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 16),
+                                      child: Container(
+                                        width: 70,
+                                        height: 70,
+                                        decoration: ShapeDecoration(
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(90),
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            categories[index]['image'],
+                                            style:
+                                                const TextStyle(fontSize: 35),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      categories[index]['name'],
+                                      style: const TextStyle(
+                                          fontSize: 16, color: Colors.white),
+                                    )
+                                  ],
+                                ),
                               ),
-                              backgroundColor: Colors.white,
                             ),
-                            // Image.asset(
-                            //   "Assets/burger.jpg",
-                            //   width: 90,
-                            //   height: 100,
-                            // ),
-                            Text(
-                              "Burger",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
-                            )
-                          ],
-                        ),
-                      );
-                    }),
+                          ]);
+                        })),
                   ),
-              ),  
+                ],
+              ),
               const Text(
                 "Most Popular",
                 style: TextStyle(
@@ -173,10 +210,9 @@ class _HomeState extends State<Home> {
                 ),
               ),
               Column(
-                children: List.generate(10, (index) {
-                  return const FoodCard();
-                })
-              ),
+                  children: List.generate(10, (index) {
+                return const FoodCard();
+              })),
               // TextButton(
               //   onPressed: () { },
               //),
