@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/appDrawer.dart';
-import 'package:food_delivery_app/components/foodCard.dart';
 import 'package:food_delivery_app/screens/categories.dart';
 import 'package:food_delivery_app/screens/favourites.dart';
+import 'package:food_delivery_app/screens/foodDetails.dart';
 import 'package:food_delivery_app/screens/orders.dart';
 
 class Home extends StatefulWidget {
@@ -21,6 +21,33 @@ class _HomeState extends State<Home> {
     {"image": "🌮", "name": "Taco"},
     {"image": "🥐", "name": "Bun"},
     {"image": "🍞", "name": "Bread"}
+  ];
+
+  List<Map<String, dynamic>> popular = [
+    {
+      "image": "Assets/Foods/pastry.png",
+      "name": "Chicken Pastry",
+      "price": "Rs.85.00"
+    },
+    {
+      "image": "Assets/Foods/sandwich.png",
+      "name": "Fish Sandwiches",
+      "price": "Rs.35.00"
+    },
+    {
+      "image": "Assets/Foods/taco.png",
+      "name": "Veggi Taco",
+      "price": "Rs.35.00"
+    },
+    {"image": "Assets/Foods/hotdog.png", 
+     "name": "Hotdog", 
+     "price": "Rs.65.00"
+    },
+    {
+      "image": "Assets/Foods/crossiant.png",
+      "name": "Crossiant",
+      "price": "Rs.45.00"
+    }
   ];
 
   @override
@@ -210,12 +237,54 @@ class _HomeState extends State<Home> {
                 ),
               ),
               Column(
-                  children: List.generate(10, (index) {
-                return const FoodCard();
-              })),
-              // TextButton(
-              //   onPressed: () { },
-              //),
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 5),
+                    child: GestureDetector(
+                      child: ListView(
+                          scrollDirection: Axis.vertical,
+                          children: List.generate(popular.length, (index) {
+                            return Row(children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.asset(
+                                      popular[index]['imageAsset'],
+                                      width: 80,
+                                      height: 80,
+                                    ),
+                                    const SizedBox(width: 40),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          categories[index]['name'],
+                                          style: const TextStyle(
+                                              fontSize: 18, color: Colors.white),
+                                        ),
+                                        Text(
+                                          categories[index]['price'],
+                                          style: const TextStyle(
+                                              fontSize: 18, color: Colors.white),
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                ),
+                              ),
+                            ]);
+                          })),
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const FoodDetails()),);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         )),
