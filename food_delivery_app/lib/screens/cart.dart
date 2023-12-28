@@ -1,11 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:food_delivery_app/components/foodCard.dart';
+import 'package:food_delivery_app/screens/foodDetails.dart';
 
-class Cart extends StatelessWidget {
+class Cart extends StatefulWidget {
   const Cart({super.key});
 
   @override
+  State<Cart> createState() => _CartState();
+}
+
+class _CartState extends State<Cart> {
+  List<Map<String, dynamic>> cart = [
+    {
+      "image": "Assets/Foods/Chicken Burger.png",
+      "name": "Chicken Burger",
+      "price": "Rs.95.00"
+    },
+    {
+      "image": "Assets/Foods/Sandwich.png",
+      "name": "Fish Sandwiches",
+      "price": "Rs.35.00"
+    },
+    {
+      "image": "Assets/Foods/Taco.png",
+      "name": "Veggi Taco",
+      "price": "Rs.35.00"
+    }
+  ];
+
+  @override
   Widget build(BuildContext context) {
+
     final ButtonStyle style = ElevatedButton.styleFrom(
         backgroundColor: Colors.amber,
         elevation: 5,
@@ -36,9 +60,69 @@ class Cart extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
               Column(
-                  children: List.generate(3, (index) {
-                return const FoodCard();
-              })),
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                    height: 375,
+                    child: GestureDetector(
+                      child: ListView(
+                          scrollDirection: Axis.vertical,
+                          children: List.generate(cart.length, (index) {
+                            return Card(
+                              elevation: 5,
+                              color: Colors.amber,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Row(children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 15),
+                                  child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        const SizedBox(width: 20),
+                                        Image.asset(
+                                          cart[index]['image'],
+                                          width: 80,
+                                          height: 80,
+                                        ),
+                                        const SizedBox(width: 40),
+                                        Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              Text(
+                                                cart[index]['name'],
+                                                style: const TextStyle(
+                                                    fontSize: 18,
+                                                    color: Colors.white),
+                                              ),
+                                              Text(
+                                                cart[index]['price'],
+                                                style: const TextStyle(
+                                                    fontSize: 18,
+                                                    color: Colors.white),
+                                              )
+                                            ])
+                                      ]),
+                                ),
+                              ]),
+                            );
+                          })),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const FoodDetails()),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 15,
@@ -52,7 +136,7 @@ class Cart extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              'Total',
+                              'Sub Total',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.black),
                             ),
@@ -97,7 +181,7 @@ class Cart extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
-                              'Sub Total',
+                              'Total',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.black),
                             ),

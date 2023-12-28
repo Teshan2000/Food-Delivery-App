@@ -42,35 +42,35 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.person_outline_outlined),
+            leading: const Icon(Icons.person),
             title: const Text(
               'Profile',
             ),
             onTap: onProfilepressed,
           ),
           ListTile(
-            leading: const Icon(Icons.fastfood_outlined),
+            leading: const Icon(Icons.fastfood),
             title: const Text(
               'Categories',
             ),
             onTap: onCategoriesPressed,
           ),
           ListTile(
-            leading: const Icon(Icons.favorite_border_outlined),
+            leading: const Icon(Icons.favorite),
             title: const Text(
               'Favorites',
             ),
             onTap: onFavoritesPressed,
           ),
           ListTile(
-            leading: const Icon(Icons.shopping_cart_outlined),
+            leading: const Icon(Icons.shopping_cart),
             title: const Text(
               'Cart',
             ),
             onTap: onCartPressed,
           ),
           ListTile(
-            leading: const Icon(Icons.shopping_bag_outlined),
+            leading: const Icon(Icons.shopping_bag),
             title: const Text(
               'Orders',
             ),

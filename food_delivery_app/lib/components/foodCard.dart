@@ -15,6 +15,9 @@ class FoodCard extends StatelessWidget {
         child: Card(
           elevation: 5,
           color: Colors.amber,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
           child: Row(
             children: [
               Padding(
