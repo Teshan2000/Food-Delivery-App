@@ -54,14 +54,18 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: const Text('Hello, Peter!'),
-        actions: const [
-          EndDrawerButton(),
-          // Form(
-          //   child: Container(
-          //     padding: const EdgeInsets.all(20),
-          //     decoration: const BoxDecoration(color: Colors.white)
-          //   )
-          // ),
+        actions: [
+          const EndDrawerButton(),
+          // Container(
+          //   padding: const EdgeInsets.all(16),
+          //   child: const TextField(
+          //     decoration: InputDecoration(
+          //       labelText: 'Search',
+          //       border: OutlineInputBorder(),
+          //       prefixIcon: Icon(Icons.search),
+          //     ),
+          //   ),
+          // )
         ],
       ),
       endDrawer: AppDrawer(
@@ -149,8 +153,8 @@ class _HomeState extends State<Home> {
               Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 5, vertical: 10),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                     height: 165,
                     width: double.infinity,
                     child: ListView(
@@ -218,7 +222,8 @@ class _HomeState extends State<Home> {
               Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                     height: 475,
                     child: GestureDetector(
                       child: ListView(
@@ -235,7 +240,8 @@ class _HomeState extends State<Home> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 5, vertical: 15),
                                   child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: <Widget>[
                                         const SizedBox(width: 20),
                                         Image.asset(
