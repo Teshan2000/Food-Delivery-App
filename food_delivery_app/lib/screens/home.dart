@@ -54,8 +54,8 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: const Text('Hello, Peter!'),
-        actions: [
-          const EndDrawerButton(),
+        actions: const [
+          EndDrawerButton(),
           // Container(
           //   padding: const EdgeInsets.all(16),
           //   child: const TextField(
