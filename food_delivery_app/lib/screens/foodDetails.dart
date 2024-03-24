@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/screens/cart.dart';
+import 'package:input_quantity/input_quantity.dart';
 
 class FoodDetails extends StatefulWidget {
   const FoodDetails({super.key});
@@ -156,7 +157,7 @@ class FoodDetailsState extends State<FoodDetails> {
                               ]),
                         ),
                       ]),
-                  Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
@@ -170,45 +171,30 @@ class FoodDetailsState extends State<FoodDetails> {
                           ),
                         ),
                       ]),
-                  Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 15),
-                          height: 35,
-                          width: 135,
+                          width: 150,
+                          height: 30,
                           decoration: ShapeDecoration(
                             color: const Color.fromARGB(255, 255, 255, 255),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40),
+                              borderRadius: BorderRadius.circular(90),
                             ),
                           ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                '-',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.black),
+                          child: InputQty.int(
+                                qtyFormProps:
+                                    QtyFormProps(cursorColor: Colors.amber),
+                                decoration: QtyDecorationProps(
+                                    width: 12,
+                                    orientation: ButtonOrientation.horizontal,
+                                    isBordered: false,
+                                    borderShape: BorderShapeBtn.circle),
                               ),
-                              SizedBox(width: 28),
-                              Text(
-                                '2',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.black),
-                              ),
-                              SizedBox(width: 28),
-                              Text(
-                                '+',
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.black),
-                              )
-                            ],
-                          ),
                         ),
                       ]),
-                  Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
@@ -222,13 +208,12 @@ class FoodDetailsState extends State<FoodDetails> {
                           ),
                         ),
                       ]),
-                  const Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 15
-                          ),
+                              horizontal: 15, vertical: 15),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -244,10 +229,10 @@ class FoodDetailsState extends State<FoodDetails> {
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.white),
                                 ),
-                              ]
-                          ),
+                              ]),
                         ),
-                      ]),
+                      ]
+                    ),
                 ],
               ),
             ),

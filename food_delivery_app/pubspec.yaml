@@ -30,6 +30,7 @@ environment:
 dependencies:
 
   easy_search_bar: ^2.5.0
+  input_quantity: ^2.3.2
   
   flutter:
     sdk: flutter
