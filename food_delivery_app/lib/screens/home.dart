@@ -1,3 +1,4 @@
+import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/appDrawer.dart';
 import 'package:food_delivery_app/components/foodCard.dart';
@@ -63,20 +64,6 @@ class _HomeState extends State<Home> {
     }
   ];
 
-  Widget _buildSearchResults() {
-    return Container(
-      height: 5,
-      child: ListView.builder(
-        itemCount: _searchResults.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(_searchResults[index]),
-            contentPadding: EdgeInsets.symmetric(vertical: 4),
-          );
-        },
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +94,7 @@ class _HomeState extends State<Home> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const Favourites(title: '',),
+                builder: (context) => const Favourites(),
               ));
         },
         onCartPressed: () {
@@ -142,20 +129,34 @@ class _HomeState extends State<Home> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: onSearchTextChanged,
-                    decoration: const InputDecoration(
-                      labelText: 'Search Foods',
-                      border: OutlineInputBorder(),
-                      suffixIcon: Icon(Icons.search),
-                    ),                  
+                AnimatedSearchBar(
+                  label: 'Search Foods',
+                  labelStyle: const TextStyle(fontSize: 16),
+                  cursorColor: Colors.amber,
+                  controller: _searchController,
+                  onChanged: onSearchTextChanged,
+                  searchDecoration: const InputDecoration(
+                    labelText: 'Search Foods',
+                    labelStyle: TextStyle(color: Colors.amber),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(35))),                             
                   ),
+                  textInputAction: TextInputAction.done,
+                  searchIcon: const Icon(Icons.search),
+                  closeIcon: const Icon(Icons.close),
                 ),
                 const SizedBox(height: 6),
-                _buildSearchResults(),
+                // Container(
+                //   child: ListView.builder(
+                //     itemCount: _searchResults.length,
+                //     itemBuilder: (context, index) {
+                //       return ListTile(
+                //         title: Text(_searchResults[index]),
+                //         contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                //       );
+                //     },
+                //   ),
+                // ),
+
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
