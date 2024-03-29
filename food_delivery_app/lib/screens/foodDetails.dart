@@ -10,6 +10,9 @@ class FoodDetails extends StatefulWidget {
 }
 
 class FoodDetailsState extends State<FoodDetails> {
+  int quantity = 1;
+  double totalPrice = 95.00;
+
   List<Map<String, dynamic>> ingredients = [
     {"image": "🥪", "name": "Bread"},
     {"image": "🥩", "name": "Chicken"},
@@ -17,6 +20,13 @@ class FoodDetailsState extends State<FoodDetails> {
     {"image": "🍅", "name": "Tomato"},
     {"image": "🥬", "name": "Salad"}
   ];
+
+  void onQtyChanged(int newQuantity) {
+    setState(() {
+      quantity = newQuantity;
+      totalPrice = 95.00 * quantity;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,19 +98,10 @@ class FoodDetailsState extends State<FoodDetails> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    // Image.asset(
-                                    //   ingredients[index]['image'],
-                                    //   width: 60,
-                                    //   height: 60,
-                                    // ),
                                     Text(
                                       ingredients[index]['image'],
                                       style: const TextStyle(fontSize: 26),
                                     ),
-                                    // Icon(
-                                    //   ingredients[index]['icon'],
-                                    //   color: Colors.white,
-                                    // ),
                                     const SizedBox(height: 8),
                                     Text(
                                       ingredients[index]['name'],
@@ -136,7 +137,7 @@ class FoodDetailsState extends State<FoodDetails> {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 15),
+                            horizontal: 15, vertical: 15),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -144,7 +145,7 @@ class FoodDetailsState extends State<FoodDetails> {
                                 Text(
                                   'Chicken Burger',
                                   style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
+                                    fontSize: 16, color: Colors.white),
                                 ),
                                 SizedBox(
                                   width: 120,
@@ -152,12 +153,12 @@ class FoodDetailsState extends State<FoodDetails> {
                                 Text(
                                   'Rs.95.00',
                                   style: TextStyle(
-                                      fontSize: 16, color: Colors.white),
+                                    fontSize: 16, color: Colors.white),
                                 ),
                               ]),
                         ),
                       ]),
-                    Row(
+                  Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
@@ -171,7 +172,7 @@ class FoodDetailsState extends State<FoodDetails> {
                           ),
                         ),
                       ]),
-                    Row(
+                  Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
@@ -184,17 +185,20 @@ class FoodDetailsState extends State<FoodDetails> {
                             ),
                           ),
                           child: InputQty.int(
-                                qtyFormProps:
-                                    QtyFormProps(cursorColor: Colors.amber),
-                                decoration: QtyDecorationProps(
-                                    width: 12,
-                                    orientation: ButtonOrientation.horizontal,
-                                    isBordered: false,
-                                    borderShape: BorderShapeBtn.circle),
-                              ),
+                            qtyFormProps:
+                                const QtyFormProps(cursorColor: Colors.amber),
+                            decoration: const QtyDecorationProps(
+                                width: 12,
+                                orientation: ButtonOrientation.horizontal,
+                                isBordered: false,
+                                borderShape: BorderShapeBtn.circle),
+                            onQtyChanged: (newQty) {
+                              onQtyChanged(newQty);
+                            },
+                          ),
                         ),
                       ]),
-                    Row(
+                  Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
@@ -208,31 +212,31 @@ class FoodDetailsState extends State<FoodDetails> {
                           ),
                         ),
                       ]),
-                    const Row(
+                  Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Padding(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 15),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text(
+                                const Text(
                                   'Total',
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.white),
                                 ),
-                                SizedBox(width: 180),
+                                const SizedBox(width: 185),
                                 Text(
-                                  'Rs. 190.00',
-                                  style: TextStyle(
+                                  'Rs. $totalPrice' '0',
+                                  style: const TextStyle(
                                       fontSize: 16, color: Colors.white),
                                 ),
                               ]),
                         ),
-                      ]
-                    ),
+                      ]),
                 ],
               ),
             ),
@@ -240,20 +244,6 @@ class FoodDetailsState extends State<FoodDetails> {
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
               ElevatedButton(
                 style: style,
-                // style: ButtonStyle(
-                //   backgroundColor: Colors.amber,
-                //   textStyle: TextStyle(
-                //     color: Colors.white,
-                //     fontSize: 18
-                //   )
-                // ),
-                //style: style,
-                // style: ButtonStyle(
-                //   textStyle: TextStyle(
-                //     color: Colors.amber,
-                //     fontSize: 18,
-                //   )
-                // ),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -270,12 +260,6 @@ class FoodDetailsState extends State<FoodDetails> {
               const SizedBox(width: 50),
               ElevatedButton(
                 style: style,
-                // style: ButtonStyle(
-                //   textStyle: TextStyle(
-                //     color: Colors.amber,
-                //     fontSize: 18,
-                //   )
-                // ),
                 onPressed: () {},
                 child: const Text(
                   'Buy Now',
