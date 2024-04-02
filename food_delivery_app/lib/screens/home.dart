@@ -94,7 +94,7 @@ class _HomeState extends State<Home> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const Favourites(title: '',),
+                builder: (context) => const Favourites(),
               ));
         },
         onCartPressed: () {

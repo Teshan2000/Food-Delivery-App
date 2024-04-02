@@ -12,7 +12,7 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   int quantity = 1;
-  double totalPrice = 95.00;
+  double totalPrice = 255.00;
 
   int _counterInit = 0;
   int _counter = 1;
@@ -42,10 +42,10 @@ class _CartState extends State<Cart> {
     }
   ];
 
-  void onQtyChanged(int newQuantity) {
+  void didChangeCount(int newQuantity) {
     setState(() {
-      quantity = newQuantity;
-      totalPrice = 95.00 * quantity;
+      _counter = newQuantity;
+      totalPrice = 255.00 * _counter;
     });
   }
 
@@ -97,25 +97,32 @@ class _CartState extends State<Cart> {
                                 borderRadius: BorderRadius.circular(30),
                               ),
                               child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  // mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 5, vertical: 15),
                                       child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: <Widget>[
                                             const SizedBox(width: 20),
-                                            Image.asset(
-                                              cart[index]['image'],
-                                              width: 80,
-                                              height: 80,
+                                            Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                Image.asset(
+                                                  cart[index]['image'],
+                                                  width: 80,
+                                                  height: 80,
+                                                  alignment: Alignment.centerLeft,
+                                                ),
+                                              ],
                                             ),
                                             const SizedBox(width: 25),
                                             Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.start,
+                                                    MainAxisAlignment.center,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: <Widget>[
@@ -174,23 +181,28 @@ class _CartState extends State<Cart> {
                                             //   ],
                                             // ),
                                             const SizedBox(width: 25),
-                                            CartStepperInt(
-                                              style: const CartStepperStyle(
-                                                  iconTheme: IconThemeData(
-                                                      color: Colors.black),
-                                                  foregroundColor: Colors.black,
-                                                  activeForegroundColor:
-                                                      Colors.black,
-                                                  backgroundColor: Colors.white,
-                                                  activeBackgroundColor:
-                                                      Colors.white),
-                                              value: _counter,
-                                              axis: Axis.vertical,
-                                              didChangeCount: (count) {
-                                                setState(() {
-                                                  _counter = count;
-                                                });
-                                              },
+                                            Column(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                CartStepperInt(
+                                                  style: const CartStepperStyle(
+                                                      iconTheme: IconThemeData(
+                                                          color: Colors.black),
+                                                      foregroundColor: Colors.black,
+                                                      activeForegroundColor:
+                                                          Colors.black,
+                                                      backgroundColor: Colors.white,
+                                                      activeBackgroundColor:
+                                                          Colors.white),
+                                                  value: _counter,
+                                                  axis: Axis.vertical,
+                                                  didChangeCount: (count) {
+                                                    setState(() {
+                                                      _counter = count;
+                                                    });
+                                                  },
+                                                ),
+                                              ],
                                             ),
                                             const SizedBox(width: 15),
                                           ]),
@@ -229,12 +241,12 @@ class _CartState extends State<Cart> {
                             const SizedBox(height: 40, width: 170),
                             Text(
                               // 'Rs. 255.00',
-                              'Rs. $totalPrice''0',
+                              'Rs. $totalPrice' '0',
                               style: const TextStyle(
                                   fontSize: 16, color: Colors.black),
                             ),
                           ]),
-                      const Row(
+                        const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
@@ -257,17 +269,17 @@ class _CartState extends State<Cart> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text(
+                            const Text(
                               'Total',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.black),
                             ),
-                            SizedBox(height: 40, width: 180),
+                            const SizedBox(height: 40, width: 180),
                             Text(
                               // 'Rs. 305.00',
                               'Rs. $totalPrice''0',
                               style:
-                                  TextStyle(fontSize: 16, color: Colors.black),
+                                  const TextStyle(fontSize: 16, color: Colors.black),
                             ),
                           ]),
                       const SizedBox(height: 30, width: 50),

@@ -137,7 +137,7 @@ class FoodDetailsState extends State<FoodDetails> {
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 15),
+                              horizontal: 15, vertical: 15),
                           child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -145,7 +145,7 @@ class FoodDetailsState extends State<FoodDetails> {
                                 Text(
                                   'Chicken Burger',
                                   style: TextStyle(
-                                    fontSize: 16, color: Colors.white),
+                                      fontSize: 16, color: Colors.white),
                                 ),
                                 SizedBox(
                                   width: 120,
@@ -153,7 +153,7 @@ class FoodDetailsState extends State<FoodDetails> {
                                 Text(
                                   'Rs.95.00',
                                   style: TextStyle(
-                                    fontSize: 16, color: Colors.white),
+                                      fontSize: 16, color: Colors.white),
                                 ),
                               ]),
                         ),
@@ -176,8 +176,8 @@ class FoodDetailsState extends State<FoodDetails> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
-                          width: 150,
-                          height: 30,
+                          width: 140,
+                          height: 25,
                           decoration: ShapeDecoration(
                             color: const Color.fromARGB(255, 255, 255, 255),
                             shape: RoundedRectangleBorder(
@@ -188,10 +188,14 @@ class FoodDetailsState extends State<FoodDetails> {
                             qtyFormProps:
                                 const QtyFormProps(cursorColor: Colors.amber),
                             decoration: const QtyDecorationProps(
-                                width: 12,
-                                orientation: ButtonOrientation.horizontal,
-                                isBordered: false,
-                                borderShape: BorderShapeBtn.circle),
+                              width: 12,
+                              iconColor: Colors.black,
+                              minusBtn:
+                                  Icon(Icons.remove_circle_outline_outlined),
+                              plusBtn: Icon(Icons.add_circle_outline_outlined),
+                              orientation: ButtonOrientation.horizontal,
+                              isBordered: false,
+                            ),
                             onQtyChanged: (newQty) {
                               onQtyChanged(newQty);
                             },
