@@ -10,6 +10,7 @@ class FoodDetails extends StatefulWidget {
 }
 
 class FoodDetailsState extends State<FoodDetails> {
+  bool isFav = true;
   int quantity = 1;
   double totalPrice = 95.00;
 
@@ -31,9 +32,9 @@ class FoodDetailsState extends State<FoodDetails> {
   @override
   Widget build(BuildContext context) {
     final ButtonStyle style = ElevatedButton.styleFrom(
+      foregroundColor: Colors.white,
         backgroundColor: Colors.amber,
-        elevation: 5,
-        textStyle: const TextStyle(fontSize: 16, color: Colors.amber));
+        textStyle: const TextStyle(fontSize: 16, color: Colors.white));
 
     return Scaffold(
       appBar: AppBar(
@@ -42,8 +43,13 @@ class FoodDetailsState extends State<FoodDetails> {
         title: const Center(child: Text('Chicken Burger')),
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.favorite_border_outlined),
+            onPressed: () {
+              setState(() {
+                isFav = !isFav;
+              });
+            },
+            icon: Icon(isFav ? Icons.favorite_border : Icons.favorite,),
+            color: Colors.red,
           )
         ],
       ),
@@ -246,7 +252,9 @@ class FoodDetailsState extends State<FoodDetails> {
             ),
             const SizedBox(height: 18),
             Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-              ElevatedButton(
+              ElevatedButton.icon(
+                icon: Icon(Icons.shopping_cart),
+                label: Text('Add to Cart'),
                 style: style,
                 onPressed: () {
                   Navigator.push(
@@ -256,19 +264,13 @@ class FoodDetailsState extends State<FoodDetails> {
                     ),
                   );
                 },
-                child: const Text(
-                  'Add to Cart',
-                  style: TextStyle(color: Colors.white),
-                ),
               ),
               const SizedBox(width: 50),
-              ElevatedButton(
+              ElevatedButton.icon(
+                icon: Icon(Icons.shopping_bag),
+                label: Text('Buy Now'),
                 style: style,
                 onPressed: () {},
-                child: const Text(
-                  'Buy Now',
-                  style: TextStyle(color: Colors.white),
-                ),
               ),
             ])
           ],

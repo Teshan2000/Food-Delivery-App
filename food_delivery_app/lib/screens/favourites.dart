@@ -9,17 +9,15 @@ class Favourites extends StatefulWidget {
 }
 
 class _FavouritesState extends State<Favourites> {
+  bool isFav = true;
+
   List<Map<String, dynamic>> favourites = [
     {
       "image": "Assets/Foods/Ham Burger.png",
       "name": "Ham Burger",
       "price": "Rs.135.00"
     },
-    {
-      "image": "Assets/Foods/Hotdog.png",
-      "name": "Hotdog",
-      "price": "Rs.65.00"
-    },
+    {"image": "Assets/Foods/Hotdog.png", "name": "Hotdog", "price": "Rs.65.00"},
     {
       "image": "Assets/Foods/Pizza.png",
       "name": "Pepperoni Pizza",
@@ -48,91 +46,107 @@ class _FavouritesState extends State<Favourites> {
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: const Center(
-          child: Text(
-            'Favourites'
-          ),
+          child: Text('Favourites'),
         ),
         actions: [
-          IconButton(
-            onPressed: () {}, 
-            icon: const Icon(Icons.favorite)
-          )
+          IconButton(onPressed: () {}, icon: const Icon(Icons.favorite))
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 15
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
         child: SafeArea(
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                    height: 675,
-                    child: GestureDetector(
-                      child: ListView(
-                          scrollDirection: Axis.vertical,
-                          children: List.generate(favourites.length, (index) {
-                            return Card(
-                              elevation: 5,
-                              color: Colors.amber,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: Row(children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: 15),
-                                  child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        const SizedBox(width: 20),
-                                        Image.asset(
-                                          favourites[index]['image'],
-                                          width: 80,
-                                          height: 80,
-                                        ),
-                                        const SizedBox(width: 40),
-                                        Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
-                                                favourites[index]['name'],
-                                                style: const TextStyle(
-                                                    fontSize: 18,
-                                                    color: Colors.white),
-                                              ),
-                                              Text(
-                                                favourites[index]['price'],
-                                                style: const TextStyle(
-                                                    fontSize: 18,
-                                                    color: Colors.white),
-                                              )
-                                            ])
-                                      ]),
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 10),
+                      height: 675,
+                      child: GestureDetector(
+                        child: ListView(
+                            scrollDirection: Axis.vertical,
+                            children: List.generate(favourites.length, (index) {
+                              return Card(
+                                elevation: 5,
+                                color: Colors.amber,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
-                              ]),
-                            );
-                          })),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const FoodDetails()),
-                        );
-                      },
+                                child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 15),
+                                        child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: <Widget>[
+                                              const SizedBox(width: 20),
+                                              Image.asset(
+                                                favourites[index]['image'],
+                                                width: 80,
+                                                height: 80,
+                                              ),
+                                              const SizedBox(width: 40),
+                                              Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      favourites[index]['name'],
+                                                      style: const TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.white),
+                                                    ),
+                                                    Text(
+                                                      favourites[index]
+                                                          ['price'],
+                                                      style: const TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.white),
+                                                    )
+                                                  ]),
+                                              const SizedBox(width: 8),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  IconButton(
+                                                      onPressed: () {
+                                                        setState(() {
+                                                          isFav = !isFav;
+                                                        });
+                                                      },
+                                                      icon: Icon(
+                                                        isFav
+                                                            ? Icons
+                                                                .favorite_border
+                                                            : Icons.favorite,
+                                                        color: Colors.red,
+                                                      ))
+                                                ],
+                                              )
+                                            ]),
+                                      ),
+                                    ]),
+                              );
+                            })),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const FoodDetails()),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
               ],
             ),
           ),

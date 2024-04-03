@@ -52,9 +52,9 @@ class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
     final ButtonStyle style = ElevatedButton.styleFrom(
+      foregroundColor: Colors.white,
         backgroundColor: Colors.amber,
-        elevation: 5,
-        textStyle: const TextStyle(fontSize: 16, color: Colors.amber));
+        textStyle: const TextStyle(fontSize: 16, color: Colors.white));
 
     return Scaffold(
       appBar: AppBar(
@@ -283,19 +283,11 @@ class _CartState extends State<Cart> {
                             ),
                           ]),
                       const SizedBox(height: 30, width: 50),
-                      ElevatedButton(
+                      ElevatedButton.icon(
+                        icon: Icon(Icons.check_circle_outline_sharp),
+                        label: Text('Proceed To Checkout'),
                         style: style,
-                        // style: ButtonStyle(
-                        //   textStyle: TextStyle(
-                        //     color: Colors.amber,
-                        //     fontSize: 18,
-                        //   )
-                        // ),
                         onPressed: () {},
-                        child: const Text(
-                          'Proceed To Checkout',
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
                       ),
                     ]),
               )
