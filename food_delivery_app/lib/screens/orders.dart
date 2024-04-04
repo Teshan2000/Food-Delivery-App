@@ -17,11 +17,11 @@ class _OrdersState extends State<Orders> {
       "total": "Rs.190.00"
     },
     {
-      "image": "Assets/Foods/Pizza.png",
-      "name": "Pepperoni Pizza",
-      "price": "Rs.125.00",
+      "image": "Assets/Foods/Pastry.png",
+      "name": "Fish Pastry",
+      "price": "Rs.35.00",
       "quantity": "1",
-      "total": "Rs.125.00"
+      "total": "Rs.35.00"
     },
     {
       "image": "Assets/Foods/Taco.png",
@@ -29,7 +29,14 @@ class _OrdersState extends State<Orders> {
       "price": "Rs.35.00",
       "quantity": "3",
       "total": "Rs.105.00"
-    },    
+    },  
+    {
+      "image": "Assets/Foods/Pizza.png",
+      "name": "Pepperoni Pizza",
+      "price": "Rs.125.00",
+      "quantity": "1",
+      "total": "Rs.125.00"
+    },  
   ];
 
   @override
@@ -68,16 +75,12 @@ class _OrdersState extends State<Orders> {
                         child: ListView(
                             scrollDirection: Axis.vertical,
                             children: List.generate(Orders.length, (index) {
-                              return Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                height: 250,
-                                width: 350,
-                                decoration: ShapeDecoration(
-                                  color: const Color(0xFFFFC107),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(40),
-                                  ),
-                                ),
+                              return Card(
+                              elevation: 5,
+                              color: Colors.amber,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
@@ -86,7 +89,7 @@ class _OrdersState extends State<Orders> {
                                         children: <Widget>[
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 15, vertical: 15),
+                                                horizontal: 20, vertical: 18),
                                             child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -97,7 +100,7 @@ class _OrdersState extends State<Orders> {
                                                         fontSize: 16, color: Colors.white),
                                                   ),
                                                   const SizedBox(
-                                                    width: 120,
+                                                    width: 150,
                                                   ),
                                                   Text(
                                                     Orders[index]['price'],
@@ -122,19 +125,11 @@ class _OrdersState extends State<Orders> {
                                           ),
                                         ]),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
-                                          Container(
+                                          Padding(
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 15, vertical: 15),
-                                            height: 35,
-                                            width: 135,
-                                            decoration: ShapeDecoration(
-                                              color: const Color.fromARGB(255, 255, 255, 255),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(40),
-                                              ),
-                                            ),
+                                                horizontal: 18, vertical: 5),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: <Widget>[
@@ -143,11 +138,23 @@ class _OrdersState extends State<Orders> {
                                                     width: 80,
                                                     height: 80,
                                                   ),
-                                                const SizedBox(width: 28),
-                                                const Text(
-                                                  '2',
-                                                  style: TextStyle(
-                                                      fontSize: 26, color: Colors.black),
+                                                const SizedBox(width: 195),
+                                                Container(
+                                                  width: 30,
+                                                  height: 30,
+                                                  decoration: ShapeDecoration(
+                                                    color: const Color.fromARGB(255, 255, 255, 255),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(90),
+                                                    ),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      Orders[index]['quantity'],
+                                                      style: const TextStyle(
+                                                          fontSize: 24, color: Colors.black),
+                                                    ),
+                                                  ),
                                                 ),
                                               ],
                                             ),
@@ -172,7 +179,7 @@ class _OrdersState extends State<Orders> {
                                         children: <Widget>[
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
-                                              horizontal: 15, vertical: 15
+                                              horizontal: 20, vertical: 18
                                             ),
                                             child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -183,7 +190,7 @@ class _OrdersState extends State<Orders> {
                                                     style: TextStyle(
                                                         fontSize: 16, color: Colors.white),
                                                   ),
-                                                  const SizedBox(width: 180),
+                                                  const SizedBox(width: 190),
                                                   Text(
                                                     Orders[index]['total'],
                                                     style: const TextStyle(
