@@ -1,6 +1,6 @@
 # Food Delivery Mobile App
 
-<!-- ![App Logo](link_to_your_logo) -->
+![App Logo](Assets/icon.png)
 
 ## Overview
 
@@ -60,5 +60,3 @@ We welcome contributions! If you'd like to contribute to Foodie Express, please 
 Food Delivery Mobile App is open-source and available under the [MIT License](link_to_license).
 
 ---
-
-Feel free to customize this template based on the specifics of your app. Include any additional information or features that make your Food Delivery Mobile App stand out. Don't forget to provide links to essential resources, such as the live app (if available), documentation, and contribution guidelines.
