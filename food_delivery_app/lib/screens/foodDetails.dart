@@ -9,7 +9,8 @@ class FoodDetails extends StatefulWidget {
   State<FoodDetails> createState() => FoodDetailsState();
 }
 
-class FoodDetailsState extends State<FoodDetails> {
+class FoodDetailsState extends State<FoodDetails>
+    with TickerProviderStateMixin {
   bool isFav = true;
   int quantity = 1;
   double totalPrice = 95.00;
@@ -22,6 +23,19 @@ class FoodDetailsState extends State<FoodDetails> {
     {"image": "🥬", "name": "Salad"}
   ];
 
+  List<Map<String, dynamic>> delivery = [
+    {
+      "image": "Assets/pick me foods.jpg",
+      "name": "Pick Me Foods",
+      "price": "Rs. 50.00"
+    },
+    {
+      "image": "Assets/uber eats.jpg",
+      "name": "Uber Eats",
+      "price": "Free Delivery"
+    }
+  ];
+
   void onQtyChanged(int newQuantity) {
     setState(() {
       quantity = newQuantity;
@@ -32,7 +46,7 @@ class FoodDetailsState extends State<FoodDetails> {
   @override
   Widget build(BuildContext context) {
     final ButtonStyle style = ElevatedButton.styleFrom(
-      foregroundColor: Colors.white,
+        foregroundColor: Colors.white,
         backgroundColor: Colors.amber,
         textStyle: const TextStyle(fontSize: 16, color: Colors.white));
 
@@ -48,7 +62,9 @@ class FoodDetailsState extends State<FoodDetails> {
                 isFav = !isFav;
               });
             },
-            icon: Icon(isFav ? Icons.favorite_border : Icons.favorite,),
+            icon: Icon(
+              isFav ? Icons.favorite_border : Icons.favorite,
+            ),
             color: Colors.red,
           )
         ],
@@ -270,7 +286,116 @@ class FoodDetailsState extends State<FoodDetails> {
                 icon: Icon(Icons.shopping_bag),
                 label: Text('Buy Now'),
                 style: style,
-                onPressed: () {},
+                onPressed: () {
+                  AnimationController _controller = AnimationController(
+                    vsync: this,
+                    duration: Duration(milliseconds: 300),
+                  );
+
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (_) => BottomSheet(
+                      animationController: _controller,
+                      onClosing: () {
+                        TextButton.icon(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          icon: Icon(Icons.close),
+                          label: Text('Close')
+                        );
+                      },
+                      builder: (BuildContext context) {
+                        return Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 10
+                              ),
+                              height: 275,
+                              child: GestureDetector(
+                                child: ListView(
+                                    scrollDirection: Axis.vertical,
+                                    children: List.generate(delivery.length, (index) {
+                                      return Card(
+                                        elevation: 5,
+                                        color: Colors.amber,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(30),
+                                        ),
+                                        child: Row(children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 5, vertical: 15
+                                            ),
+                                            child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: <Widget>[
+                                                  const SizedBox(width: 20),
+                                                  Image.asset(
+                                                    delivery[index]['image'],
+                                                    width: 80,
+                                                    height: 80,
+                                                  ),
+                                                  const SizedBox(width: 40),
+                                                  Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: <Widget>[
+                                                        Text(
+                                                          delivery[index]['name'],
+                                                          style: const TextStyle(
+                                                            fontSize: 18,
+                                                            color: Colors.white
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          delivery[index]['price'],
+                                                          style: const TextStyle(
+                                                            fontSize: 18,
+                                                            color: Colors.white
+                                                          ),
+                                                        )
+                                                      ]
+                                                    ),
+                                                  const SizedBox(width: 8),
+                                                  Column(
+                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                    children: [
+                                                      IconButton(
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              isFav = !isFav;
+                                                            });
+                                                          },
+                                                          icon: Icon(
+                                                            isFav ? Icons.favorite_border : Icons.favorite,
+                                                            color: Colors.red,
+                                                          )
+                                                        )
+                                                    ],
+                                                  )
+                                                ]),
+                                          ),
+                                        ]),
+                                      );
+                                    })),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const Cart()
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ])
           ],
