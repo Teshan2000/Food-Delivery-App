@@ -1,6 +1,7 @@
 import 'package:cart_stepper/cart_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/screens/foodDetails.dart';
+import 'package:food_delivery_app/screens/home.dart';
 import 'package:input_quantity/input_quantity.dart';
 
 class Cart extends StatefulWidget {
@@ -11,18 +12,9 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
-  int quantity = 1;
-  double totalPrice = 255.00;
-
-  int _counterInit = 0;
-  int _counter = 1;
-  int _counterLimit = 1;
-  double _dCounter = 0.01;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  double subTotal = 165.00;
+  double delivery = 50.00;
+  double total = 50.00;
 
   List<Map<String, dynamic>> cart = [
     {
@@ -42,17 +34,33 @@ class _CartState extends State<Cart> {
     }
   ];
 
-  void didChangeCount(int newQuantity) {
+  void didChangeCount(int newQuantity, int index) {
     setState(() {
-      _counter = newQuantity;
-      totalPrice = 255.00 * _counter;
+      cart[index]["quantity"] = newQuantity;
+      subTotal = calculatesubTotal();
+      total = calculateTotal();
     });
+  }
+
+  double calculatesubTotal() {
+    double subTotal = 0;
+    for (var item in cart) {
+      subTotal += double.parse(item["price"].replaceAll("Rs.", "").trim()) *
+          (item["quantity"] ?? 0);
+    }
+    return subTotal;
+  }
+
+  double calculateTotal() {
+    double total = 0;
+    total = subTotal + delivery;
+    return total;
   }
 
   @override
   Widget build(BuildContext context) {
     final ButtonStyle style = ElevatedButton.styleFrom(
-      foregroundColor: Colors.white,
+        foregroundColor: Colors.white,
         backgroundColor: Colors.amber,
         textStyle: const TextStyle(fontSize: 16, color: Colors.white));
 
@@ -103,19 +111,22 @@ class _CartState extends State<Cart> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 5, vertical: 15),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: <Widget>[
                                             const SizedBox(width: 20),
                                             Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
                                               children: [
                                                 Image.asset(
                                                   cart[index]['image'],
                                                   width: 80,
                                                   height: 80,
-                                                  alignment: Alignment.centerLeft,
+                                                  alignment:
+                                                      Alignment.centerLeft,
                                                 ),
                                               ],
                                             ),
@@ -139,67 +150,30 @@ class _CartState extends State<Cart> {
                                                         color: Colors.white),
                                                   )
                                                 ]),
-                                            // Container(
-                                            //   width: 50,
-                                            //   height: 80,
-                                            //   decoration: ShapeDecoration(
-                                            //     color: const Color.fromARGB(255, 255, 255, 255),
-                                            //     shape: RoundedRectangleBorder(
-                                            //       borderRadius: BorderRadius.circular(90),
-                                            //     ),
-                                            //   ),
-                                            //   child: InputQty.int(
-                                            //     qtyFormProps: const QtyFormProps(cursorColor: Colors.amber),
-                                            //     decoration: const QtyDecorationProps(
-                                            //       width: 12,
-                                            //       orientation: ButtonOrientation.vertical,
-                                            //       isBordered: false,
-                                            //       borderShape: BorderShapeBtn.circle,
-                                            //     ),
-                                            //     onQtyChanged: (newQty) {
-                                            //       onQtyChanged(newQty);
-                                            //     },
-                                            //   ),
-                                            // ),
-                                            //                         Row(
-                                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            //   children: [
-                                            //     InputQty.int(
-                                            //       messageBuilder: (minVal, maxVal, value) => const Text(
-                                            //           "Button on Left",
-                                            //           textAlign: TextAlign.center),
-                                            //       decoration: const QtyDecorationProps(
-                                            //           // qtyStyle: QtyStyle.btnOnLeft,
-                                            //           orientation: ButtonOrientation.vertical,
-                                            //           width: 4,
-                                            //           btnColor: Colors.white,
-                                            //           fillColor: Colors.black12,
-                                            //           isBordered: false,
-                                            //           borderShape: BorderShapeBtn.circle
-                                            //         ),
-                                            //     ),
-                                            //   ],
-                                            // ),
                                             const SizedBox(width: 25),
                                             Column(
-                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
                                               children: [
                                                 CartStepperInt(
                                                   style: const CartStepperStyle(
                                                       iconTheme: IconThemeData(
                                                           color: Colors.black),
-                                                      foregroundColor: Colors.black,
+                                                      foregroundColor:
+                                                          Colors.black,
                                                       activeForegroundColor:
                                                           Colors.black,
-                                                      backgroundColor: Colors.white,
+                                                      backgroundColor:
+                                                          Colors.white,
                                                       activeBackgroundColor:
                                                           Colors.white),
-                                                  value: _counter,
+                                                  value: cart[index]
+                                                          ["quantity"] ??
+                                                      1,
                                                   axis: Axis.vertical,
                                                   didChangeCount: (count) {
-                                                    setState(() {
-                                                      _counter = count;
-                                                    });
+                                                    didChangeCount(
+                                                        count, index);
                                                   },
                                                 ),
                                               ],
@@ -240,13 +214,12 @@ class _CartState extends State<Cart> {
                             ),
                             const SizedBox(height: 40, width: 170),
                             Text(
-                              // 'Rs. 255.00',
-                              'Rs. $totalPrice' '0',
+                              'Rs. ${subTotal.toStringAsFixed(2)}',
                               style: const TextStyle(
                                   fontSize: 16, color: Colors.black),
                             ),
                           ]),
-                        const Row(
+                      const Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Text(
@@ -261,7 +234,7 @@ class _CartState extends State<Cart> {
                                   TextStyle(fontSize: 16, color: Colors.black),
                             ),
                           ]),
-                      const SizedBox(height: 3, width: 180),                      
+                      const SizedBox(height: 3, width: 180),
                       const Divider(
                         color: Colors.black,
                         thickness: 1,
@@ -276,10 +249,9 @@ class _CartState extends State<Cart> {
                             ),
                             const SizedBox(height: 40, width: 180),
                             Text(
-                              // 'Rs. 305.00',
-                              'Rs. $totalPrice''0',
-                              style:
-                                  const TextStyle(fontSize: 16, color: Colors.black),
+                              'Rs. ${total.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.black),
                             ),
                           ]),
                       const SizedBox(height: 30, width: 50),
@@ -287,7 +259,30 @@ class _CartState extends State<Cart> {
                         icon: Icon(Icons.check_circle_outline_sharp),
                         label: Text('Proceed To Checkout'),
                         style: style,
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                            context: context, 
+                            builder: (_) => AlertDialog(
+                              title: Text("Checkout Confirmation"),
+                              content: Text("Are you sure you want to proceed?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    Home();
+                                  },
+                                  child: Text('Yes'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('No'),
+                                ),
+                              ],
+                            )
+                          );
+                        },
                       ),
                     ]),
               )
