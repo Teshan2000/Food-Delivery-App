@@ -16,7 +16,7 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with TickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
   final List<String> _foodList = [
     "Pizza",
@@ -38,6 +38,21 @@ class _HomeState extends State<Home> {
     {"image": "🌮", "name": "Taco"},
     {"image": "🥐", "name": "Bun"},
     {"image": "🍞", "name": "Bread"}
+  ];
+
+  List<Map<String, dynamic>> foods = [
+    {
+      "image": "Assets/burger.jpg",
+      "name": "Chicken Burger",
+      "price": "Rs.85.00"
+    },
+    {"image": "Assets/burger.jpg", "name": "Fish Burger", "price": "Rs.35.00"},
+    {
+      "image": "Assets/burger.jpg",
+      "name": "Veggie Burger",
+      "price": "Rs.35.00"
+    },
+    {"image": "Assets/burger.jpg", "name": "Cheese Burger", "price": "Rs.45.00"}
   ];
 
   List<Map<String, dynamic>> popular = [
@@ -63,7 +78,6 @@ class _HomeState extends State<Home> {
       "price": "Rs.45.00"
     }
   ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +152,8 @@ class _HomeState extends State<Home> {
                   searchDecoration: const InputDecoration(
                     labelText: 'Search Foods',
                     labelStyle: TextStyle(color: Colors.amber),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(35))),                             
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(35))),
                   ),
                   textInputAction: TextInputAction.done,
                   searchIcon: const Icon(Icons.search),
@@ -187,62 +202,171 @@ class _HomeState extends State<Home> {
                 Column(
                   children: [
                     Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 10),
                       height: 165,
                       width: double.infinity,
-                      child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: List.generate(categories.length, (index) {
-                            return Column(children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 2),
-                                child: Container(
-                                  width: 90,
-                                  height: 145,
-                                  decoration: ShapeDecoration(
-                                    color: const Color(0xFFFFC107),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(90),
+                      child: GestureDetector(
+                        child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: List.generate(categories.length, (index) {
+                              return Column(children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 2),
+                                  child: Container(
+                                    width: 90,
+                                    height: 145,
+                                    decoration: ShapeDecoration(
+                                      color: const Color(0xFFFFC107),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(90),
+                                      ),
                                     ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 16),
-                                        child: Container(
-                                          width: 70,
-                                          height: 70,
-                                          decoration: ShapeDecoration(
-                                            color: const Color.fromARGB(
-                                                255, 255, 255, 255),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(90),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 16),
+                                          child: Container(
+                                            width: 70,
+                                            height: 70,
+                                            decoration: ShapeDecoration(
+                                              color: const Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(90),
+                                              ),
                                             ),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              categories[index]['image'],
-                                              style:
-                                                  const TextStyle(fontSize: 35),
+                                            child: Center(
+                                              child: Text(
+                                                categories[index]['image'],
+                                                style: const TextStyle(
+                                                    fontSize: 35),
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Text(
-                                        categories[index]['name'],
-                                        style: const TextStyle(
-                                            fontSize: 16, color: Colors.white),
-                                      )
-                                    ],
+                                        Text(
+                                          categories[index]['name'],
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ]);
-                          })),
+                              ]);
+                            })),
+                        onTap: () {
+                          AnimationController _controller = AnimationController(
+                            vsync: this,
+                            duration: Duration(milliseconds: 300),
+                          );
+
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (_) => BottomSheet(
+                              animationController: _controller,
+                              onClosing: () {
+                                TextButton.icon(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    icon: Icon(Icons.close),
+                                    label: Text('Close'));
+                              },
+                              builder: (BuildContext context) {
+                                return Column(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5, vertical: 10),
+                                      height: 445,
+                                      child: GestureDetector(
+                                        child: ListView(
+                                            scrollDirection: Axis.vertical,
+                                            children: List.generate(
+                                                foods.length, (index) {
+                                              return Card(
+                                                elevation: 5,
+                                                color: Colors.amber,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                ),
+                                                child: Row(children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 5,
+                                                        vertical: 15),
+                                                    child: Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
+                                                          const SizedBox(
+                                                              width: 20),
+                                                          Image.asset(
+                                                            foods[index]
+                                                                ['image'],
+                                                            width: 80,
+                                                            height: 80,
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 40),
+                                                          Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: <Widget>[
+                                                                Text(
+                                                                  foods[index]
+                                                                      ['name'],
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          18,
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                                Text(
+                                                                  foods[index]
+                                                                      ['price'],
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          18,
+                                                                      color: Colors
+                                                                          .white),
+                                                                )
+                                                              ]),
+                                                        ]),
+                                                  ),
+                                                ]),
+                                              );
+                                            })),
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const FoodDetails()),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -256,8 +380,8 @@ class _HomeState extends State<Home> {
                 Column(
                   children: [
                     Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 10),
                       height: 475,
                       child: GestureDetector(
                         child: ListView(
@@ -341,5 +465,5 @@ class _HomeState extends State<Home> {
     }
 
     setState(() {});
-  }  
+  }
 }
