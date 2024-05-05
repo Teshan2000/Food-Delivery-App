@@ -1,6 +1,7 @@
 import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/appDrawer.dart';
+import 'package:food_delivery_app/components/categoryCard.dart';
 import 'package:food_delivery_app/components/foodCard.dart';
 import 'package:food_delivery_app/components/searchBar.dart';
 import 'package:food_delivery_app/screens/cart.dart';
@@ -279,88 +280,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                     label: Text('Close'));
                               },
                               builder: (BuildContext context) {
-                                return Column(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5, vertical: 10),
-                                      height: 445,
-                                      child: GestureDetector(
-                                        child: ListView(
-                                            scrollDirection: Axis.vertical,
-                                            children: List.generate(
-                                                foods.length, (index) {
-                                              return Card(
-                                                elevation: 5,
-                                                color: Colors.amber,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(30),
-                                                ),
-                                                child: Row(children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 5,
-                                                        vertical: 15),
-                                                    child: Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: <Widget>[
-                                                          const SizedBox(
-                                                              width: 20),
-                                                          Image.asset(
-                                                            foods[index]
-                                                                ['image'],
-                                                            width: 80,
-                                                            height: 80,
-                                                          ),
-                                                          const SizedBox(
-                                                              width: 40),
-                                                          Column(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .start,
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: <Widget>[
-                                                                Text(
-                                                                  foods[index]
-                                                                      ['name'],
-                                                                  style: const TextStyle(
-                                                                      fontSize:
-                                                                          18,
-                                                                      color: Colors
-                                                                          .white),
-                                                                ),
-                                                                Text(
-                                                                  foods[index]
-                                                                      ['price'],
-                                                                  style: const TextStyle(
-                                                                      fontSize:
-                                                                          18,
-                                                                      color: Colors
-                                                                          .white),
-                                                                )
-                                                              ]),
-                                                        ]),
-                                                  ),
-                                                ]),
-                                              );
-                                            })),
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const FoodDetails()),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
+                                return CategoryCard(
+                                  
                                 );
                               },
                             ),
