@@ -41,21 +41,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     {"image": "🍞", "name": "Bread"}
   ];
 
-  List<Map<String, dynamic>> foods = [
-    {
-      "image": "Assets/burger.jpg",
-      "name": "Chicken Burger",
-      "price": "Rs.85.00"
-    },
-    {"image": "Assets/burger.jpg", "name": "Fish Burger", "price": "Rs.35.00"},
-    {
-      "image": "Assets/burger.jpg",
-      "name": "Veggie Burger",
-      "price": "Rs.35.00"
-    },
-    {"image": "Assets/burger.jpg", "name": "Cheese Burger", "price": "Rs.45.00"}
-  ];
-
   List<Map<String, dynamic>> popular = [
     {
       "image": "Assets/Foods/Pastry.png",
@@ -280,9 +265,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                     label: Text('Close'));
                               },
                               builder: (BuildContext context) {
-                                return CategoryCard(
-                                  
-                                );
+                                return CategoryCard();
                               },
                             ),
                           );
