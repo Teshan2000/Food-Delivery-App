@@ -9,7 +9,7 @@ class Favourites extends StatefulWidget {
 }
 
 class _FavouritesState extends State<Favourites> {
-  bool isFav = true;
+  bool isFav = false;
 
   List<Map<String, dynamic>> favourites = [
     {
@@ -124,8 +124,7 @@ class _FavouritesState extends State<Favourites> {
                                                       },
                                                       icon: Icon(
                                                         isFav
-                                                            ? Icons
-                                                                .favorite_border
+                                                            ? Icons.favorite_border
                                                             : Icons.favorite,
                                                         color: Colors.red,
                                                       ))

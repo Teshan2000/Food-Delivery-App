@@ -27,12 +27,14 @@ class FoodDetailsState extends State<FoodDetails>
     {
       "image": "Assets/pick me foods.jpg",
       "name": "Pick Me Foods",
-      "price": "Rs. 50.00"
+      "price": "Rs. 50.00",
+      "rate": "⭐ 4.5"
     },
     {
       "image": "Assets/uber eats.jpg",
       "name": "Uber Eats",
-      "price": "Free Delivery"
+      "price": "Free Delivery",
+      "rate": "⭐ 4.8"
     }
   ];
 

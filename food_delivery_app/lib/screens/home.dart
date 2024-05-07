@@ -38,7 +38,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     {"image": "🥪", "name": "Sandwich"},
     {"image": "🌮", "name": "Taco"},
     {"image": "🥐", "name": "Bun"},
-    {"image": "🍞", "name": "Bread"}
+    {"image": "🍞", "name": "Bread"},
+    {"image": "🥮", "name": "Cake"}
   ];
 
   List<Map<String, dynamic>> popular = [
@@ -286,7 +287,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 5, vertical: 10),
-                      height: 475,
+                      height: 625,
                       child: GestureDetector(
                         child: ListView(
                             scrollDirection: Axis.vertical,
