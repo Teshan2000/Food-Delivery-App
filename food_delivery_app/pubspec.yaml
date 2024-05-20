@@ -32,6 +32,7 @@ dependencies:
   input_quantity: ^2.3.2
   cart_stepper: ^4.3.0
   animated_search_bar: ^2.7.1
+  firebase_core: ^2.24.0
   
   flutter:
     sdk: flutter
