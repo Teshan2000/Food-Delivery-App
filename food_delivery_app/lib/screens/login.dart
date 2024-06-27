@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/components/loginForm.dart';
 import 'package:food_delivery_app/components/socialButton.dart';
+import 'package:food_delivery_app/screens/register.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -37,6 +39,8 @@ class LoginPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                const SizedBox(height: 20),
+                const LoginForm(),
                 const SizedBox(height: 30),
                 const Center(
                   child: Text(
@@ -79,6 +83,13 @@ class LoginPage extends StatelessWidget {
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RegisterPage(),
+                                    ),
+                                  );
                                 },
                             ),
                           ],
