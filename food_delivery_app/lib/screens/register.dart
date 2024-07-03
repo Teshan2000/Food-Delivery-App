@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/components/registerForm.dart';
 import 'package:food_delivery_app/components/socialButton.dart';
 import 'package:food_delivery_app/screens/login.dart';
 
@@ -38,7 +39,9 @@ class RegisterPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: 20),
+                RegisterForm(),
+                const SizedBox(height: 30),
                 const Center(
                   child: Text(
                     'or sign in with',
@@ -60,7 +63,7 @@ class RegisterPage extends StatelessWidget {
                         TextSpan(
                           text: "  Sign In",
                           style: const TextStyle(
-                            color: Colors.purple,
+                            color: Colors.amberAccent,
                             fontSize: 17,
                           ),
                           recognizer: TapGestureRecognizer()
