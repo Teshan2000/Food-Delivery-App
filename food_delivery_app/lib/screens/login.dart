@@ -10,6 +10,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.yellow,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
@@ -47,7 +48,8 @@ class LoginPage extends StatelessWidget {
                     'Forgot Your Password?',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.purple,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
                       fontSize: 16,
                       decorationStyle: TextDecorationStyle.solid,
                     ),
@@ -61,7 +63,17 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 25),
-                const SocialButton(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const SocialButton(
+                      social: 'google',
+                    ),
+                    const SocialButton(
+                      social: 'facebook',
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 30),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -77,7 +89,8 @@ class LoginPage extends StatelessWidget {
                             TextSpan(
                               text: "  Sign Up",
                               style: const TextStyle(
-                                color: Colors.purple,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
                                 fontSize: 17,
                                 decorationStyle: TextDecorationStyle.solid,
                               ),

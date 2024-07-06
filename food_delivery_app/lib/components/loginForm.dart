@@ -33,20 +33,22 @@ class LoginFormState extends State<LoginForm> {
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
-            cursorColor: Colors.yellow,
+            cursorColor: Colors.amber,
             decoration: InputDecoration(
               hintText: 'Email Address',
               labelText: 'Email Address',
               alignLabelWithHint: true,
+              fillColor: Colors.white,
+              filled: true,
               prefixIcon: const Icon(Icons.email_outlined),
-              prefixIconColor: Colors.yellow,
+              prefixIconColor: Colors.amber,
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.black),
                 borderRadius: BorderRadius.circular(10),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: const BorderSide(
-                  color: Colors.yellow,
+                  color: Colors.amber,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(15),
@@ -76,21 +78,23 @@ class LoginFormState extends State<LoginForm> {
           TextFormField(
             controller: _passController,
             keyboardType: TextInputType.visiblePassword,
-            cursorColor: Colors.yellow,
+            cursorColor: Colors.amber,
             obscureText: obsecurePass,
             decoration: InputDecoration(
                 hintText: 'Password',
                 labelText: 'Password',
                 alignLabelWithHint: true,
+                fillColor: Colors.white,
+                filled: true,
                 prefixIcon: const Icon(Icons.lock_outline),
-                prefixIconColor: Colors.yellow,
+                prefixIconColor: Colors.amber,
                 enabledBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: Colors.black),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(
-                    color: Colors.yellow,
+                    color: Colors.amber,
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(15),
@@ -115,7 +119,7 @@ class LoginFormState extends State<LoginForm> {
                           )
                         : const Icon(
                             Icons.visibility_outlined,
-                            color: Colors.yellow,
+                            color: Colors.amber,
                           ))),
             validator: (val) {
               if (val!.length < 6) {
@@ -133,7 +137,7 @@ class LoginFormState extends State<LoginForm> {
           const SizedBox(height: 40),
           Button(
             width: double.infinity,
-            title: 'Login',
+            title: 'Sign In',
             disable: false,
             onPressed: () {
               if (_formKey.currentState!.validate()) {

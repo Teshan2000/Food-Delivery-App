@@ -36,20 +36,22 @@ class RegisterFormState extends State<RegisterForm> {
           TextFormField(
             controller: _nameController,
             keyboardType: TextInputType.text,
-            cursorColor: Colors.orange,
+            cursorColor: Colors.amber,
             decoration: InputDecoration(
               hintText: 'Username',
               labelText: 'Username',
               alignLabelWithHint: true,
+              fillColor: Colors.white,
+              filled: true,
               prefixIcon: const Icon(Icons.person_outlined),
-              prefixIconColor: Colors.orange,
+              prefixIconColor: Colors.amber,
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.black),
                 borderRadius: BorderRadius.circular(10),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: const BorderSide(
-                  color: Colors.orange,
+                  color: Colors.amber,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(15),
@@ -79,20 +81,22 @@ class RegisterFormState extends State<RegisterForm> {
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
-            cursorColor: Colors.orange,
+            cursorColor: Colors.amber,
             decoration: InputDecoration(
               hintText: 'Email Address',
               labelText: 'Email Address',
               alignLabelWithHint: true,
+              fillColor: Colors.white,
+              filled: true,
               prefixIcon: const Icon(Icons.email_outlined),
-              prefixIconColor: Colors.orange,
+              prefixIconColor: Colors.amber,
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.black),
                 borderRadius: BorderRadius.circular(10),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: const BorderSide(
-                  color: Colors.orange,
+                  color: Colors.amber,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(15),
@@ -122,21 +126,23 @@ class RegisterFormState extends State<RegisterForm> {
           TextFormField(
             controller: _passController,
             keyboardType: TextInputType.visiblePassword,
-            cursorColor: Colors.orange,
+            cursorColor: Colors.amber,
             obscureText: obsecurePass,
             decoration: InputDecoration(
                 hintText: 'Password',
                 labelText: 'Password',
                 alignLabelWithHint: true,
+                fillColor: Colors.white,
+                filled: true,
                 prefixIcon: const Icon(Icons.lock_outline),
-                prefixIconColor: Colors.orange,
+                prefixIconColor: Colors.amber,
                 enabledBorder: OutlineInputBorder(
                   borderSide: const BorderSide(color: Colors.black),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderSide: const BorderSide(
-                    color: Colors.orange,
+                    color: Colors.amber,
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(15),
@@ -161,7 +167,7 @@ class RegisterFormState extends State<RegisterForm> {
                           )
                         : const Icon(
                             Icons.visibility_outlined,
-                            color: Colors.orange,
+                            color: Colors.amber,
                           ))),
             validator: (val) {
               if (val!.length < 6) {
@@ -176,7 +182,7 @@ class RegisterFormState extends State<RegisterForm> {
               });
             },
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 40),
           Button(
             width: double.infinity,
             title: 'Sign Up',

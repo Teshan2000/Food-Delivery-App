@@ -10,6 +10,7 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.yellow,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
@@ -49,7 +50,13 @@ class RegisterPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 25),
-                const SocialButton(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const SocialButton(social: 'google',),
+                    const SocialButton(social: 'facebook',),
+                  ],
+                ),  
                 const SizedBox(height: 30),
                 Center(
                   child: Text.rich(
@@ -63,7 +70,8 @@ class RegisterPage extends StatelessWidget {
                         TextSpan(
                           text: "  Sign In",
                           style: const TextStyle(
-                            color: Colors.amberAccent,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
                             fontSize: 17,
                           ),
                           recognizer: TapGestureRecognizer()
