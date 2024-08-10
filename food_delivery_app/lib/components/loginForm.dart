@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/providers/auth_service.dart';
+import 'package:food_delivery_app/screens/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -9,6 +12,8 @@ class LoginForm extends StatefulWidget {
 }
 
 class LoginFormState extends State<LoginForm> {
+  final AuthService _auth = AuthService();
+
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
@@ -16,11 +21,27 @@ class LoginFormState extends State<LoginForm> {
   String email = "";
   String password = "";
 
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passController.dispose();
+    super.dispose();
+  }
+
+
   void loginUser() async {
-    final data = {
-      'email': _emailController.text,
-      'password': _passController.text,
-    };
+    String email = _emailController.text;
+    String password = _passController.text;
+
+    User? user = await _auth.signInWithEmailAndPassword(email, password);
+
+    if (user != null) {
+      print("User successfully logged");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const Home()));
+    } else {
+      print("Some error occured");
+    }
   }
 
   @override
@@ -136,14 +157,13 @@ class LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 40),
           Button(
-            width: double.infinity,
             title: 'Sign In',
-            disable: false,
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 loginUser();
               }
             },
+            disable: false, width: double.infinity,
           ),
         ],
       ),

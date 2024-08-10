@@ -50,13 +50,13 @@ class RegisterPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 25),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    const SocialButton(social: 'google',),
-                    const SocialButton(social: 'facebook',),
-                  ],
-                ),  
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //   children: [
+                //     const SocialButton(social: 'google',),
+                //     const SocialButton(social: 'facebook',),
+                //   ],
+                // ),  
                 const SizedBox(height: 30),
                 Center(
                   child: Text.rich(

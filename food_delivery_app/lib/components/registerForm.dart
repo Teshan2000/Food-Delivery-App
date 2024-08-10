@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/providers/auth_service.dart';
+import 'package:food_delivery_app/screens/login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -9,6 +12,8 @@ class RegisterForm extends StatefulWidget {
 }
 
 class RegisterFormState extends State<RegisterForm> {
+  final AuthService _auth = AuthService();
+
   final _formKey = GlobalKey<FormState>();
   String email = "";
   String password = "";
@@ -18,12 +23,28 @@ class RegisterFormState extends State<RegisterForm> {
   final _passController = TextEditingController();
   bool obsecurePass = true;
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passController.dispose();
+    super.dispose();
+  }
+
   void registerUser() async {
-    final data = {
-      'name': _nameController.text,
-      'email': _emailController.text,
-      'password': _passController.text,
-    };
+    String username = _nameController.text;
+    String email = _emailController.text;
+    String password = _passController.text;
+
+    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+
+    if (user != null) {
+      print("User successfully created");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const LoginPage()));
+    } else {
+      print("Some error occured");
+    }
   }
 
   @override
@@ -184,14 +205,14 @@ class RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 40),
           Button(
-            width: double.infinity,
             title: 'Sign Up',
-            disable: false,
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 registerUser();
               }
             },
+            disable: false,
+            width: double.infinity,
           ),
         ],
       ),
