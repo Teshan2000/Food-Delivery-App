@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
@@ -15,9 +16,6 @@ class RegisterFormState extends State<RegisterForm> {
   final AuthService _auth = AuthService();
 
   final _formKey = GlobalKey<FormState>();
-  String email = "";
-  String password = "";
-  String fullName = "";
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
@@ -87,7 +85,7 @@ class RegisterFormState extends State<RegisterForm> {
             ),
             onChanged: (val) {
               setState(() {
-                fullName = val;
+                _nameController.text = val;
               });
             },
             validator: (val) {
@@ -139,7 +137,7 @@ class RegisterFormState extends State<RegisterForm> {
             },
             onChanged: (val) {
               setState(() {
-                email = val;
+                _emailController.text = val;
               });
             },
           ),
@@ -199,7 +197,7 @@ class RegisterFormState extends State<RegisterForm> {
             },
             onChanged: (val) {
               setState(() {
-                password = val;
+                _passController.text = val;
               });
             },
           ),

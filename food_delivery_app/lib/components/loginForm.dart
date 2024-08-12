@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
@@ -18,8 +19,6 @@ class LoginFormState extends State<LoginForm> {
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   bool obsecurePass = true;
-  String email = "";
-  String password = "";
 
   @override
   void dispose() {
@@ -91,7 +90,7 @@ class LoginFormState extends State<LoginForm> {
             },
             onChanged: (val) {
               setState(() {
-                email = val;
+                _emailController.text = val;
               });
             },
           ),
@@ -151,7 +150,7 @@ class LoginFormState extends State<LoginForm> {
             },
             onChanged: (val) {
               setState(() {
-                password = val;
+                _passController.text = val;
               });
             },
           ),
