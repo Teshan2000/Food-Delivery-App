@@ -8,7 +8,10 @@ import 'package:food_delivery_app/screens/cart.dart';
 import 'package:food_delivery_app/screens/categories.dart';
 import 'package:food_delivery_app/screens/favourites.dart';
 import 'package:food_delivery_app/screens/foodDetails.dart';
+import 'package:food_delivery_app/screens/login.dart';
 import 'package:food_delivery_app/screens/orders.dart';
+import 'package:food_delivery_app/providers/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -19,6 +22,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
+  final AuthService _auth = AuthService();
+
   final List<String> _foodList = [
     "Pizza",
     "Burger",
@@ -112,11 +117,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 builder: (context) => const Orders(),
               ));
         },
-        onLogoutPressed: () {
+        onLogoutPressed: () async{
+          await _auth.signOut();
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const FoodCard(),
+                builder: (context) => const LoginPage(),
               ));
         },
       ),

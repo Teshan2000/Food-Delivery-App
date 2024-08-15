@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class SocialButton extends StatelessWidget {
   final String social;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final AuthService _authService = AuthService(); 
 
   SocialButton({super.key, required this.social});
 
@@ -14,32 +15,28 @@ class SocialButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: () async {
-       final GoogleSignIn _googleSignIn = GoogleSignIn();
-
-    try {
-      final GoogleSignInAccount? googleSignInAccount =
-          await _googleSignIn.signIn();
-
-      if (googleSignInAccount != null) {
-        final GoogleSignInAuthentication googleSignInAuthentication =
-            await googleSignInAccount.authentication;
-
-        final AuthCredential credential = GoogleAuthProvider.credential(
-          idToken: googleSignInAuthentication.idToken,
-          accessToken: googleSignInAuthentication.accessToken,
-        );
-        await _auth.signInWithCredential(credential);
-      }
-    } catch (e) {
-      print("Some error occured! ${e}");
-    }
+        if (social.toLowerCase() == "google") {
+          User? user = await _authService.signInWithGoogle();
+          if (user != null) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => Home()),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Google sign-in failed")),
+            );
+          }
+        }
       },
       style: OutlinedButton.styleFrom(
-          backgroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          shape: const RoundedRectangleBorder(
-              side: BorderSide(width: 5, color: Colors.black),
-              borderRadius: BorderRadius.all(Radius.circular(10)))),
+        backgroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        shape: const RoundedRectangleBorder(
+          side: BorderSide(width: 5, color: Colors.black),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+      ),
       child: SizedBox(
         width: 160,
         child: Row(
@@ -53,8 +50,8 @@ class SocialButton extends StatelessWidget {
             const SizedBox(width: 15),
             Text(
               social.toUpperCase(),
-              style: TextStyle(color: Colors.black),
-            )
+              style: const TextStyle(color: Colors.black),
+            ),
           ],
         ),
       ),

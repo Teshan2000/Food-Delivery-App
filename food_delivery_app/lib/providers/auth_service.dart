@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:food_delivery_app/screens/home.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<User?> signUpWithEmailAndPassword(
       String email, String password) async {
@@ -13,7 +13,7 @@ class AuthService extends StatelessWidget {
           email: email, password: password);
       return credential.user;
     } catch (e) {
-      print("Some error occured!");
+      print("Error during sign-up: $e");
     }
     return null;
   }
@@ -25,14 +25,12 @@ class AuthService extends StatelessWidget {
           email: email, password: password);
       return credential.user;
     } catch (e) {
-      print("Some error occured!");
+      print("Error during sign-in: $e");
     }
     return null;
   }
 
-  signInWithGoogle() async {
-    final GoogleSignIn _googleSignIn = GoogleSignIn();
-
+  Future<User?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount =
           await _googleSignIn.signIn();
@@ -45,10 +43,23 @@ class AuthService extends StatelessWidget {
           idToken: googleSignInAuthentication.idToken,
           accessToken: googleSignInAuthentication.accessToken,
         );
-        await _auth.signInWithCredential(credential);
+
+        UserCredential userCredential =
+            await _auth.signInWithCredential(credential);
+        return userCredential.user;
       }
     } catch (e) {
-      print("Some error occured! ${e}");
+      print("Error during Google sign-in: $e");
+    }
+    return null;
+  }
+
+  Future<void> signOut() async {
+    try {
+      await _auth.signOut();
+      await _googleSignIn.signOut();
+    } catch (e) {
+      print("Error during sign-out: $e");
     }
   }
 
@@ -56,16 +67,4 @@ class AuthService extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Placeholder();
   }
-
-  Future<void> signOut() async {
-    try {
-      await _auth.signOut();
-    } catch (e) {
-      print("Some error occured!");
-    }
-  }
 }
-
-// onPressed: () {
-//   FirebaseAuth.instance.signOut();
-// },
