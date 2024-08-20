@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/components/passwordForm.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
 import 'package:food_delivery_app/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -26,7 +27,6 @@ class LoginFormState extends State<LoginForm> {
     _passController.dispose();
     super.dispose();
   }
-
 
   void loginUser() async {
     String email = _emailController.text;
@@ -154,7 +154,52 @@ class LoginFormState extends State<LoginForm> {
               });
             },
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 20),
+          Center(
+            child: TextButton(
+              child: Text(
+                'Forgot Your Password?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  decorationStyle: TextDecorationStyle.solid,
+                ),
+              ),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 10),
+                    child: Dialog(
+                      backgroundColor: Colors.transparent,
+                      insetPadding: EdgeInsets.all(10),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          SingleChildScrollView(
+                            child: Container(
+                              width: double.infinity,
+                              height: 350,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.white),
+                              padding: EdgeInsets.fromLTRB(25, 50, 25, 25),
+                              child: PasswordForm(),
+                            ),
+                          ),
+                        ],
+                      )
+                    )
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 20),
           Button(
             title: 'Sign In',
             onPressed: () {
@@ -162,7 +207,8 @@ class LoginFormState extends State<LoginForm> {
                 loginUser();
               }
             },
-            disable: false, width: double.infinity,
+            disable: false,
+            width: double.infinity,
           ),
         ],
       ),
