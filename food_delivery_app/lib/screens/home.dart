@@ -12,6 +12,7 @@ import 'package:food_delivery_app/screens/login.dart';
 import 'package:food_delivery_app/screens/orders.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -23,6 +24,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> with TickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
   final AuthService _auth = AuthService();
+  SharedPreferences? preferences;
+  String? userId;
+
+  Future<String?> _getUserId() async {
+    final preferences = await SharedPreferences.getInstance();
+    return preferences.getString('userId');
+  }
 
   final List<String> _foodList = [
     "Pizza",
@@ -117,7 +125,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 builder: (context) => const Orders(),
               ));
         },
-        onLogoutPressed: () async{
+        onLogoutPressed: () async {
+          preferences?.clear();
           await _auth.signOut();
           Navigator.push(
               context,

@@ -5,6 +5,7 @@ import 'package:food_delivery_app/components/passwordForm.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
 import 'package:food_delivery_app/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -35,6 +36,11 @@ class LoginFormState extends State<LoginForm> {
     User? user = await _auth.signInWithEmailAndPassword(email, password);
 
     if (user != null) {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      await preferences.setBool('isLoggedIn', true);
+      await preferences.setString('userId', user.uid);
+      await preferences.setString('email', user.email ?? '');
+      await preferences.setString('name', user.displayName ?? '');
       print("User successfully logged");
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const Home()));
@@ -171,30 +177,28 @@ class LoginFormState extends State<LoginForm> {
                 showDialog(
                   context: context,
                   builder: (_) => Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10, vertical: 10),
-                    child: Dialog(
-                      backgroundColor: Colors.transparent,
-                      insetPadding: EdgeInsets.all(10),
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        alignment: Alignment.center,
-                        children: <Widget>[
-                          SingleChildScrollView(
-                            child: Container(
-                              width: double.infinity,
-                              height: 350,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                color: Colors.white),
-                              padding: EdgeInsets.fromLTRB(25, 50, 25, 25),
-                              child: PasswordForm(),
-                            ),
-                          ),
-                        ],
-                      )
-                    )
-                  ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
+                      child: Dialog(
+                          backgroundColor: Colors.transparent,
+                          insetPadding: EdgeInsets.all(10),
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            alignment: Alignment.center,
+                            children: <Widget>[
+                              SingleChildScrollView(
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 350,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white),
+                                  padding: EdgeInsets.fromLTRB(25, 50, 25, 25),
+                                  child: PasswordForm(),
+                                ),
+                              ),
+                            ],
+                          ))),
                 );
               },
             ),
