@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/firebase_options.dart';
 import 'package:food_delivery_app/screens/home.dart';
 import 'package:food_delivery_app/screens/login.dart';
+import 'package:food_delivery_app/screens/splash.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,      
       initialRoute: '/',
       routes: {
-        '/':(context) => const LoginPage(),
+        '/':(context) => const SplashScreen(),
       },
     );
   }
