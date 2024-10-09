@@ -59,16 +59,16 @@ class AuthService extends StatelessWidget {
     try {
       final LoginResult result = await FacebookAuth.instance.login();
 
-      if (result.status == LoginStatus.success) {
-        final OAuthCredential credential =
-            FacebookAuthProvider.credential(result.accessToken!.token);
+      // if (result.status == LoginStatus.success) {
+      //   final OAuthCredential credential =
+      //       FacebookAuthProvider.credential(result.accessToken!.token);
 
-        UserCredential userCredential =
-            await FirebaseAuth.instance.signInWithCredential(credential);
+      //   UserCredential userCredential =
+      //       await FirebaseAuth.instance.signInWithCredential(credential);
         
-        print(result.accessToken);
-        return userCredential.user;
-      }
+      //   print(result.accessToken);
+      //   return userCredential.user;
+      // }
     } catch(e) {
         print("Error during Facebook sign-in: $e");
     }

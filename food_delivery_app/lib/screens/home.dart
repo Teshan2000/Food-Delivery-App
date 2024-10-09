@@ -11,6 +11,7 @@ import 'package:food_delivery_app/screens/foodDetails.dart';
 import 'package:food_delivery_app/screens/login.dart';
 import 'package:food_delivery_app/screens/orders.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -78,6 +79,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
       "price": "Rs.45.00"
     }
   ];
+
+  Future<List<Map<String, dynamic>>> fetchFoodData() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('foods').get();
+    return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
