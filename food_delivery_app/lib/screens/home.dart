@@ -81,8 +81,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   ];
 
   Future<List<Map<String, dynamic>>> fetchFoodData() async {
-    QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('foods').get();
-    return snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('foods').get();
+    return snapshot.docs
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
   }
 
   @override
@@ -306,67 +309,83 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                 Column(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 10),
-                      height: 625,
+                      height: 800,
                       child: GestureDetector(
-                        child: ListView(
-                            scrollDirection: Axis.vertical,
-                            children: List.generate(popular.length, (index) {
-                              return Card(
-                                elevation: 5,
-                                color: Colors.amber,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Row(children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 15),
-                                    child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          const SizedBox(width: 20),
-                                          Image.asset(
-                                            popular[index]['image'],
-                                            width: 80,
-                                            height: 80,
-                                          ),
-                                          const SizedBox(width: 40),
-                                          Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                                Text(
-                                                  popular[index]['name'],
-                                                  style: const TextStyle(
-                                                      fontSize: 18,
-                                                      color: Colors.white),
-                                                ),
-                                                Text(
-                                                  popular[index]['price'],
-                                                  style: const TextStyle(
-                                                      fontSize: 18,
-                                                      color: Colors.white),
-                                                )
-                                              ])
-                                        ]),
+                        child: FutureBuilder(
+                          future: fetchFoodData(),
+                          builder: (context,
+                              AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            }                      
+                            if (snapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${snapshot.error}'));
+                            }                      
+                            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                              return Center(child: Text('No food data available'));
+                            }                      
+                            List<Map<String, dynamic>> foods = snapshot.data!;                      
+                            return ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: foods.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  child: Card(
+                                    elevation: 5,
+                                    color: Colors.amber,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Row(children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 15),
+                                        child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: <Widget>[
+                                              const SizedBox(width: 20),
+                                              Image.network(foods[index]['image'] ?? 'Assets/Foods/Chicken Burger.png', width: 80, height: 80,),                                              
+                                              const SizedBox(width: 40),
+                                              Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      foods[index]['name'] ?? 'Name',
+                                                      style: const TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.white),
+                                                    ),
+                                                    Text(
+                                                      foods[index]['price'] ?? 'Price',
+                                                      style: const TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.white),
+                                                    )
+                                                  ])
+                                            ]),
+                                      ),
+                                    ]),
                                   ),
-                                ]),
-                              );
-                            })),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const FoodDetails()),
-                          );
-                        },
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const FoodDetails()),
+                                    );
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ),
                       ),
-                    ),
+                    ),                    
                   ],
                 ),
               ],
