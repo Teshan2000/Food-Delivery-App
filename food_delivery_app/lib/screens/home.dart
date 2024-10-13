@@ -81,11 +81,23 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   ];
 
   Future<List<Map<String, dynamic>>> fetchFoodData() async {
-    QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection('foods').get();
-    return snapshot.docs
-        .map((doc) => doc.data() as Map<String, dynamic>)
-        .toList();
+    List<Map<String, dynamic>> foods = [];
+
+    try {
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('foods').get();
+      foods = snapshot.docs.map((doc) {
+        return {
+          "food_id": doc.id,
+          "name": doc['name'],
+          "image": doc['image'],
+          "price": doc['price'],
+        };
+      }).toList();
+    } catch (e) {
+      print("Error fetching foods: $e");
+    }
+    return foods;
   }
 
   @override
@@ -314,19 +326,21 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                         child: FutureBuilder(
                           future: fetchFoodData(),
                           builder: (context,
-                              AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                              AsyncSnapshot<List<Map<String, dynamic>>>
+                                  snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
                               return Center(child: CircularProgressIndicator());
-                            }                      
+                            }
                             if (snapshot.hasError) {
                               return Center(
                                   child: Text('Error: ${snapshot.error}'));
-                            }                      
+                            }
                             if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                              return Center(child: Text('No food data available'));
-                            }                      
-                            List<Map<String, dynamic>> foods = snapshot.data!;                      
+                              return Center(
+                                  child: Text('No food data available'));
+                            }
+                            List<Map<String, dynamic>> foods = snapshot.data!;
                             return ListView.builder(
                               scrollDirection: Axis.vertical,
                               itemCount: foods.length,
@@ -347,7 +361,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                                 CrossAxisAlignment.center,
                                             children: <Widget>[
                                               const SizedBox(width: 20),
-                                              Image.network(foods[index]['image'] ?? 'Assets/Foods/Chicken Burger.png', width: 80, height: 80,),                                              
+                                              Image.network(
+                                                foods[index]['image'] ??
+                                                    'Assets/Foods/Chicken Burger.png',
+                                                width: 80,
+                                                height: 80,
+                                              ),
                                               const SizedBox(width: 40),
                                               Column(
                                                   mainAxisAlignment:
@@ -356,13 +375,15 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                                       CrossAxisAlignment.start,
                                                   children: <Widget>[
                                                     Text(
-                                                      foods[index]['name'] ?? 'Name',
+                                                      foods[index]['name'] ??
+                                                          'Name',
                                                       style: const TextStyle(
                                                           fontSize: 18,
                                                           color: Colors.white),
                                                     ),
                                                     Text(
-                                                      foods[index]['price'] ?? 'Price',
+                                                      foods[index]['price'] ??
+                                                          'Price',
                                                       style: const TextStyle(
                                                           fontSize: 18,
                                                           color: Colors.white),
@@ -376,7 +397,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => const FoodDetails()),
+                                          builder: (context) => FoodDetails(
+                                            id: foods[index]['food_id'],
+                                            name: foods[index]['name'],
+                                            image: foods[index]['image'],
+                                            price: foods[index]['price'],
+                                          )),
                                     );
                                   },
                                 );
@@ -385,7 +411,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                           },
                         ),
                       ),
-                    ),                    
+                    ),
                   ],
                 ),
               ],

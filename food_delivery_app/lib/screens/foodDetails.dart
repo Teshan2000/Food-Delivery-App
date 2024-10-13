@@ -1,9 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/screens/cart.dart';
 import 'package:input_quantity/input_quantity.dart';
 
 class FoodDetails extends StatefulWidget {
-  const FoodDetails({super.key});
+  final String id;
+  final String name;
+  final String image;
+  final String price;
+
+  const FoodDetails(
+      {super.key,
+      required this.id,
+      required this.name,
+      required this.image,
+      required this.price});
 
   @override
   State<FoodDetails> createState() => FoodDetailsState();
@@ -14,14 +25,39 @@ class FoodDetailsState extends State<FoodDetails>
   bool isFav = true;
   int quantity = 1;
   double totalPrice = 95.00;
+  List<Map<String, dynamic>> ingredients = [];
 
-  List<Map<String, dynamic>> ingredients = [
-    {"image": "🥪", "name": "Bread"},
-    {"image": "🥩", "name": "Chicken"},
-    {"image": "🧀", "name": "Cheese"},
-    {"image": "🍅", "name": "Tomato"},
-    {"image": "🥬", "name": "Salad"}
-  ];
+  @override
+  void initState() {
+    super.initState();
+    fetchIngredients();
+  }
+
+  Future<void> fetchIngredients() async {
+    try {
+      CollectionReference ingredientsRef = FirebaseFirestore.instance
+          .collection('foods')
+          .doc(widget.id)
+          .collection('ingredients');
+
+      QuerySnapshot ingredientsData = await ingredientsRef.get();
+        setState(() {
+          ingredients = ingredientsData.docs
+              .map((doc) => {"image": doc['image'], "name": doc['name']})
+              .toList();
+        });    
+    } catch (e) {
+      print("Failed to fetch ingredients: $e");
+    }
+  }
+
+  // List<Map<String, dynamic>> ingredients = [
+  //   {"image": "🥪", "name": "Bread"},
+  //   {"image": "🥩", "name": "Chicken"},
+  //   {"image": "🧀", "name": "Cheese"},
+  //   {"image": "🍅", "name": "Tomato"},
+  //   {"image": "🥬", "name": "Salad"}
+  // ];
 
   List<Map<String, dynamic>> delivery = [
     {
@@ -56,7 +92,7 @@ class FoodDetailsState extends State<FoodDetails>
       appBar: AppBar(
         backgroundColor: Colors.amber,
         leading: const Icon(Icons.arrow_back),
-        title: const Center(child: Text('Chicken Burger')),
+        title: Center(child: Text(widget.name)),
         actions: [
           IconButton(
             onPressed: () {
@@ -74,18 +110,14 @@ class FoodDetailsState extends State<FoodDetails>
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 15,
-          vertical: 15,
+          vertical: 5,
         ),
         child: Column(
           children: <Widget>[
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Image(
-                    width: 250,
-                    image: AssetImage(
-                      'Assets/burger.jpg',
-                    ))
+                Image(width: 250, image: NetworkImage(widget.image))
               ],
             ),
             const Row(children: <Widget>[
@@ -145,7 +177,7 @@ class FoodDetailsState extends State<FoodDetails>
             const SizedBox(height: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              height: 250,
+              height: 240,
               width: 350,
               decoration: ShapeDecoration(
                 color: const Color(0xFFFFC107),
@@ -156,7 +188,7 @@ class FoodDetailsState extends State<FoodDetails>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  const Row(
+                  Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Padding(
@@ -167,7 +199,7 @@ class FoodDetailsState extends State<FoodDetails>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  'Chicken Burger',
+                                  widget.name,
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.white),
                                 ),
@@ -175,7 +207,7 @@ class FoodDetailsState extends State<FoodDetails>
                                   width: 120,
                                 ),
                                 Text(
-                                  'Rs.95.00',
+                                  "Rs. ${widget.price}",
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.white),
                                 ),
@@ -300,38 +332,38 @@ class FoodDetailsState extends State<FoodDetails>
                       animationController: _controller,
                       onClosing: () {
                         TextButton.icon(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          icon: Icon(Icons.close),
-                          label: Text('Close')
-                        );
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            icon: Icon(Icons.close),
+                            label: Text('Close'));
                       },
                       builder: (BuildContext context) {
                         return Column(
                           children: [
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 10
-                              ),
+                                  horizontal: 5, vertical: 10),
                               height: 275,
                               child: GestureDetector(
                                 child: ListView(
                                     scrollDirection: Axis.vertical,
-                                    children: List.generate(delivery.length, (index) {
+                                    children:
+                                        List.generate(delivery.length, (index) {
                                       return Card(
                                         elevation: 5,
                                         color: Colors.amber,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(30),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
                                         ),
                                         child: Row(children: [
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
-                                              horizontal: 5, vertical: 15
-                                            ),
+                                                horizontal: 5, vertical: 15),
                                             child: Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
                                                 children: <Widget>[
                                                   const SizedBox(width: 20),
                                                   Image.asset(
@@ -341,28 +373,36 @@ class FoodDetailsState extends State<FoodDetails>
                                                   ),
                                                   const SizedBox(width: 40),
                                                   Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: <Widget>[
                                                         Text(
-                                                          delivery[index]['name'],
-                                                          style: const TextStyle(
-                                                            fontSize: 18,
-                                                            color: Colors.white
-                                                          ),
+                                                          delivery[index]
+                                                              ['name'],
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 18,
+                                                                  color: Colors
+                                                                      .white),
                                                         ),
                                                         Text(
-                                                          delivery[index]['price'],
-                                                          style: const TextStyle(
-                                                            fontSize: 18,
-                                                            color: Colors.white
-                                                          ),
+                                                          delivery[index]
+                                                              ['price'],
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 18,
+                                                                  color: Colors
+                                                                      .white),
                                                         )
-                                                      ]
-                                                    ),
+                                                      ]),
                                                   const SizedBox(width: 8),
                                                   Column(
-                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
                                                     children: [
                                                       IconButton(
                                                           onPressed: () {
@@ -371,10 +411,13 @@ class FoodDetailsState extends State<FoodDetails>
                                                             });
                                                           },
                                                           icon: Icon(
-                                                            isFav ? Icons.favorite_border : Icons.favorite,
+                                                            isFav
+                                                                ? Icons
+                                                                    .favorite_border
+                                                                : Icons
+                                                                    .favorite,
                                                             color: Colors.red,
-                                                          )
-                                                        )
+                                                          ))
                                                     ],
                                                   )
                                                 ]),
@@ -386,8 +429,7 @@ class FoodDetailsState extends State<FoodDetails>
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const Cart()
-                                    ),
+                                        builder: (context) => const Cart()),
                                   );
                                 },
                               ),
