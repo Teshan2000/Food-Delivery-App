@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/screens/cart.dart';
 import 'package:input_quantity/input_quantity.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FoodDetails extends StatefulWidget {
   final String id;
@@ -22,15 +24,24 @@ class FoodDetails extends StatefulWidget {
 
 class FoodDetailsState extends State<FoodDetails>
     with TickerProviderStateMixin {
-  bool isFav = true;
+  bool isFav = false;
   int quantity = 1;
   double totalPrice = 95.00;
+  SharedPreferences? preferences;
+  String? userId;
+  final FirebaseAuth auth = FirebaseAuth.instance;
   List<Map<String, dynamic>> ingredients = [];
 
   @override
   void initState() {
     super.initState();
     fetchIngredients();
+    checkIfFavorite();
+  }
+
+  Future<String?> _getUserId() async {
+    final preferences = await SharedPreferences.getInstance();
+    return userId = preferences.getString('userId');
   }
 
   Future<void> fetchIngredients() async {
@@ -41,13 +52,59 @@ class FoodDetailsState extends State<FoodDetails>
           .collection('ingredients');
 
       QuerySnapshot ingredientsData = await ingredientsRef.get();
-        setState(() {
-          ingredients = ingredientsData.docs
-              .map((doc) => {"image": doc['image'], "name": doc['name']})
-              .toList();
-        });    
+      setState(() {
+        ingredients = ingredientsData.docs
+            .map((doc) => {"image": doc['image'], "name": doc['name']})
+            .toList();
+      });
     } catch (e) {
       print("Failed to fetch ingredients: $e");
+    }
+  }
+
+  Future<void> checkIfFavorite() async {
+    try {
+      DocumentSnapshot favSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('favourites')
+          .doc(widget.name)
+          .get();
+      if (favSnapshot.exists) {
+        setState(() {
+          isFav = true;
+        });
+      }
+    } catch (e) {
+      print('Error checking favorite: $e');
+    }
+  }
+
+  Future<void> toggleFavourite() async {
+    try {
+      DocumentReference favRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('favourites')
+          .doc(widget.name);
+      if (isFav) {
+        await favRef.delete();
+        setState(() {
+          isFav = false;
+        });
+      } else {
+        await favRef.set({
+          'food_id': widget.id,
+          'name': widget.name,
+          'image': widget.image,
+          'price': widget.price,
+        });
+        setState(() {
+          isFav = true;
+        });
+      }
+    } catch (e) {
+      print('Error toggling favorite: $e');
     }
   }
 
@@ -95,13 +152,14 @@ class FoodDetailsState extends State<FoodDetails>
         title: Center(child: Text(widget.name)),
         actions: [
           IconButton(
-            onPressed: () {
-              setState(() {
-                isFav = !isFav;
-              });
-            },
+            onPressed: toggleFavourite,
+            // onPressed: () {
+            //   setState(() {
+            //     isFav = !isFav;
+            //   });
+            // },
             icon: Icon(
-              isFav ? Icons.favorite_border : Icons.favorite,
+              isFav ? Icons.favorite : Icons.favorite_border,
             ),
             color: Colors.red,
           )

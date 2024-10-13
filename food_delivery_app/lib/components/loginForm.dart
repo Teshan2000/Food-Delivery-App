@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
 import 'package:food_delivery_app/components/passwordForm.dart';
@@ -41,11 +42,29 @@ class LoginFormState extends State<LoginForm> {
       await preferences.setString('userId', user.uid);
       await preferences.setString('email', user.email ?? '');
       await preferences.setString('name', user.displayName ?? '');
+      createUserInFirestore();
       print("User successfully logged");
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const Home()));
     } else {
       print("Some error occured");
+    }
+  }
+
+  void createUserInFirestore() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      String userId = user.uid;
+
+      DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
+      DocumentSnapshot docSnapshot = await userDoc.get();
+
+      if (!docSnapshot.exists) {
+        await userDoc.set({
+          'favorites': [],
+        });
+      }
     }
   }
 
