@@ -5,7 +5,18 @@ import 'package:food_delivery_app/screens/home.dart';
 import 'package:input_quantity/input_quantity.dart';
 
 class Cart extends StatefulWidget {
-  const Cart({super.key});
+  final String id;
+  final String name;
+  final String image;
+  final int price;
+  
+  const Cart({
+    super.key,
+    required this.id,
+    required this.name,
+    required this.image,
+    required this.price
+  });
 
   @override
   State<Cart> createState() => _CartState();
@@ -184,13 +195,13 @@ class _CartState extends State<Cart> {
                                   ]),
                             );
                           })),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const FoodDetails()),
-                        );
-                      },
+                      // onTap: () {
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => const FoodDetails()),
+                      //   );
+                      // },
                     ),
                   ),
                 ],

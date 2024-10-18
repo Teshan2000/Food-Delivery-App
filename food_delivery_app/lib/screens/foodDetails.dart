@@ -9,7 +9,7 @@ class FoodDetails extends StatefulWidget {
   final String id;
   final String name;
   final String image;
-  final String price;
+  final int price;
 
   const FoodDetails(
       {super.key,
@@ -26,7 +26,7 @@ class FoodDetailsState extends State<FoodDetails>
     with TickerProviderStateMixin {
   bool isFav = false;
   int quantity = 1;
-  double totalPrice = 95.00;
+  int? totalPrice;
   SharedPreferences? preferences;
   String? userId;
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -108,14 +108,6 @@ class FoodDetailsState extends State<FoodDetails>
     }
   }
 
-  // List<Map<String, dynamic>> ingredients = [
-  //   {"image": "🥪", "name": "Bread"},
-  //   {"image": "🥩", "name": "Chicken"},
-  //   {"image": "🧀", "name": "Cheese"},
-  //   {"image": "🍅", "name": "Tomato"},
-  //   {"image": "🥬", "name": "Salad"}
-  // ];
-
   List<Map<String, dynamic>> delivery = [
     {
       "image": "Assets/pick me foods.jpg",
@@ -134,7 +126,7 @@ class FoodDetailsState extends State<FoodDetails>
   void onQtyChanged(int newQuantity) {
     setState(() {
       quantity = newQuantity;
-      totalPrice = 95.00 * quantity;
+      totalPrice = widget.price * quantity;
     });
   }
 
@@ -148,7 +140,6 @@ class FoodDetailsState extends State<FoodDetails>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
-        leading: const Icon(Icons.arrow_back),
         title: Center(child: Text(widget.name)),
         actions: [
           IconButton(
@@ -166,10 +157,7 @@ class FoodDetailsState extends State<FoodDetails>
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 5,
-        ),
+        padding: const EdgeInsets.all(0),
         child: Column(
           children: <Widget>[
             Row(
@@ -178,22 +166,26 @@ class FoodDetailsState extends State<FoodDetails>
                 Image(width: 250, image: NetworkImage(widget.image))
               ],
             ),
-            const Row(children: <Widget>[
-              Text(
-                'Ingredients',
-                style: TextStyle(fontSize: 18),
-              ),
-            ]),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: const Row(children: <Widget>[
+                Text(
+                  'Ingredients',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ]),
+            ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
               height: 140,
               width: double.infinity,
               child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: 13),
                   scrollDirection: Axis.horizontal,
                   children: List.generate(ingredients.length, (index) {
                     return Flexible(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
                         child: Container(
                           width: 75,
                           height: 100,
@@ -236,7 +228,7 @@ class FoodDetailsState extends State<FoodDetails>
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               height: 240,
-              width: 350,
+              width: 355,
               decoration: ShapeDecoration(
                 color: const Color(0xFFFFC107),
                 shape: RoundedRectangleBorder(
@@ -262,10 +254,10 @@ class FoodDetailsState extends State<FoodDetails>
                                       fontSize: 16, color: Colors.white),
                                 ),
                                 SizedBox(
-                                  width: 120,
+                                  width: 110,
                                 ),
                                 Text(
-                                  "Rs. ${widget.price}",
+                                  "Rs. ${widget.price}.00",
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.white),
                                 ),
@@ -342,13 +334,13 @@ class FoodDetailsState extends State<FoodDetails>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 const Text(
-                                  'Total',
+                                  'Total🧀🥓🥚🍤🍞🥛🥥🍄🌶🌽🧄🥔🍅🥬🧅🦐🐟',
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.white),
                                 ),
                                 const SizedBox(width: 185),
                                 Text(
-                                  'Rs. $totalPrice' '0',
+                                  'Rs. ${totalPrice}.00',
                                   style: const TextStyle(
                                       fontSize: 16, color: Colors.white),
                                 ),
@@ -368,7 +360,12 @@ class FoodDetailsState extends State<FoodDetails>
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Cart(),
+                      builder: (context) => Cart(
+                        id: widget.id,
+                        name: widget.name,
+                        image: widget.image,
+                        price: widget.price.toInt(),
+                      ),
                     ),
                   );
                 },
@@ -487,7 +484,12 @@ class FoodDetailsState extends State<FoodDetails>
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => const Cart()),
+                                        builder: (context) => Cart(
+                                              id: widget.id,
+                                              name: widget.name,
+                                              image: widget.image,
+                                              price: widget.price.toInt(),
+                                            )),
                                   );
                                 },
                               ),

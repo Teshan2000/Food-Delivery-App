@@ -133,11 +133,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ));
         },
         onCartPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Cart(),
-              ));
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => const Cart(),
+          //     ));
         },
         onOrdersPressed: () {
           Navigator.push(
@@ -382,8 +382,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                                           color: Colors.white),
                                                     ),
                                                     Text(
-                                                      foods[index]['price'] ??
-                                                          'Price',
+                                                      "Rs. ${foods[index]['price'].toString()}.00",
                                                       style: const TextStyle(
                                                           fontSize: 18,
                                                           color: Colors.white),
@@ -401,7 +400,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                             id: foods[index]['food_id'],
                                             name: foods[index]['name'],
                                             image: foods[index]['image'],
-                                            price: foods[index]['price'],
+                                            price: foods[index]['price'].toInt(),
                                           )),
                                     );
                                   },
