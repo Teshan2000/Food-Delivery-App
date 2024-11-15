@@ -17,7 +17,7 @@ class LoginForm extends StatefulWidget {
 
 class LoginFormState extends State<LoginForm> {
   final AuthService _auth = AuthService();
-
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
@@ -56,15 +56,21 @@ class LoginFormState extends State<LoginForm> {
 
     if (user != null) {
       String userId = user.uid;
+      DocumentSnapshot doc = await _firestore.collection('users').doc(user.uid).get();
 
-      DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(userId);
-      DocumentSnapshot docSnapshot = await userDoc.get();
-
-      if (!docSnapshot.exists) {
-        await userDoc.set({
+      if (!doc.exists) {        
+        await _firestore.collection('users').doc(user.uid).set({
+          'uid': user.uid,
+          'email': user.email,
+          'name': user.displayName ?? '',
           'favorites': [],
         });
-      }
+        print("User added to Firestore with uid: ${user.uid}");
+      } else {
+        print("User already exists in Firestore.");
+      }      
+    } else {
+      print("No user is currently signed in.");
     }
   }
 

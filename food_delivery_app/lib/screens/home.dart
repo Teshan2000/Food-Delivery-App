@@ -129,7 +129,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const Favourites(),
+                builder: (context) => Favourites(),
               ));
         },
         onCartPressed: () {

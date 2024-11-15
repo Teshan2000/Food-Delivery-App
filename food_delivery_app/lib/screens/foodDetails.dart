@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/providers/Fav_service.dart';
 import 'package:food_delivery_app/screens/cart.dart';
 import 'package:input_quantity/input_quantity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,21 +29,24 @@ class FoodDetailsState extends State<FoodDetails>
   int quantity = 1;
   int? totalPrice;
   SharedPreferences? preferences;
-  String? userId;
+  String userId = '';
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final FavService _favService = FavService();
   List<Map<String, dynamic>> ingredients = [];
+  late final Map<String, dynamic> foodData;
 
   @override
   void initState() {
     super.initState();
+    getUserId();
     fetchIngredients();
     checkIfFavorite();
   }
 
-  Future<String?> _getUserId() async {
-    final preferences = await SharedPreferences.getInstance();
-    return userId = preferences.getString('userId');
-  }
+  // Future<String?> _getUserId() async {
+  //   final preferences = await SharedPreferences.getInstance();
+  //   return userId = preferences.getString('userId');
+  // }
 
   Future<void> fetchIngredients() async {
     try {
@@ -62,14 +66,22 @@ class FoodDetailsState extends State<FoodDetails>
     }
   }
 
+  Future<void> getUserId() async {
+    final User? user = auth.currentUser;
+    if (user != null) {
+      userId = user.uid;
+    }
+  }
+
   Future<void> checkIfFavorite() async {
     try {
       DocumentSnapshot favSnapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
-          .collection('favourites')
+          .collection('favorites')
           .doc(widget.name)
           .get();
+      
       if (favSnapshot.exists) {
         setState(() {
           isFav = true;
@@ -80,13 +92,14 @@ class FoodDetailsState extends State<FoodDetails>
     }
   }
 
-  Future<void> toggleFavourite() async {
+  Future<void> toggleFavorite() async {
     try {
       DocumentReference favRef = FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
-          .collection('favourites')
+          .collection('favorites')
           .doc(widget.name);
+
       if (isFav) {
         await favRef.delete();
         setState(() {
@@ -94,7 +107,7 @@ class FoodDetailsState extends State<FoodDetails>
         });
       } else {
         await favRef.set({
-          'food_id': widget.id,
+          'food_id': widget.name,
           'name': widget.name,
           'image': widget.image,
           'price': widget.price,
@@ -143,12 +156,7 @@ class FoodDetailsState extends State<FoodDetails>
         title: Center(child: Text(widget.name)),
         actions: [
           IconButton(
-            onPressed: toggleFavourite,
-            // onPressed: () {
-            //   setState(() {
-            //     isFav = !isFav;
-            //   });
-            // },
+            onPressed: toggleFavorite,
             icon: Icon(
               isFav ? Icons.favorite : Icons.favorite_border,
             ),
@@ -180,7 +188,7 @@ class FoodDetailsState extends State<FoodDetails>
               height: 140,
               width: double.infinity,
               child: ListView(
-                padding: EdgeInsets.symmetric(horizontal: 13),
+                  padding: EdgeInsets.symmetric(horizontal: 13),
                   scrollDirection: Axis.horizontal,
                   children: List.generate(ingredients.length, (index) {
                     return Flexible(
@@ -334,13 +342,14 @@ class FoodDetailsState extends State<FoodDetails>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 const Text(
-                                  'Total🧀🥓🥚🍤🍞🥛🥥🍄🌶🌽🧄🥔🍅🥬🧅🦐🐟',
+                                  'Total',                                  
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.white),
                                 ),
                                 const SizedBox(width: 185),
                                 Text(
-                                  'Rs. ${totalPrice}.00',
+                                  totalPrice == null ? 'Rs. ${widget.price}.00'
+                                  : 'Rs. ${totalPrice}.00',
                                   style: const TextStyle(
                                       fontSize: 16, color: Colors.white),
                                 ),
