@@ -122,12 +122,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           EndDrawerButton(),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(70),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: Searchbar(
-              onSearchResultsUpdated: updateSearchResults,
-            ),
+          preferredSize: const Size(double.infinity, 70),
+          child: Searchbar(
+            onSearchResultsUpdated: updateSearchResults,
           ),
         ),
       ),
@@ -177,89 +174,87 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ));
         },
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 15,
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                if (_isSearching)
-                  Center(child: const CircularProgressIndicator())
-                else if (_searchResults.isNotEmpty)
-                  Container(
-                    height: MediaQuery.of(context).size.height,
-                    child: ListView.builder(
-                      itemCount: _searchResults.length,
-                      itemBuilder: (context, index) {
-                        final food = _searchResults[index];
-                        return GestureDetector(
-                          child: Card(
-                            elevation: 5,
-                            color: Colors.amber,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 15),
-                              child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    const SizedBox(width: 20),
-                                    Image.network(
-                                      food['image'] ??
-                                          'Assets/Foods/Chicken Burger.png',
-                                      width: 80,
-                                      height: 80,
-                                    ),
-                                    const SizedBox(width: 40),
-                                    Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            food['name'] ?? 'Name',
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.white),
-                                          ),
-                                          Text(
-                                            "Rs. ${food['price'].toString()}.00",
-                                            style: const TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.white),
-                                          )
-                                        ])
-                                  ]),
-                            ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              if (_isSearching)
+                Center(child: const CircularProgressIndicator())
+              else if (_searchResults.isNotEmpty)
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  child: ListView.builder(
+                    itemCount: _searchResults.length,
+                    itemBuilder: (context, index) {
+                      final food = _searchResults[index];
+                      return GestureDetector(
+                        child: Card(
+                          elevation: 5,
+                          color: Colors.amber,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
                           ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => FoodDetails(
-                                        id: food[index]['food_id'],
-                                        name: food[index]['name'],
-                                        image: food[index]['image'],
-                                        price: food[index]['price'].toInt(),
-                                      )),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  )
-                //               else if (_searchTriggered) // If search has been triggered but no results found
-                // const Center(child: Text('No results found'))
-                else
-                  Container(),
-                Row(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 15),
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  const SizedBox(width: 20),
+                                  Image.network(
+                                    food['image'] ??
+                                        'Assets/Foods/Chicken Burger.png',
+                                    width: 80,
+                                    height: 80,
+                                  ),
+                                  const SizedBox(width: 40),
+                                  Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          food['name'] ?? 'Name',
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.white),
+                                        ),
+                                        Text(
+                                          "Rs. ${food['price'].toString()}.00",
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.white),
+                                        )
+                                      ])
+                                ]),
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => FoodDetails(
+                                      id: food[index]['food_id'],
+                                      name: food[index]['name'],
+                                      image: food[index]['image'],
+                                      price: food[index]['price'].toInt(),
+                                    )),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                )
+              //               else if (_searchTriggered) // If search has been triggered but no results found
+              // const Center(child: Text('No results found'))
+              else
+                Container(),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       const Text(
@@ -286,103 +281,111 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                         ),
                       ),
                     ]),
-                Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 10),
-                      height: 165,
-                      width: double.infinity,
-                      child: GestureDetector(
-                        child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: List.generate(categories.length, (index) {
-                              return Column(children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 2),
-                                  child: Container(
-                                    width: 90,
-                                    height: 145,
-                                    decoration: ShapeDecoration(
-                                      color: const Color(0xFFFFC107),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(90),
-                                      ),
+              ),
+              Column(
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                    height: 165,
+                    width: double.infinity,
+                    child: GestureDetector(
+                      child: ListView(
+                          padding: EdgeInsets.symmetric(horizontal: 12),
+                          scrollDirection: Axis.horizontal,
+                          children: List.generate(categories.length, (index) {
+                            return Column(children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 2),
+                                child: Container(
+                                  width: 90,
+                                  height: 145,
+                                  decoration: ShapeDecoration(
+                                    color: const Color(0xFFFFC107),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(90),
                                     ),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 16),
-                                          child: Container(
-                                            width: 70,
-                                            height: 70,
-                                            decoration: ShapeDecoration(
-                                              color: const Color.fromARGB(
-                                                  255, 255, 255, 255),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(90),
-                                              ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 16),
+                                        child: Container(
+                                          width: 70,
+                                          height: 70,
+                                          decoration: ShapeDecoration(
+                                            color: const Color.fromARGB(
+                                                255, 255, 255, 255),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(90),
                                             ),
-                                            child: Center(
-                                              child: Text(
-                                                categories[index]['image'],
-                                                style: const TextStyle(
-                                                    fontSize: 35),
-                                              ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              categories[index]['image'],
+                                              style:
+                                                  const TextStyle(fontSize: 35),
                                             ),
                                           ),
                                         ),
-                                        Text(
-                                          categories[index]['name'],
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white),
-                                        )
-                                      ],
-                                    ),
+                                      ),
+                                      Text(
+                                        categories[index]['name'],
+                                        style: const TextStyle(
+                                            fontSize: 16, color: Colors.white),
+                                      )
+                                    ],
                                   ),
                                 ),
-                              ]);
-                            })),
-                        onTap: () {
-                          AnimationController _controller = AnimationController(
-                            vsync: this,
-                            duration: Duration(milliseconds: 300),
-                          );
+                              ),
+                            ]);
+                          })),
+                      onTap: () {
+                        AnimationController _controller = AnimationController(
+                          vsync: this,
+                          duration: Duration(milliseconds: 300),
+                        );
 
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (_) => BottomSheet(
-                              animationController: _controller,
-                              onClosing: () {
-                                TextButton.icon(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    icon: Icon(Icons.close),
-                                    label: Text('Close'));
-                              },
-                              builder: (BuildContext context) {
-                                return CategoryCard();
-                              },
-                            ),
-                          );
-                        },
-                      ),
+                        showModalBottomSheet(
+                          context: context,
+                          builder: (_) => BottomSheet(
+                            animationController: _controller,
+                            onClosing: () {
+                              TextButton.icon(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  icon: Icon(Icons.close),
+                                  label: Text('Close'));
+                            },
+                            builder: (BuildContext context) {
+                              return CategoryCard();
+                            },
+                          ),
+                        );
+                      },
                     ),
-                  ],
-                ),
-                const Text(
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: const Text(
                   "Most Popular",
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black,
                   ),
                 ),
-                Column(
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
                   children: [
                     Container(
                       height: 800,
@@ -478,8 +481,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

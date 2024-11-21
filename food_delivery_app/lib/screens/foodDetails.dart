@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:food_delivery_app/providers/Fav_service.dart';
 import 'package:food_delivery_app/screens/cart.dart';
 import 'package:input_quantity/input_quantity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,7 +30,6 @@ class FoodDetailsState extends State<FoodDetails>
   SharedPreferences? preferences;
   String userId = '';
   final FirebaseAuth auth = FirebaseAuth.instance;
-  final FavService _favService = FavService();
   List<Map<String, dynamic>> ingredients = [];
   late final Map<String, dynamic> foodData;
 
@@ -81,7 +79,7 @@ class FoodDetailsState extends State<FoodDetails>
           .collection('favorites')
           .doc(widget.name)
           .get();
-      
+
       if (favSnapshot.exists) {
         setState(() {
           isFav = true;
@@ -107,7 +105,7 @@ class FoodDetailsState extends State<FoodDetails>
         });
       } else {
         await favRef.set({
-          'food_id': widget.name,
+          'food_id': widget.id,
           'name': widget.name,
           'image': widget.image,
           'price': widget.price,
@@ -118,6 +116,26 @@ class FoodDetailsState extends State<FoodDetails>
       }
     } catch (e) {
       print('Error toggling favorite: $e');
+    }
+  }
+
+  Future<void> addToCart() async {
+    try {
+      DocumentReference cartRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('cart')
+          .doc(widget.name);
+
+      await cartRef.set({
+        'food_id': widget.id,
+        'name': widget.name,
+        'image': widget.image,
+        'price': widget.price,
+        'quantity': quantity,
+      });
+    } catch (e) {
+      print('Error adding to cart: $e');
     }
   }
 
@@ -342,14 +360,15 @@ class FoodDetailsState extends State<FoodDetails>
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 const Text(
-                                  'Total',                                  
+                                  'Total',
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.white),
                                 ),
                                 const SizedBox(width: 185),
                                 Text(
-                                  totalPrice == null ? 'Rs. ${widget.price}.00'
-                                  : 'Rs. ${totalPrice}.00',
+                                  totalPrice == null
+                                      ? 'Rs. ${widget.price}.00'
+                                      : 'Rs. ${totalPrice}.00',
                                   style: const TextStyle(
                                       fontSize: 16, color: Colors.white),
                                 ),
@@ -366,6 +385,7 @@ class FoodDetailsState extends State<FoodDetails>
                 label: Text('Add to Cart'),
                 style: style,
                 onPressed: () {
+                  addToCart();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -374,6 +394,7 @@ class FoodDetailsState extends State<FoodDetails>
                         name: widget.name,
                         image: widget.image,
                         price: widget.price.toInt(),
+                        quantity: quantity,
                       ),
                     ),
                   );
@@ -490,6 +511,7 @@ class FoodDetailsState extends State<FoodDetails>
                                       );
                                     })),
                                 onTap: () {
+                                  addToCart();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -498,6 +520,7 @@ class FoodDetailsState extends State<FoodDetails>
                                               name: widget.name,
                                               image: widget.image,
                                               price: widget.price.toInt(),
+                                              quantity: quantity,
                                             )),
                                   );
                                 },

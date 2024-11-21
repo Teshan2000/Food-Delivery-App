@@ -2,20 +2,21 @@ import 'package:cart_stepper/cart_stepper.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/screens/foodDetails.dart';
 import 'package:food_delivery_app/screens/home.dart';
-import 'package:input_quantity/input_quantity.dart';
 
 class Cart extends StatefulWidget {
   final String id;
   final String name;
   final String image;
   final int price;
+  final int quantity;
   
   const Cart({
     super.key,
     required this.id,
     required this.name,
     required this.image,
-    required this.price
+    required this.price, 
+    required this.quantity
   });
 
   @override
