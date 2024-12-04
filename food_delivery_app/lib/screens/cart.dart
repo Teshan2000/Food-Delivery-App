@@ -1,76 +1,106 @@
 import 'package:cart_stepper/cart_stepper.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/screens/checkout.dart';
 import 'package:food_delivery_app/screens/foodDetails.dart';
 import 'package:food_delivery_app/screens/home.dart';
 
 class Cart extends StatefulWidget {
-  final String id;
-  final String name;
-  final String image;
-  final int price;
-  final int quantity;
-  
-  const Cart({
-    super.key,
-    required this.id,
-    required this.name,
-    required this.image,
-    required this.price, 
-    required this.quantity
-  });
+  const Cart({super.key});
 
   @override
   State<Cart> createState() => _CartState();
 }
 
 class _CartState extends State<Cart> {
-  double subTotal = 165.00;
-  double delivery = 50.00;
-  double total = 50.00;
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String userId = "";
+  int? total, subTotal;
+  int delivery = 50;
 
-  List<Map<String, dynamic>> cart = [
-    {
-      "image": "Assets/Foods/Chicken Burger.png",
-      "name": "Chicken Burger",
-      "price": "Rs.95.00"
-    },
-    {
-      "image": "Assets/Foods/Sandwich.png",
-      "name": "Fish Sandwiches",
-      "price": "Rs.35.00"
-    },
-    {
-      "image": "Assets/Foods/Taco.png",
-      "name": "Veggi Taco",
-      "price": "Rs.35.00"
-    }
-  ];
+  // List<Map<String, dynamic>> cart = [
+  //   {
+  //     "image": "Assets/Foods/Chicken Burger.png",
+  //     "name": "Chicken Burger",
+  //     "price": "Rs.95.00"
+  //   },
+  //   {
+  //     "image": "Assets/Foods/Sandwich.png",
+  //     "name": "Fish Sandwiches",
+  //     "price": "Rs.35.00"
+  //   },
+  //   {
+  //     "image": "Assets/Foods/Taco.png",
+  //     "name": "Veggi Taco",
+  //     "price": "Rs.35.00"
+  //   }
+  // ];
 
   void didChangeCount(int newQuantity, int index) {
     setState(() {
-      cart[index]["quantity"] = newQuantity;
-      subTotal = calculatesubTotal();
-      total = calculateTotal();
+      // cart[index]["quantity"] = newQuantity;
+      // subTotal = calculatesubTotal();
+      // total = calculateTotal();
     });
   }
 
-  double calculatesubTotal() {
-    double subTotal = 0;
-    for (var item in cart) {
-      subTotal += double.parse(item["price"].replaceAll("Rs.", "").trim()) *
-          (item["quantity"] ?? 0);
+  // double calculatesubTotal() {
+  //   double subTotal = cartItems.fold(0, (total, item) {
+  //     return total +
+  //         (double.parse(item['price'].replaceAll("Rs.", "").trim()) *
+  //             (item['quantity'] ?? 1));
+  //   });
+
+  //   // for (var item in cart) {
+  //   //   subTotal += double.parse(item["price"].replaceAll("Rs.", "").trim()) *
+  //   //       (item["quantity"] ?? 0);
+  //   // }
+  //   return subTotal;
+  // }
+
+  // double calculateTotal() {
+  //   double total = 0;
+  //   total = subTotal + delivery;
+  //   return total;
+  // }
+
+  Future<void> getUserId() async {
+    final User? user = auth.currentUser;
+    if (user != null) {
+      userId = user.uid;
     }
-    return subTotal;
   }
 
-  double calculateTotal() {
-    double total = 0;
-    total = subTotal + delivery;
-    return total;
-  }
+  // Future<void> createOrder() async {
+  //   try {
+  //     DocumentReference orderRef = FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(userId)
+  //         .collection('orders')
+  //         .doc(widget.name);
+
+  //     await orderRef.set({
+  //       'food_id': widget.id,
+  //       'name': widget.name,
+  //       'image': widget.image,
+  //       'price': widget.price,
+  //       'quantity': quantity,
+  //       'date': Timestamp.now(),
+  //     });
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Failed to place order: $e')),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final User? user = auth.currentUser;
+    if (user == null) {
+      return Center(child: Text("Please log in."));
+    }
     final ButtonStyle style = ElevatedButton.styleFrom(
         foregroundColor: Colors.white,
         backgroundColor: Colors.amber,
@@ -106,10 +136,35 @@ class _CartState extends State<Cart> {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
                     height: 375,
-                    child: GestureDetector(
-                      child: ListView(
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user.uid)
+                          .collection('cart')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        var cartItems = snapshot.data!.docs;
+                        if (cartItems.isEmpty) {
+                          return Center(child: Text("No cart items."));
+                        }
+                        return ListView.builder(
                           scrollDirection: Axis.vertical,
-                          children: List.generate(cart.length, (index) {
+                          itemCount: cartItems.length,
+                          itemBuilder: (context, index) {
+                            var cart = cartItems[index];
+                            double subTotal = cartItems.fold(0, (total, item) {
+                              return total +
+                                  ((item['price'] is String)
+                                      ? double.parse(item['price']
+                                          .replaceAll("Rs.", "")
+                                          .trim())
+                                      : item['price'].toDouble() *
+                                          (item['quantity'] ?? 1));
+                            });
+                            // total = subTotal + delivery;
                             return Card(
                               elevation: 5,
                               color: Colors.amber,
@@ -133,8 +188,8 @@ class _CartState extends State<Cart> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
                                               children: [
-                                                Image.asset(
-                                                  cart[index]['image'],
+                                                Image.network(
+                                                  cart['image'],
                                                   width: 80,
                                                   height: 80,
                                                   alignment:
@@ -150,19 +205,27 @@ class _CartState extends State<Cart> {
                                                     CrossAxisAlignment.start,
                                                 children: <Widget>[
                                                   Text(
-                                                    cart[index]['name'],
+                                                    cart['name'],
                                                     style: const TextStyle(
                                                         fontSize: 18,
                                                         color: Colors.white),
                                                   ),
                                                   Text(
-                                                    cart[index]['price'],
+                                                    'Rs. ${cart['price']}.00',
                                                     style: const TextStyle(
                                                         fontSize: 18,
                                                         color: Colors.white),
                                                   )
                                                 ]),
                                             const SizedBox(width: 25),
+                                            // SizedBox(width: 15,),
+                                            // IconButton(
+                                            //   icon: const Icon(Icons.cancel),
+                                            //   color: Colors.red,
+                                            //   onPressed: () {
+                                            //     // _removeFood(index);
+                                            //   },
+                                            // ),
                                             Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.end,
@@ -179,9 +242,7 @@ class _CartState extends State<Cart> {
                                                           Colors.white,
                                                       activeBackgroundColor:
                                                           Colors.white),
-                                                  value: cart[index]
-                                                          ["quantity"] ??
-                                                      1,
+                                                  value: cart['quantity'] ?? 1,
                                                   axis: Axis.vertical,
                                                   didChangeCount: (count) {
                                                     didChangeCount(
@@ -195,14 +256,9 @@ class _CartState extends State<Cart> {
                                     ),
                                   ]),
                             );
-                          })),
-                      // onTap: () {
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => const FoodDetails()),
-                      //   );
-                      // },
+                          },
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -226,7 +282,7 @@ class _CartState extends State<Cart> {
                             ),
                             const SizedBox(height: 40, width: 170),
                             Text(
-                              'Rs. ${subTotal.toStringAsFixed(2)}',
+                              'Rs. ${subTotal}.00',
                               style: const TextStyle(
                                   fontSize: 16, color: Colors.black),
                             ),
@@ -261,7 +317,7 @@ class _CartState extends State<Cart> {
                             ),
                             const SizedBox(height: 40, width: 180),
                             Text(
-                              'Rs. ${total.toStringAsFixed(2)}',
+                              'Rs. ${total}.00',
                               style: const TextStyle(
                                   fontSize: 16, color: Colors.black),
                             ),
@@ -273,27 +329,30 @@ class _CartState extends State<Cart> {
                         style: style,
                         onPressed: () {
                           showDialog(
-                            context: context, 
-                            builder: (_) => AlertDialog(
-                              title: Text("Checkout Confirmation"),
-                              content: Text("Are you sure you want to proceed?"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    Home();
-                                  },
-                                  child: Text('Yes'),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('No'),
-                                ),
-                              ],
-                            )
-                          );
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                    title: Text("Checkout Confirmation"),
+                                    content: Text(
+                                        "Are you sure you want to proceed?"),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Checkout()),
+                                  );
+                                        },
+                                        child: Text('Yes'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Text('No'),
+                                      ),
+                                    ],
+                                  ));
                         },
                       ),
                     ]),

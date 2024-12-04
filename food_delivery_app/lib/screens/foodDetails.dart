@@ -385,19 +385,7 @@ class FoodDetailsState extends State<FoodDetails>
                 label: Text('Add to Cart'),
                 style: style,
                 onPressed: () {
-                  addToCart();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Cart(
-                        id: widget.id,
-                        name: widget.name,
-                        image: widget.image,
-                        price: widget.price.toInt(),
-                        quantity: quantity,
-                      ),
-                    ),
-                  );
+                  addToCart();                  
                 },
               ),
               const SizedBox(width: 50),
@@ -511,17 +499,10 @@ class FoodDetailsState extends State<FoodDetails>
                                       );
                                     })),
                                 onTap: () {
-                                  addToCart();
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Cart(
-                                              id: widget.id,
-                                              name: widget.name,
-                                              image: widget.image,
-                                              price: widget.price.toInt(),
-                                              quantity: quantity,
-                                            )),
+                                        builder: (context) => Cart()),
                                   );
                                 },
                               ),
