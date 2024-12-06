@@ -13,6 +13,8 @@ import 'package:food_delivery_app/screens/orders.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:food_delivery_app/screens/profile.dart';
+import 'package:food_delivery_app/screens/profilePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
@@ -133,7 +135,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const Categories(),
+                builder: (context) => ProfilePage(),
               ));
         },
         onCategoriesPressed: () {
@@ -151,11 +153,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               ));
         },
         onCartPressed: () {
-          // Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //       builder: (context) => const Cart(),
-          //     ));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Cart(),
+              ));
         },
         onOrdersPressed: () {
           Navigator.push(
