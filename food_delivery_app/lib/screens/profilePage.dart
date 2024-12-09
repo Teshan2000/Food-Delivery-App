@@ -300,12 +300,31 @@ class _ProfilePageState extends State<ProfilePage> {
                                 itemCount: paymentData.length,
                                 itemBuilder: (context, index) {
                                   var data = paymentData[index];
-                                  return paymentData.isEmpty
-                                      ? ListTile(
-                                          title: Text(data['address']),
-                                          subtitle: Text(data['city']),
-                                        )
-                                      : ShippingForm();
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 15),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                          Text(
+                                            data['cardHolder'],
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Text(
+                                            data['cardNumber'],
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ],
+                                    ),
+                                  );
                                 });
                           })
                     ],

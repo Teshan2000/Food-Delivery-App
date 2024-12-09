@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/components/paymentForm.dart';
 import 'package:food_delivery_app/components/shippingForm.dart';
 import 'package:food_delivery_app/screens/categories.dart';
 import 'package:food_delivery_app/screens/home.dart';
@@ -193,10 +194,30 @@ class _CheckoutState extends State<Checkout> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Categories(),
+                        showModalBottomSheet(
+                          backgroundColor: Colors.amber,
+                          context: context,
+                          builder: (_) => Column(
+                            children: [
+                              const SizedBox(height: 20),
+                              Container(
+                                decoration: ShapeDecoration(
+                                    color: Colors.amber,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      topRight: Radius.circular(15),
+                                    ))),
+                                child: Text(
+                                  'Add Payment Details',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              PaymentForm(),
+                            ],
                           ),
                         );
                       },
@@ -251,19 +272,18 @@ class _CheckoutState extends State<Checkout> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            data['cardNumber'],
+                                            data['cardHolder'],
                                             style: TextStyle(
                                               fontSize: 16,
                                             ),
                                           ),
                                           const SizedBox(height: 5),
                                           Text(
-                                            data['cardHolderName'],
+                                            data['cardNumber'],
                                             style: TextStyle(
                                               fontSize: 16,
                                             ),
                                           ),
-                                          const SizedBox(height: 20),
                                         ],
                                       ),
                                     );
