@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/components/shippingForm.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:ffi';
 import 'dart:io';
@@ -40,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (user != null) {
       userId = user.uid;
     }
-  }  
+  }
 
   Future<void> _fetchProfile() async {
     DocumentSnapshot profileSnap = await _firestore
@@ -52,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     if (profileSnap.exists) {
       setState(() {
-        name = profileSnap['name'] ?? '';
+        nameController.text = profileSnap['name'] ?? '';
         image = profileSnap['profileImage'] ?? '';
       });
     }
@@ -155,13 +156,13 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(
                 height: 50,
               ),
+              Text(name),
               Column(children: [
                 Row(children: [
                   SizedBox(
                     width: 350,
                     child: TextFormField(
                       controller: nameController,
-                      // initialValue: name,
                       decoration: InputDecoration(
                         hintText: 'Name',
                         labelText: 'Name',
@@ -298,11 +299,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                 shrinkWrap: true,
                                 itemCount: paymentData.length,
                                 itemBuilder: (context, index) {
-                                  var data = paymentData[index];                                  
-                                  return ListTile(
-                                    title: Text(data['cardNumber']),
-                                    subtitle: Text(data['cardHolderName']),
-                                  );
+                                  var data = paymentData[index];
+                                  return paymentData.isEmpty
+                                      ? ListTile(
+                                          title: Text(data['address']),
+                                          subtitle: Text(data['city']),
+                                        )
+                                      : ShippingForm();
                                 });
                           })
                     ],
@@ -323,7 +326,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           stream: _firestore
                               .collection('users')
                               .doc(user?.uid)
-                              .collection('shippingAddresses')
+                              .collection('shippingDetails')
                               .snapshots(),
                           builder: (context, snapshot) {
                             if (!snapshot.hasData) {
@@ -334,10 +337,31 @@ class _ProfilePageState extends State<ProfilePage> {
                                 shrinkWrap: true,
                                 itemCount: addressData.length,
                                 itemBuilder: (context, index) {
-                                  var data = addressData[index];                                  
-                                  return ListTile(
-                                    title: Text(data['address']),
-                                    subtitle: Text(data['city']),
+                                  var data = addressData[index];
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 15),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "${data['address']}, ${data['city']}",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          "${data['state']}, ${data['country']}, ${data['zipCode']}",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   );
                                 });
                           })

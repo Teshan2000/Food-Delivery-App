@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/components/shippingForm.dart';
 import 'package:food_delivery_app/screens/categories.dart';
 import 'package:food_delivery_app/screens/home.dart';
 
@@ -15,8 +16,24 @@ class Checkout extends StatefulWidget {
 
 class _CheckoutState extends State<Checkout> {
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   int? total, subTotal;
   int delivery = 50;
+  String userId = "";
+  late User? user;
+
+  Future<void> getUserId() async {
+    final User? user = auth.currentUser;
+    if (user != null) {
+      userId = user.uid;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserId();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +55,7 @@ class _CheckoutState extends State<Checkout> {
           ),
         ),
         actions: [
-          IconButton(
-              onPressed: () {}, icon: const Icon(Icons.payment))
+          IconButton(onPressed: () {}, icon: const Icon(Icons.payment))
         ],
       ),
       body: SafeArea(
@@ -62,10 +78,34 @@ class _CheckoutState extends State<Checkout> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Categories(),
+                        // AnimationController _controller = AnimationController(
+                        //   vsync: this,
+                        //   duration: Duration(milliseconds: 300),
+                        // );
+                        showModalBottomSheet(
+                          backgroundColor: Colors.amber,
+                          context: context,
+                          builder: (_) => Column(
+                            children: [
+                              const SizedBox(height: 20),
+                              Container(
+                                decoration: ShapeDecoration(
+                                    color: Colors.amber,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      topRight: Radius.circular(15),
+                                    ))),
+                                child: Text(
+                                  'Add Shipping Details',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                              ShippingForm(),
+                            ],
                           ),
                         );
                       },
@@ -79,56 +119,64 @@ class _CheckoutState extends State<Checkout> {
                     ),
                   ]),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                children: [
-                  TextFormField(
-                    // controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    cursorColor: Colors.amber,
-                    decoration: InputDecoration(
-                      hintText: 'Address',
-                      labelText: 'Address',
-                      alignLabelWithHint: true,
-                      fillColor: Colors.white,
-                      filled: true,
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      prefixIconColor: Colors.amber,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.black),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.amber,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.red,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Expanded(
+                child: Container(
+                  decoration: ShapeDecoration(
+                    color: Colors.amber,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    validator: (val) {
-                      return RegExp(
-                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                              .hasMatch(val!)
-                          ? null
-                          : "Please enter a valid email";
-                    },
-                    onChanged: (val) {
-                      setState(() {
-                        // _emailController.text = val;
-                      });
-                    },
                   ),
-                ],
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        StreamBuilder<QuerySnapshot>(
+                            stream: _firestore
+                                .collection('users')
+                                .doc(user?.uid)
+                                .collection('shippingDetails')
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Text("No Shipping Details added!");
+                              }
+                              var addressData = snapshot.data!.docs;
+                              return ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: addressData.length,
+                                  itemBuilder: (context, index) {
+                                    var data = addressData[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 15),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "${data['address']}, ${data['city']}",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Text(
+                                           "${data['state']}, ${data['country']}, ${data['zipCode']}",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),                                          
+                                        ],
+                                      ),
+                                    );
+                                  });
+                            })
+                      ]),
+                ),
               ),
             ),
             const SizedBox(height: 30),
@@ -162,201 +210,67 @@ class _CheckoutState extends State<Checkout> {
                     ),
                   ]),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                children: [
-                  TextFormField(
-                    // controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    cursorColor: Colors.amber,
-                    decoration: InputDecoration(
-                      hintText: 'Card Number',
-                      labelText: 'Card Number',
-                      alignLabelWithHint: true,
-                      fillColor: Colors.white,
-                      filled: true,
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      prefixIconColor: Colors.amber,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.black),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.amber,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.red,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Expanded(
+                child: Container(
+                  decoration: ShapeDecoration(
+                    color: Colors.amber,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                    validator: (val) {
-                      return RegExp(
-                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                              .hasMatch(val!)
-                          ? null
-                          : "Please enter a valid email";
-                    },
-                    onChanged: (val) {
-                      setState(() {
-                        // _emailController.text = val;
-                      });
-                    },
                   ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: 170,
-                        child: TextFormField(
-                          // controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          cursorColor: Colors.amber,
-                          decoration: InputDecoration(
-                            hintText: 'Exp Date',
-                            labelText: 'Exp Date',
-                            alignLabelWithHint: true,
-                            fillColor: Colors.white,
-                            filled: true,
-                            prefixIcon: const Icon(Icons.email_outlined),
-                            prefixIconColor: Colors.amber,
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.black),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.amber,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.red,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          validator: (val) {
-                            return RegExp(
-                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                    .hasMatch(val!)
-                                ? null
-                                : "Please enter a valid email";
-                          },
-                          onChanged: (val) {
-                            setState(() {
-                              // _emailController.text = val;
-                            });
-                          },
-                        ),
-                      ),
-                      Container(
-                        width: 170,
-                        child: TextFormField(
-                          // controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          cursorColor: Colors.amber,
-                          decoration: InputDecoration(
-                            hintText: 'Cvv',
-                            labelText: 'Cvv',
-                            alignLabelWithHint: true,
-                            fillColor: Colors.white,
-                            filled: true,
-                            prefixIcon: const Icon(Icons.email_outlined),
-                            prefixIconColor: Colors.amber,
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.black),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.amber,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Colors.red,
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          validator: (val) {
-                            return RegExp(
-                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                    .hasMatch(val!)
-                                ? null
-                                : "Please enter a valid email";
-                          },
-                          onChanged: (val) {
-                            setState(() {
-                              // _emailController.text = val;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    // controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    cursorColor: Colors.amber,
-                    decoration: InputDecoration(
-                      hintText: 'Card Holder',
-                      labelText: 'Card Holder',
-                      alignLabelWithHint: true,
-                      fillColor: Colors.white,
-                      filled: true,
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      prefixIconColor: Colors.amber,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.black),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.amber,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      errorBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.red,
-                          width: 2,
-                        ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    validator: (val) {
-                      return RegExp(
-                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                              .hasMatch(val!)
-                          ? null
-                          : "Please enter a valid email";
-                    },
-                    onChanged: (val) {
-                      setState(() {
-                        // _emailController.text = val;
-                      });
-                    },
-                  ),
-                ],
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        StreamBuilder<QuerySnapshot>(
+                            stream: _firestore
+                                .collection('users')
+                                .doc(user?.uid)
+                                .collection('paymentDetails')
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Text("No Payment Details added!");
+                              }
+                              var paymentData = snapshot.data!.docs;
+                              return ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: paymentData.length,
+                                  itemBuilder: (context, index) {
+                                    var data = paymentData[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 15, vertical: 15),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            data['cardNumber'],
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Text(
+                                            data['cardHolderName'],
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 20),
+                                        ],
+                                      ),
+                                    );
+                                  });
+                            })
+                      ]),
+                ),
               ),
             ),
             const SizedBox(height: 30),
