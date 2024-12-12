@@ -1,15 +1,15 @@
-import 'package:cart_stepper/cart_stepper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
 import 'package:food_delivery_app/components/paymentForm.dart';
 import 'package:food_delivery_app/components/shippingForm.dart';
+import 'package:food_delivery_app/screens/cart.dart';
 import 'package:food_delivery_app/screens/categories.dart';
-import 'package:food_delivery_app/screens/home.dart';
 
 class Checkout extends StatefulWidget {
-  const Checkout({super.key});
+  final String total;
+  const Checkout({super.key, required this.total});
 
   @override
   State<Checkout> createState() => _CheckoutState();
@@ -18,7 +18,7 @@ class Checkout extends StatefulWidget {
 class _CheckoutState extends State<Checkout> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  int? total, subTotal;
+  List<Map<String, dynamic>> cart = [];
   int delivery = 50;
   String userId = "";
   late User? user;
@@ -34,6 +34,62 @@ class _CheckoutState extends State<Checkout> {
   void initState() {
     super.initState();
     getUserId();
+  }
+
+  Future<void> createOrder() async {
+    final User? user = auth.currentUser;
+    final userId = user?.uid;
+    if (userId != null) {
+      try {
+        CollectionReference cartRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(user?.uid)
+            .collection('cart');
+
+        QuerySnapshot cartSnapshot = await cartRef.get();
+        if (cartSnapshot.docs.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Cart is empty!')),
+          );
+          return;
+        }
+
+        DocumentReference orderRef = FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('orders')
+            .doc();
+
+        List<Map<String, dynamic>> orders = cartSnapshot.docs.map((doc) {
+          return {
+            'food_id': doc['food_id'],
+            'name': doc['name'],
+            'image': doc['image'],
+            'price': doc['price'],
+            'quantity': doc['quantity'],
+          };
+        }).toList();
+
+        await orderRef.set({
+          'order_id': orderRef.id,
+          'order_date': Timestamp.now(),
+          'total_price': widget.total,
+          'status': 'Pending',
+          'items': orders,
+        });
+
+        for (var doc in cartSnapshot.docs) {
+          await doc.reference.delete();
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Order completed Successfully!')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to place order: $e')),
+        );
+      }
+    }
   }
 
   @override
@@ -155,8 +211,10 @@ class _CheckoutState extends State<Checkout> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 15, vertical: 15),
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "${data['address']}, ${data['city']}",
@@ -166,11 +224,11 @@ class _CheckoutState extends State<Checkout> {
                                           ),
                                           const SizedBox(height: 5),
                                           Text(
-                                           "${data['state']}, ${data['country']}, ${data['zipCode']}",
+                                            "${data['state']}, ${data['country']}, ${data['zipCode']}",
                                             style: TextStyle(
                                               fontSize: 16,
                                             ),
-                                          ),                                          
+                                          ),
                                         ],
                                       ),
                                     );
@@ -318,7 +376,7 @@ class _CheckoutState extends State<Checkout> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const Categories(),
+                            builder: (context) => const Cart(),
                           ),
                         );
                       },
@@ -339,12 +397,12 @@ class _CheckoutState extends State<Checkout> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     const Text(
-                      'Total',
+                      'Total Price',
                       style: TextStyle(fontSize: 16, color: Colors.black),
                     ),
                     const SizedBox(height: 40, width: 180),
                     Text(
-                      'Rs. ${total}.00',
+                      'Rs. ${widget.total}.00',
                       style: const TextStyle(fontSize: 16, color: Colors.black),
                     ),
                   ]),
@@ -353,8 +411,36 @@ class _CheckoutState extends State<Checkout> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Button(
-                title: 'Make Payment',
-                onPressed: () {},
+                title: 'Place Order',
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                            title: Text("Checkout Confirmation"),
+                            content: Text("Are you sure you want to proceed?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  createOrder();
+                                  WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                      setState(() {
+                                        cart.clear();
+                                      });
+                                    });
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Yes'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('No'),
+                              ),
+                            ],
+                          ));
+                },
                 disable: false,
                 width: double.infinity,
               ),
