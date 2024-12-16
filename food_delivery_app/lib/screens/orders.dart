@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Orders extends StatefulWidget {
   const Orders({super.key});
@@ -8,212 +11,295 @@ class Orders extends StatefulWidget {
 }
 
 class _OrdersState extends State<Orders> {
-  List<Map<String, dynamic>> Orders = [
-    {
-      "image": "Assets/Foods/Ham Burger.png",
-      "name": "Ham Burger",
-      "price": "Rs.95.00",
-      "quantity": "2",
-      "total": "Rs.190.00"
-    },
-    {
-      "image": "Assets/Foods/Pastry.png",
-      "name": "Fish Pastry",
-      "price": "Rs.35.00",
-      "quantity": "1",
-      "total": "Rs.35.00"
-    },
-    {
-      "image": "Assets/Foods/Taco.png",
-      "name": "Veggi Taco",
-      "price": "Rs.35.00",
-      "quantity": "3",
-      "total": "Rs.105.00"
-    },  
-    {
-      "image": "Assets/Foods/Pizza.png",
-      "name": "Pepperoni Pizza",
-      "price": "Rs.125.00",
-      "quantity": "1",
-      "total": "Rs.125.00"
-    },  
-  ];
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  List<Map<String, dynamic>> Orders = [];
+
+  Stream<List<Map<String, dynamic>>> fetchOrders() {
+    final User? user = auth.currentUser;
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user?.uid)
+        .collection('orders')
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+  }
 
   @override
   Widget build(BuildContext context) {
+    final User? user = auth.currentUser;
+    if (user == null) {
+      return Center(child: Text("Please log in."));
+    }
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amber,
-        title: const Center(
-          child: Text(
-            'Orders'
+        appBar: AppBar(
+          backgroundColor: Colors.amber,
+          title: const Center(
+            child: Text('Orders'),
           ),
+          actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.shopping_bag))
+          ],
         ),
-        actions: [
-          IconButton(
-            onPressed: () {}, 
-            icon: const Icon(Icons.shopping_bag)
-          )
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 15
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                      height: 675,
-                      child: GestureDetector(
-                        child: ListView(
-                            scrollDirection: Axis.vertical,
-                            children: List.generate(Orders.length, (index) {
-                              return Card(
-                              elevation: 5,
-                              color: Colors.amber,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 20, vertical: 18),
-                                            child: Row(
+        body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Column(children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 5),
+                          height: 675,
+                          child: StreamBuilder<List<Map<String, dynamic>>>(
+                              stream: fetchOrders(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                }
+                                if (!snapshot.hasData ||
+                                    snapshot.data!.isEmpty) {
+                                  return Center(child: Text("No orders yet."));
+                                }
+                                var orders = snapshot.data!;
+                                return ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: orders.length,
+                                  itemBuilder: (context, index) {
+                                    var order = orders[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      child: Card(
+                                        elevation: 5,
+                                        color: Colors.amber,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(horizontal: 15),
+                                              child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      "Order ${order['order_id']}",
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                      ),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        // order['order_id']
+                                                        // Navigator.push(
+                                                        //   context,
+                                                        //   MaterialPageRoute(
+                                                        //     builder: (context) => const Categories(),
+                                                        //   ),
+                                                        // );
+                                                      },
+                                                      child: const Text(
+                                                        "View All",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.amber,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ]),
+                                            ),
+                                            Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: <Widget>[
-                                                  Text(
-                                                    Orders[index]['name'],
-                                                    style: const TextStyle(
-                                                        fontSize: 16, color: Colors.white),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 150,
-                                                  ),
-                                                  Text(
-                                                    Orders[index]['price'],
-                                                    style: const TextStyle(
-                                                        fontSize: 16, color: Colors.white),
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                      horizontal: 20, vertical: 18),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            "Order #001",
+                                                            style: const TextStyle(
+                                                              fontSize: 16,
+                                                              color: Colors.white),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 150,
+                                                          ),
+                                                          Text(
+                                                            "${DateFormat('yyyy-MM-dd').format(order['order_date'].toDate())}",
+                                                            style: const TextStyle(
+                                                              fontSize: 16,
+                                                              color: Colors.white),
+                                                          ),
+                                                        ]),
                                                   ),
                                                 ]),
-                                          ),
-                                        ]),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Container(
-                                            width: 300,
-                                            height: 3,
-                                            decoration: ShapeDecoration(
-                                              color: const Color.fromARGB(255, 255, 255, 255),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(90),
-                                              ),
-                                            ),
-                                          ),
-                                        ]),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 18, vertical: 5),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: <Widget>[
-                                                Image.asset(
-                                                    Orders[index]['image'],
-                                                    width: 80,
-                                                    height: 80,
-                                                  ),
-                                                const SizedBox(width: 195),
-                                                Container(
-                                                  width: 30,
-                                                  height: 30,
-                                                  decoration: ShapeDecoration(
-                                                    color: const Color.fromARGB(255, 255, 255, 255),
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(90),
-                                                    ),
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      Orders[index]['quantity'],
-                                                      style: const TextStyle(
-                                                          fontSize: 24, color: Colors.black),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ]),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Container(
-                                            width: 300,
-                                            height: 3,
-                                            decoration: ShapeDecoration(
-                                              color: const Color.fromARGB(255, 255, 255, 255),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(90),
-                                              ),
-                                            ),
-                                          ),
-                                        ]),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 18
-                                            ),
-                                            child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
                                                 children: <Widget>[
-                                                  const Text(
-                                                    'Total',
-                                                    style: TextStyle(
-                                                        fontSize: 16, color: Colors.white),
+                                                  Container(
+                                                    width: 300,
+                                                    height: 3,
+                                                    decoration: ShapeDecoration(
+                                                      color: const Color.fromARGB(255,255, 255, 255),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(90),
+                                                      ),
+                                                    ),
                                                   ),
-                                                  const SizedBox(width: 190),
-                                                  Text(
-                                                    Orders[index]['total'],
-                                                    style: const TextStyle(
-                                                        fontSize: 16, color: Colors.white),
+                                                ]),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                      horizontal: 18, vertical: 5),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: <Widget>[
+                                                        // Image.asset(
+                                                        //     order['image'],
+                                                        //     width: 80,
+                                                        //     height: 80,
+                                                        //   ),
+                                                        const SizedBox(
+                                                            width: 195),
+                                                        Container(
+                                                          width: 30,
+                                                          height: 30,
+                                                          decoration: ShapeDecoration(
+                                                            color: const Color.fromARGB(255, 255, 255, 255),
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(
+                                                                          90),
+                                                            ),
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                              "${order['quantity']}",
+                                                              style: const TextStyle(
+                                                                  fontSize: 24,
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ]
-                                            ),
-                                          ),
-                                        ]),
-                                  ],
-                                ),
-                              );
-                            })
+                                                ]),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Container(
+                                                    width: 300,
+                                                    height: 3,
+                                                    decoration: ShapeDecoration(
+                                                      color: const Color.fromARGB(255, 255, 255, 255),
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(90),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ]),
+                                                Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                      horizontal: 20, vertical: 18),
+                                                    child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: <Widget>[
+                                                          const Text(
+                                                            'Quantity',
+                                                            style: TextStyle(
+                                                              fontSize: 16,
+                                                              color: Colors.white),
+                                                          ),
+                                                          const SizedBox(width: 190),
+                                                          Text(
+                                                            "${order['quantity']}",
+                                                            style: const TextStyle(
+                                                              fontSize: 16,
+                                                              color: Colors.white),
+                                                          ),
+                                                        ]),
+                                                  ),
+                                                ]),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                      horizontal: 20, vertical: 18),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: <Widget>[
+                                                          const Text(
+                                                            'Total',
+                                                            style: TextStyle(
+                                                              fontSize: 16,
+                                                              color: Colors.white),
+                                                          ),
+                                                          const SizedBox(width: 190),
+                                                          Text(
+                                                            "Rs. ${order['total_price']}.00",
+                                                            style:const TextStyle(
+                                                              fontSize:16,
+                                                              color: Colors.white),
+                                                          ),
+                                                        ]),
+                                                  ),
+                                                ]),
+                                                Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                      horizontal: 20, vertical: 18),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            "${order['status']}",
+                                                            style: TextStyle(
+                                                              fontSize: 16,
+                                                              color: Colors.white),
+                                                          ),
+                                                          const SizedBox(width: 190),
+                                                          Text(
+                                                            "View Details",
+                                                            style: const TextStyle(
+                                                              fontSize: 16,
+                                                               color: Colors.white),
+                                                          ),
+                                                        ]),
+                                                  ),
+                                                ]),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              }),
                         )
-                      )
-                    )
-                  ]
-                )
-              ]
-            ),
-          ),
-        )
-      )
-    );
+                      ])
+                    ]),
+              ),
+            )));
   }
 }
