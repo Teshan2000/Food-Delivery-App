@@ -13,7 +13,7 @@ import 'package:food_delivery_app/screens/orders.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:food_delivery_app/screens/profile.dart';
+// import 'package:food_delivery_app/screens/profile.dart';
 import 'package:food_delivery_app/screens/profilePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

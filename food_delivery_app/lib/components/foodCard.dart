@@ -84,12 +84,12 @@ class _FoodCardState extends State<FoodCard> {
                     ]),
                   );
                 })),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const FoodDetails()),
-              );
-            },
+            // onTap: () {
+            //   Navigator.push(
+            //     context,
+            //     MaterialPageRoute(builder: (context) => const FoodDetails()),
+            //   );
+            // },
           ),
         ),
       ],

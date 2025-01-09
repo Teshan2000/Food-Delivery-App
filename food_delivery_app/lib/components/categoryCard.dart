@@ -27,9 +27,8 @@ class _CategoryCardState extends State<CategoryCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 15,
-        vertical: 35,
+      padding: const EdgeInsets.only(
+        top: 10, left: 10, right: 10
       ),      
       child: SingleChildScrollView(
         child: GridView.count(
@@ -79,12 +78,12 @@ class _CategoryCardState extends State<CategoryCard> {
                   ),
                 ),
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const FoodDetails()),
-                );
-              },
+              // onTap: () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(builder: (context) => const FoodDetails()),
+              //   );
+              // },
             ),
           ),
         ),
