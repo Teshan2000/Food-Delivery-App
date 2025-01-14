@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/shippingForm.dart';
+import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:ffi';
 import 'dart:io';
@@ -18,6 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
+  AlertService alertService = AlertService();
   final TextEditingController nameController = TextEditingController();
   String userId = "";
   String name = "";
@@ -60,16 +62,22 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _updateProfile(String newName, String imageUrl) async {
-    await _firestore
+    try {
+      await _firestore
         .collection('users')
         .doc(user?.uid)
         .collection('profile')
         .doc('details')
         .set({'name': newName, 'profileImage': imageUrl, 'email': user?.email});
-    setState(() {
-      name = newName;
-      image = imageUrl;
-    });
+      setState(() {
+        name = newName;
+        image = imageUrl;
+      });
+      alertService.showToast(context: context, text: 'Profile Updated successfully!', icon: Icons.info);
+    } catch (e) {
+      alertService.showToast(context: context, text: 'Profile Updating Failed!', icon: Icons.warning);
+    }
+    
   }
 
   Future<void> _uploadProfileImage() async {
@@ -88,6 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
         await _updateProfile(name, imageUrl);
       } catch (e) {
+        alertService.showToast(context: context, text: 'Profile Image Updating Failed!', icon: Icons.warning);
         print("Error uploading image: $e");
       }
     }

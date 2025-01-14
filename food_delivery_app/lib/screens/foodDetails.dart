@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/screens/cart.dart';
 import 'package:input_quantity/input_quantity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,6 +31,7 @@ class FoodDetailsState extends State<FoodDetails>
   SharedPreferences? preferences;
   String userId = '';
   final FirebaseAuth auth = FirebaseAuth.instance;
+  AlertService alertService = AlertService();
   List<Map<String, dynamic>> ingredients = [];
   late final Map<String, dynamic> foodData;
 
@@ -113,6 +115,7 @@ class FoodDetailsState extends State<FoodDetails>
         setState(() {
           isFav = true;
         });
+        alertService.showToast(context: context, text: 'Food added to Favorites!', icon: Icons.info);
       }
     } catch (e) {
       print('Error toggling favorite: $e');
@@ -134,6 +137,7 @@ class FoodDetailsState extends State<FoodDetails>
         'price': widget.price,
         'quantity': quantity,
       });
+      alertService.showToast(context: context, text: 'Food added to Cart!', icon: Icons.info);
     } catch (e) {
       print('Error adding to cart: $e');
     }
@@ -485,10 +489,8 @@ class FoodDetailsState extends State<FoodDetails>
                                                           },
                                                           icon: Icon(
                                                             isFav
-                                                                ? Icons
-                                                                    .favorite_border
-                                                                : Icons
-                                                                    .favorite,
+                                                              ? Icons.favorite_border
+                                                              : Icons.favorite,
                                                             color: Colors.red,
                                                           ))
                                                     ],

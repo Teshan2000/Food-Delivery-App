@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
 import 'package:food_delivery_app/screens/home.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,6 +10,7 @@ class SocialButton extends StatelessWidget {
   final String social;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final AuthService _authService = AuthService();
+  AlertService alertService = AlertService();
 
   SocialButton({super.key, required this.social});
 
@@ -19,29 +21,26 @@ class SocialButton extends StatelessWidget {
         if (social.toLowerCase() == "google") {
           User? user = await _authService.signInWithGoogle();
           if (user != null) {
+            alertService.showToast(context: context, text: 'Logged successfully!', icon: Icons.info);
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => Home()),
             );
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Google sign-in failed")),
-            );
+            alertService.showToast(context: context, text: 'Google Login Failed!', icon: Icons.warning);
           }
         }
         if (social.toLowerCase() == "facebook") {
           User? user = await _authService.signInWithFacebook();
           if (user != null) {
+            alertService.showToast(context: context, text: 'Logged successfully!', icon: Icons.info);
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => Home()),
             );
             print('Signed in as ${user.displayName}');
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Facebook sign-in failed")),
-            );
-            print('Sign-in failed');
+            alertService.showToast(context: context, text: 'Facebook Login Failed!', icon: Icons.warning);
           }          
         }
       },

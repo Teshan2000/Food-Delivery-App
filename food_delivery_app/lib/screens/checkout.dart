@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
 import 'package:food_delivery_app/components/paymentForm.dart';
 import 'package:food_delivery_app/components/shippingForm.dart';
+import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/screens/cart.dart';
 import 'package:food_delivery_app/screens/categories.dart';
 
@@ -18,6 +19,7 @@ class Checkout extends StatefulWidget {
 class _CheckoutState extends State<Checkout> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  AlertService alertService = AlertService();
   List<Map<String, dynamic>> cart = [];
   int delivery = 50;
   String userId = "";
@@ -48,9 +50,7 @@ class _CheckoutState extends State<Checkout> {
 
         QuerySnapshot cartSnapshot = await cartRef.get();
         if (cartSnapshot.docs.isEmpty) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Cart is empty!')),
-          );
+          alertService.showToast(context: context, text: 'Cart is empty!', icon: Icons.warning);
           return;
         }
 
@@ -81,13 +81,9 @@ class _CheckoutState extends State<Checkout> {
         for (var doc in cartSnapshot.docs) {
           await doc.reference.delete();
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Order completed Successfully!')),
-        );
+        alertService.showToast(context: context, text: 'Order completed successfully!', icon: Icons.info);
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to place order: $e')),
-        );
+        alertService.showToast(context: context, text: 'Order Failed!', icon: Icons.warning);
       }
     }
   }
@@ -96,7 +92,7 @@ class _CheckoutState extends State<Checkout> {
   Widget build(BuildContext context) {
     final User? user = auth.currentUser;
     if (user == null) {
-      return Center(child: Text("Please log in."));
+      alertService.showToast(context: context, text: 'You are not Logged in!', icon: Icons.warning);
     }
     final ButtonStyle style = ElevatedButton.styleFrom(
         foregroundColor: Colors.white,

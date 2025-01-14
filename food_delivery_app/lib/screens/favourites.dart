@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/providers/alert_service.dart';
 
 class Favourites extends StatelessWidget {
   final FirebaseAuth auth = FirebaseAuth.instance;
+  AlertService alertService = AlertService();
   bool isFav = false;
 
   @override
   Widget build(BuildContext context) {
     final User? user = auth.currentUser;
     if (user == null) {
-      return Center(child: Text("Please log in."));
+      alertService.showToast(context: context, text: 'You are not Logged in!', icon: Icons.warning);
     }
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +40,7 @@ class Favourites extends StatelessWidget {
                       child: StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
                               .collection('users')
-                              .doc(user.uid)
+                              .doc(user?.uid)
                               .collection('favorites')
                               .snapshots(),
                           builder: (context, snapshot) {
@@ -103,9 +105,10 @@ class Favourites extends StatelessWidget {
                                                       onPressed: () async {
                                                         await FirebaseFirestore.instance
                                                           .collection('users')
-                                                          .doc(user.uid)
+                                                          .doc(user?.uid)
                                                           .collection('favorites')
                                                           .doc(favourites['food_id']).delete();
+                                                        alertService.showToast(context: context, text: 'Food removed from Favorites!', icon: Icons.info);
                                                       },
                                                       icon: Icon(
                                                         isFav

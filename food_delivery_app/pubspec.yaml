@@ -40,6 +40,7 @@ dependencies:
   flutter_facebook_auth: ^7.1.0
   shared_preferences: ^2.2.3
   image_picker: ^1.0.4
+  delightful_toast: ^1.1.0
   
   flutter:
     sdk: flutter
