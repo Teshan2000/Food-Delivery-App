@@ -7,6 +7,8 @@ import 'package:food_delivery_app/components/shippingForm.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/screens/cart.dart';
 import 'package:food_delivery_app/screens/categories.dart';
+import 'package:food_delivery_app/screens/home.dart';
+import 'package:lottie/lottie.dart';
 
 class Checkout extends StatefulWidget {
   final String total;
@@ -410,32 +412,96 @@ class _CheckoutState extends State<Checkout> {
                 title: 'Place Order',
                 onPressed: () {
                   showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                            title: Text("Checkout Confirmation"),
-                            content: Text("Are you sure you want to proceed?"),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  createOrder();
-                                  WidgetsBinding.instance
-                                    .addPostFrameCallback((_) {
-                                      setState(() {
-                                        cart.clear();
-                                      });
-                                    });
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Yes'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('No'),
-                              ),
-                            ],
-                          ));
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: Text("Checkout Confirmation"),
+                      content: Text("Are you sure you want to proceed?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            createOrder();
+                            WidgetsBinding.instance
+                              .addPostFrameCallback((_) {
+                                setState(() {
+                                  cart.clear();
+                                });
+                              });
+                            Navigator.of(context).pop();
+                            showDialog(
+                              context: context,
+                              builder: (_) => Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 10),
+                                  child: Dialog(
+                                      backgroundColor: Colors.transparent,
+                                      insetPadding: EdgeInsets.all(10),
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        alignment: Alignment.center,
+                                        children: <Widget>[
+                                          SingleChildScrollView(
+                                            child: Container(
+                                              width: double.infinity,
+                                              height: 450,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(15),
+                                                color: Colors.white),
+                                              padding: EdgeInsets.fromLTRB(25, 30, 25, 25),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                children: [
+                                                  Lottie.asset(
+                                                    'Assets/5lKST8Beoq.json',
+                                                    fit: BoxFit.contain,
+                                                    width: 120
+                                                  ),
+                                                  Text(
+                                                    "Order Successful!",
+                                                    textAlign: TextAlign.center,
+                                                    style: const TextStyle(
+                                                        fontSize: 23, fontWeight: FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    "Your order #45gt5f4 is successfully placed!",
+                                                    textAlign: TextAlign.center,
+                                                    style: const TextStyle(
+                                                        fontSize: 16),
+                                                  ),
+                                                  const SizedBox(height: 35),
+                                                  Button(
+                                                    title: 'Track the Order',
+                                                    onPressed: () {},
+                                                    disable: false,
+                                                    width: double.infinity,
+                                                  ),                                                  
+                                                  Button(
+                                                    title: 'Back to Home',
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context, MaterialPageRoute(
+                                                          builder: (context) => const Home()));
+                                                    },
+                                                    disable: false,
+                                                    width: double.infinity,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ))),
+                                    );                            
+                          },
+                          child: Text('Yes'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('No'),
+                        ),
+                      ],
+                    ));                  
                 },
                 disable: false,
                 width: double.infinity,

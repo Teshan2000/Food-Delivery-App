@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
 import 'package:food_delivery_app/components/passwordForm.dart';
+import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
 import 'package:food_delivery_app/screens/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,6 +19,7 @@ class LoginForm extends StatefulWidget {
 class LoginFormState extends State<LoginForm> {
   final AuthService _auth = AuthService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  AlertService alertService = AlertService();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
@@ -43,11 +45,12 @@ class LoginFormState extends State<LoginForm> {
       await preferences.setString('email', user.email ?? '');
       await preferences.setString('name', user.displayName ?? '');
       createUserInFirestore();
+      alertService.showToast(context: context, text: 'Logged successfully!', icon: Icons.info);
       print("User successfully logged");
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const Home()));
     } else {
-      print("Some error occured");
+      alertService.showToast(context: context, text: 'Login Failed!', icon: Icons.warning);
     }
   }
 

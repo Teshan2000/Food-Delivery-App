@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/providers/alert_service.dart';
 
 class PasswordForm extends StatefulWidget {
   const PasswordForm({super.key});
@@ -11,17 +12,17 @@ class PasswordForm extends StatefulWidget {
 
 class _PasswordFormState extends State<PasswordForm> {
   final _formKey = GlobalKey<FormState>();
+  AlertService alertService = AlertService();
   final _emailController = TextEditingController();
 
   Future resetPassword() async {
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: _emailController.text);
+      alertService.showToast(context: context, text: 'Email sent successfully!', icon: Icons.info);
     } catch (e) {
       print('An error occurred: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-         SnackBar(content: Text('An error occurred: $e')),
-      );
+      alertService.showToast(context: context, text: 'Email sending Failed!', icon: Icons.warning);
     }
   }
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
 import 'package:food_delivery_app/screens/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +15,7 @@ class RegisterForm extends StatefulWidget {
 
 class RegisterFormState extends State<RegisterForm> {
   final AuthService _auth = AuthService();
-
+  AlertService alertService = AlertService();
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -37,11 +38,11 @@ class RegisterFormState extends State<RegisterForm> {
     User? user = await _auth.signUpWithEmailAndPassword(email, password);
 
     if (user != null) {
-      print("User successfully created");
+      alertService.showToast(context: context, text: 'Registered successfully!', icon: Icons.info);
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => const LoginPage()));
     } else {
-      print("Some error occured");
+      alertService.showToast(context: context, text: 'Registration Failed!', icon: Icons.warning);
     }
   }
 
