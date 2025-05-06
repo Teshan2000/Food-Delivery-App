@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/components/paymentDetails.dart';
+import 'package:food_delivery_app/components/shippingDetails.dart';
 import 'package:food_delivery_app/components/shippingForm.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:ffi';
 import 'dart:io';
 
 class ProfilePage extends StatefulWidget {
@@ -112,9 +113,15 @@ class _ProfilePageState extends State<ProfilePage> {
               'Profile',
             ),
           ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))
+          ),
           actions: [
             IconButton(onPressed: () {}, icon: const Icon(Icons.person_outline))
           ],
+          bottom: PreferredSize(
+          preferredSize: const Size(double.infinity, 10), child: SizedBox(),
+        ),
         ),
         body: Container(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -283,7 +290,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   ExpansionTile(
                     key: UniqueKey(),
-                    leading: Icon(Icons.payment),
+                    leading: Icon(Icons.payment, color: Colors.amber,),
                     title: Text("Payment Details"),
                     onExpansionChanged: (expanded) {
                       setState(() {
@@ -293,54 +300,50 @@ class _ProfilePageState extends State<ProfilePage> {
                     },
                     initiallyExpanded: isPaymentExpanded,
                     children: [
-                      StreamBuilder<QuerySnapshot>(
-                          stream: _firestore
-                              .collection('users')
-                              .doc(user?.uid)
-                              .collection('paymentDetails')
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return Text("No Payment Details added!");
-                            }
-                            var paymentData = snapshot.data!.docs;
-                            return ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: paymentData.length,
-                                itemBuilder: (context, index) {
-                                  var data = paymentData[index];
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 15),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                          Text(
-                                            data['cardHolder'],
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Text(
-                                            data['cardNumber'],
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ],
-                                    ),
-                                  );
-                                });
-                          })
+                      Container(
+                        decoration: ShapeDecoration(
+                          color: Colors.amber,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            StreamBuilder<QuerySnapshot>(
+                                stream: _firestore
+                                    .collection('users')
+                                    .doc(user?.uid)
+                                    .collection('paymentDetails')
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Text("No Payment Details added!");
+                                  }
+                                  var paymentData = snapshot.data!.docs;
+                                  return ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: paymentData.length,
+                                      itemBuilder: (context, index) {
+                                        var data = paymentData[index];
+                                        return PaymentDetails(
+                                          cardHolder: data['cardHolder'],
+                                          cardNumber: data['cardNumber'],
+                                        );
+                                      });
+                                }),
+                          ],
+                        ),
+                      )
                     ],
+                  ),
+                  const SizedBox(
+                    height: 10,
                   ),
                   ExpansionTile(
                     key: UniqueKey(),
-                    leading: Icon(Icons.location_city),
+                    leading: Icon(Icons.location_city, color: Colors.amber,),
                     title: Text("Shipping Address"),
                     onExpansionChanged: (expanded) {
                       setState(() {
@@ -350,49 +353,42 @@ class _ProfilePageState extends State<ProfilePage> {
                     },
                     initiallyExpanded: isShippingExpanded,
                     children: [
-                      StreamBuilder<QuerySnapshot>(
-                          stream: _firestore
-                              .collection('users')
-                              .doc(user?.uid)
-                              .collection('shippingDetails')
-                              .snapshots(),
-                          builder: (context, snapshot) {
-                            if (!snapshot.hasData) {
-                              return Text("No Shipping Details added!");
-                            }
-                            var addressData = snapshot.data!.docs;
-                            return ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: addressData.length,
-                                itemBuilder: (context, index) {
-                                  var data = addressData[index];
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15, vertical: 15),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "${data['address']}, ${data['city']}",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Text(
-                                          "${data['state']}, ${data['country']}, ${data['zipCode']}",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                });
-                          })
+                      Container(
+                        decoration: ShapeDecoration(
+                          color: Colors.amber,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            StreamBuilder<QuerySnapshot>(
+                                stream: _firestore
+                                    .collection('users')
+                                    .doc(user?.uid)
+                                    .collection('shippingDetails')
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Text("No Shipping Details added!");
+                                  }
+                                  var addressData = snapshot.data!.docs;
+                                  return ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: addressData.length,
+                                      itemBuilder: (context, index) {
+                                        var data = addressData[index];
+                                        return ShippingDetails(
+                                          address1: "${data['address']}, ${data['city']}", 
+                                          address2: "${data['state']}, ${data['country']}, ${data['zipCode']}",
+                                        );
+                                      });
+                                }),
+                          ],
+                        ),
+                      )
                     ],
                   )
                 ],

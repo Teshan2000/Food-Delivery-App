@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/components/paymentDetails.dart';
 import 'package:food_delivery_app/components/paymentForm.dart';
+import 'package:food_delivery_app/components/shippingDetails.dart';
 import 'package:food_delivery_app/components/shippingForm.dart';
+import 'package:food_delivery_app/components/successCard.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/screens/cart.dart';
 import 'package:food_delivery_app/screens/categories.dart';
@@ -52,7 +55,8 @@ class _CheckoutState extends State<Checkout> {
 
         QuerySnapshot cartSnapshot = await cartRef.get();
         if (cartSnapshot.docs.isEmpty) {
-          alertService.showToast(context: context, text: 'Cart is empty!', icon: Icons.warning);
+          alertService.showToast(
+              context: context, text: 'Cart is empty!', icon: Icons.warning);
           return;
         }
 
@@ -83,9 +87,15 @@ class _CheckoutState extends State<Checkout> {
         for (var doc in cartSnapshot.docs) {
           await doc.reference.delete();
         }
-        alertService.showToast(context: context, text: 'Order completed successfully!', icon: Icons.info);
+        alertService.showToast(
+          context: context,
+          text: 'Order completed successfully!',
+          icon: Icons.info);
       } catch (e) {
-        alertService.showToast(context: context, text: 'Order Failed!', icon: Icons.warning);
+        alertService.showToast(
+          context: context, 
+          text: 'Order Failed!', 
+          icon: Icons.warning);
       }
     }
   }
@@ -94,7 +104,10 @@ class _CheckoutState extends State<Checkout> {
   Widget build(BuildContext context) {
     final User? user = auth.currentUser;
     if (user == null) {
-      alertService.showToast(context: context, text: 'You are not Logged in!', icon: Icons.warning);
+      alertService.showToast(
+          context: context,
+          text: 'You are not Logged in!',
+          icon: Icons.warning);
     }
     final ButtonStyle style = ElevatedButton.styleFrom(
         foregroundColor: Colors.white,
@@ -112,13 +125,21 @@ class _CheckoutState extends State<Checkout> {
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.payment))
         ],
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20))),
+        bottom: PreferredSize(
+          preferredSize: const Size(double.infinity, 10),
+          child: SizedBox(),
+        ),
       ),
       body: SafeArea(
-          child: SingleChildScrollView(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -186,8 +207,8 @@ class _CheckoutState extends State<Checkout> {
                     ),
                   ),
                   child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         StreamBuilder<QuerySnapshot>(
                             stream: _firestore
@@ -205,30 +226,9 @@ class _CheckoutState extends State<Checkout> {
                                   itemCount: addressData.length,
                                   itemBuilder: (context, index) {
                                     var data = addressData[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15, vertical: 15),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "${data['address']}, ${data['city']}",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Text(
-                                            "${data['state']}, ${data['country']}, ${data['zipCode']}",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    return ShippingDetails(
+                                      address1: "${data['address']}, ${data['city']}", 
+                                      address2: "${data['state']}, ${data['country']}, ${data['zipCode']}",
                                     );
                                   });
                             })
@@ -272,7 +272,10 @@ class _CheckoutState extends State<Checkout> {
                                 ),
                               ),
                               const SizedBox(height: 15),
-                              PaymentForm(),
+                              Container(
+                                height: 375,
+                                color: Colors.white,
+                                child: PaymentForm()),
                             ],
                           ),
                         );
@@ -318,30 +321,9 @@ class _CheckoutState extends State<Checkout> {
                                   itemCount: paymentData.length,
                                   itemBuilder: (context, index) {
                                     var data = paymentData[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 15, vertical: 15),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            data['cardHolder'],
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 5),
-                                          Text(
-                                            data['cardNumber'],
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    return PaymentDetails(
+                                      cardHolder: data['cardHolder'],
+                                      cardNumber: data['cardNumber'],
                                     );
                                   });
                             })
@@ -412,96 +394,42 @@ class _CheckoutState extends State<Checkout> {
                 title: 'Place Order',
                 onPressed: () {
                   showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      title: Text("Checkout Confirmation"),
-                      content: Text("Are you sure you want to proceed?"),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            createOrder();
-                            WidgetsBinding.instance
-                              .addPostFrameCallback((_) {
-                                setState(() {
-                                  cart.clear();
-                                });
-                              });
-                            Navigator.of(context).pop();
-                            showDialog(
-                              context: context,
-                              builder: (_) => Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 10),
-                                  child: Dialog(
-                                      backgroundColor: Colors.transparent,
-                                      insetPadding: EdgeInsets.all(10),
-                                      child: Stack(
-                                        clipBehavior: Clip.none,
-                                        alignment: Alignment.center,
-                                        children: <Widget>[
-                                          SingleChildScrollView(
-                                            child: Container(
-                                              width: double.infinity,
-                                              height: 450,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(15),
-                                                color: Colors.white),
-                                              padding: EdgeInsets.fromLTRB(25, 30, 25, 25),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                children: [
-                                                  Lottie.asset(
-                                                    'Assets/5lKST8Beoq.json',
-                                                    fit: BoxFit.contain,
-                                                    width: 120
-                                                  ),
-                                                  Text(
-                                                    "Order Successful!",
-                                                    textAlign: TextAlign.center,
-                                                    style: const TextStyle(
-                                                        fontSize: 23, fontWeight: FontWeight.bold),
-                                                  ),
-                                                  Text(
-                                                    "Your order #45gt5f4 is successfully placed!",
-                                                    textAlign: TextAlign.center,
-                                                    style: const TextStyle(
-                                                        fontSize: 16),
-                                                  ),
-                                                  const SizedBox(height: 35),
-                                                  Button(
-                                                    title: 'Track the Order',
-                                                    onPressed: () {},
-                                                    disable: false,
-                                                    width: double.infinity,
-                                                  ),                                                  
-                                                  Button(
-                                                    title: 'Back to Home',
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                        context, MaterialPageRoute(
-                                                          builder: (context) => const Home()));
-                                                    },
-                                                    disable: false,
-                                                    width: double.infinity,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ))),
-                                    );                            
-                          },
-                          child: Text('Yes'),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('No'),
-                        ),
-                      ],
-                    ));                  
+                      context: context,
+                      builder: (_) => AlertDialog(
+                            title: Text("Checkout Confirmation"),
+                            content: Text("Are you sure you want to proceed?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  createOrder();
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    setState(() {
+                                      cart.clear();
+                                    });
+                                  });
+                                  Navigator.of(context).pop();
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 10),
+                                      child: Dialog(
+                                        backgroundColor: Colors.transparent,
+                                        insetPadding: EdgeInsets.all(10),
+                                        child: SuccessCard())),
+                                  );
+                                },
+                                child: Text('Yes'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('No'),
+                              ),
+                            ],
+                          ));
                 },
                 disable: false,
                 width: double.infinity,
