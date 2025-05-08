@@ -290,8 +290,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   ExpansionTile(
                     key: UniqueKey(),
-                    leading: Icon(Icons.payment, color: Colors.amber,),
+                    leading: Icon(Icons.payment, color: isPaymentExpanded ? Colors.white : Colors.amber,),
                     title: Text("Payment Details"),
+                    iconColor: Colors.white,
+                    textColor: Colors.white,
+                    backgroundColor: Colors.amber,
+                    collapsedBackgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    visualDensity: VisualDensity.compact,
                     onExpansionChanged: (expanded) {
                       setState(() {
                         isPaymentExpanded = expanded;
@@ -343,8 +349,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   ExpansionTile(
                     key: UniqueKey(),
-                    leading: Icon(Icons.location_city, color: Colors.amber,),
+                    leading: Icon(Icons.location_city, color: isShippingExpanded ? Colors.white : Colors.amber,),
                     title: Text("Shipping Address"),
+                    iconColor: Colors.white,
+                    textColor: Colors.white,
+                    backgroundColor: Colors.amber,
+                    collapsedBackgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    visualDensity: VisualDensity.compact,
                     onExpansionChanged: (expanded) {
                       setState(() {
                         isShippingExpanded = expanded;

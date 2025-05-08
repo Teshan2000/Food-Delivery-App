@@ -44,6 +44,12 @@ class _OrdersState extends State<Orders> {
           actions: [
             IconButton(onPressed: () {}, icon: const Icon(Icons.shopping_bag))
           ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))
+          ),
+          bottom: PreferredSize(
+            preferredSize: const Size(double.infinity, 10), child: SizedBox(),
+          ),
         ),
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
@@ -57,10 +63,10 @@ class _OrdersState extends State<Orders> {
                           children: [
                             Container(
                               width: double.infinity,
-                              height: 40,
+                              height: 35,
                               decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20)),
+                                  borderRadius: BorderRadius.circular(15)),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -92,10 +98,10 @@ class _OrdersState extends State<Orders> {
                               duration: Duration(milliseconds: 200),
                               child: Container(
                                 width: 100,
-                                height: 40,
+                                height: 35,
                                 decoration: BoxDecoration(
                                   color: Colors.amber,
-                                  borderRadius: BorderRadius.circular(20)),
+                                  borderRadius: BorderRadius.circular(15)),
                                 child: Center(
                                     child: Text(
                                   status.name,
@@ -151,143 +157,125 @@ class _OrdersState extends State<Orders> {
                                         ),
                                         child: Column(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[                                            
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 12),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: <Widget>[
-                                                  Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 12),
+                                                  Text(
+                                                    "Order #${(order['order_id']).substring(0, 5) + ''}",
+                                                    style: const TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.white),
+                                                  ),
+                                                  GestureDetector(
+                                                    child: Text(
+                                                      "View Details",
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ), 
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context, MaterialPageRoute(
+                                                          builder: (context) => OrderDetails(
+                                                            order: order,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ]),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(
+                                                  horizontal: 15, vertical: 0),
+                                                child: Container(
+                                                  width: double.infinity,
+                                                  height: 1,
+                                                  decoration: ShapeDecoration(
+                                                    color: Colors.white,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(90),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(
+                                                    horizontal: 20, vertical: 12),
                                                     child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        children: <Widget>[
-                                                          Text(
-                                                            "Order #${(order['order_id']).substring(0, 5) + ''}",
-                                                            style: const TextStyle(
-                                                              fontSize: 16,
-                                                              color: Colors.white),
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: <Widget>[
+                                                        Container(
+                                                          width: 30,
+                                                          height: 30,
+                                                          decoration: ShapeDecoration(
+                                                            color: const Color.fromARGB(255, 255, 255, 255),
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(90),
+                                                            ),
                                                           ),
-                                                          const SizedBox(
-                                                            width: 120,
-                                                          ),
-                                                          GestureDetector(
+                                                          child: Center(
                                                             child: Text(
-                                                              "View Details",
-                                                              style: TextStyle(
-                                                                fontSize: 16,
-                                                                color: Colors.white,
-                                                                fontWeight: FontWeight.bold,
-                                                              ),
-                                                            ), 
-                                                            onTap: () {
-                                                              Navigator.push(
-                                                                context, MaterialPageRoute(
-                                                                  builder: (context) => OrderDetails(
-                                                                    order: order,
-                                                                  ),
-                                                                ),
-                                                              );
-                                                            },
+                                                              "${totalQuantity}",
+                                                              style: const TextStyle(
+                                                                fontSize: 24,
+                                                                color: Colors.black),
+                                                            ),
                                                           ),
-                                                        ]),
-                                                  ),
-                                                ]),
-                                            Row(
-                                              mainAxisAlignment:  MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Container(
-                                                    width: 320,
-                                                    height: 3,
+                                                        ),
+                                                        Text(
+                                                          "Rs. ${order['total_price']}.00",
+                                                          style: const TextStyle(
+                                                            fontSize: 16,
+                                                            color: Colors.white),
+                                                        ),
+                                                      ]
+                                                    ),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(
+                                                    horizontal: 15, vertical: 0),
+                                                  child: Container(
+                                                    width: double.infinity,
+                                                    height: 1,
                                                     decoration: ShapeDecoration(
-                                                      color: const Color.fromARGB(255, 255, 255, 255),
+                                                      color: Colors.white,
                                                       shape: RoundedRectangleBorder(
                                                         borderRadius: BorderRadius.circular(90),
                                                       ),
                                                     ),
                                                   ),
-                                                ]),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: <Widget>[
-                                                  Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 12),
-                                                    child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        children: <Widget>[
-                                                          Container(
-                                                            width: 30,
-                                                            height: 30,
-                                                            decoration: ShapeDecoration(
-                                                              color: const Color.fromARGB(255, 255, 255, 255),
-                                                              shape: RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.circular(90),
-                                                              ),
-                                                            ),
-                                                            child: Center(
-                                                              child: Text(
-                                                                "${totalQuantity}",
-                                                                style: const TextStyle(
-                                                                    fontSize: 24,
-                                                                    color: Colors.black),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          const SizedBox(width: 200),
-                                                          Text(
-                                                            "Rs. ${order['total_price']}.00",
-                                                            style: const TextStyle(
-                                                              fontSize: 16,
-                                                              color: Colors.white),
-                                                          ),
-                                                        ]),
-                                                  ),
-                                                ]),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Container(
-                                                    width: 320,
-                                                    height: 3,
-                                                    decoration: ShapeDecoration(
-                                                      color: const Color.fromARGB(255, 255, 255, 255),
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.circular(90),
+                                                ),                                                  
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(
+                                                    horizontal: 20, vertical: 12),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        "${order['status']}",
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.white),
                                                       ),
-                                                    ),
+                                                      Text(
+                                                        "${DateFormat('yyyy-MM-dd').format(order['order_date'].toDate())}",
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          color: Colors.white),
+                                                      ),
+                                                    ]
                                                   ),
-                                                ]),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: <Widget>[
-                                                  Padding(
-                                                    padding: const EdgeInsets.symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 12),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        children: <Widget>[
-                                                          Text(
-                                                            "${order['status']}",
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                              color: Colors.white),
-                                                          ),
-                                                          const SizedBox(width: 180),
-                                                          Text(
-                                                            "${DateFormat('yyyy-MM-dd').format(order['order_date'].toDate())}",
-                                                            style: const TextStyle(
-                                                              fontSize: 16,
-                                                              color: Colors.white),
-                                                          ),
-                                                        ]),
-                                                  ),
-                                                ]),
+                                                ),
                                           ],
                                         ),
                                       ),
