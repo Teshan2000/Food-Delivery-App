@@ -15,7 +15,9 @@ import 'package:lottie/lottie.dart';
 
 class Checkout extends StatefulWidget {
   final String total;
-  const Checkout({super.key, required this.total});
+  final String deliveryId;
+  final num delivery;
+  const Checkout({super.key, required this.total, required this.delivery, required this.deliveryId});
 
   @override
   State<Checkout> createState() => _CheckoutState();
@@ -26,7 +28,6 @@ class _CheckoutState extends State<Checkout> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   AlertService alertService = AlertService();
   List<Map<String, dynamic>> cart = [];
-  int delivery = 50;
   String userId = "";
   late User? user;
 
@@ -80,7 +81,9 @@ class _CheckoutState extends State<Checkout> {
           'order_id': orderRef.id,
           'order_date': Timestamp.now(),
           'total_price': widget.total,
-          'status': 'Pending',
+          'status': 'Delivered',
+          'delivery': widget.delivery,
+          'delivery_id': widget.deliveryId,
           'items': orders,
         });
 
@@ -88,14 +91,12 @@ class _CheckoutState extends State<Checkout> {
           await doc.reference.delete();
         }
         alertService.showToast(
-          context: context,
-          text: 'Order completed successfully!',
-          icon: Icons.info);
+            context: context,
+            text: 'Order completed successfully!',
+            icon: Icons.info);
       } catch (e) {
         alertService.showToast(
-          context: context, 
-          text: 'Order Failed!', 
-          icon: Icons.warning);
+            context: context, text: 'Order Failed!', icon: Icons.warning);
       }
     }
   }
@@ -135,11 +136,11 @@ class _CheckoutState extends State<Checkout> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+          child: SingleChildScrollView(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -207,8 +208,8 @@ class _CheckoutState extends State<Checkout> {
                     ),
                   ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         StreamBuilder<QuerySnapshot>(
                             stream: _firestore
@@ -227,8 +228,10 @@ class _CheckoutState extends State<Checkout> {
                                   itemBuilder: (context, index) {
                                     var data = addressData[index];
                                     return ShippingDetails(
-                                      address1: "${data['address']}, ${data['city']}", 
-                                      address2: "${data['state']}, ${data['country']}, ${data['zipCode']}",
+                                      address1:
+                                          "${data['address']}, ${data['city']}",
+                                      address2:
+                                          "${data['state']}, ${data['country']}, ${data['zipCode']}",
                                     );
                                   });
                             })
@@ -273,9 +276,9 @@ class _CheckoutState extends State<Checkout> {
                               ),
                               const SizedBox(height: 15),
                               Container(
-                                height: 375,
-                                color: Colors.white,
-                                child: PaymentForm()),
+                                  height: 375,
+                                  color: Colors.white,
+                                  child: PaymentForm()),
                             ],
                           ),
                         );
@@ -356,7 +359,9 @@ class _CheckoutState extends State<Checkout> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const Cart(),
+                            builder: (context) => Cart(
+                              delivery: widget.delivery, deliveryId: widget.deliveryId,
+                            ),
                           ),
                         );
                       },
@@ -412,12 +417,12 @@ class _CheckoutState extends State<Checkout> {
                                   showDialog(
                                     context: context,
                                     builder: (_) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 10),
-                                      child: Dialog(
-                                        backgroundColor: Colors.transparent,
-                                        insetPadding: EdgeInsets.all(10),
-                                        child: SuccessCard())),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 10),
+                                        child: Dialog(
+                                            backgroundColor: Colors.transparent,
+                                            insetPadding: EdgeInsets.all(10),
+                                            child: SuccessCard(deliveryId: widget.deliveryId,))),
                                   );
                                 },
                                 child: Text('Yes'),

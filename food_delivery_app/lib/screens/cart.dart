@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/screens/checkout.dart';
 
 class Cart extends StatefulWidget {
-  const Cart({super.key});
+  final String deliveryId;
+  final num delivery;
+  const Cart({super.key, required this.delivery, required this.deliveryId});
 
   @override
   State<Cart> createState() => _CartState();
@@ -16,7 +18,6 @@ class _CartState extends State<Cart> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String userId = "";
   num? total, subTotal = 0;
-  num delivery = 50;
   List<Map<String, dynamic>> cart = [];
 
   @override
@@ -133,7 +134,7 @@ class _CartState extends State<Cart> {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         setState(() {
                           subTotal = 0;
-                          total = 0;
+                          total = widget.delivery ?? 0;  
                         });
                       });
                       return Center(child: Text("No cart items"));
@@ -144,7 +145,7 @@ class _CartState extends State<Cart> {
                           (cart['price'] ?? 250) * (cart['quantity'] ?? 1);
                     });
 
-                    num newTotal = newSubTotal + delivery;
+                    num newTotal = newSubTotal + widget.delivery;
 
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       setState(() {
@@ -265,7 +266,7 @@ class _CartState extends State<Cart> {
                           ),
                         ],
                       ),
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Text(
@@ -274,7 +275,7 @@ class _CartState extends State<Cart> {
                           ),
                           SizedBox(height: 40, width: 180),
                           Text(
-                            'Rs. 50.00',
+                            'Rs. ${widget.delivery.toStringAsFixed(2)}',
                             style: TextStyle(fontSize: 16, color: Colors.black),
                           ),
                         ],
@@ -309,7 +310,7 @@ class _CartState extends State<Cart> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => Checkout(
-                                      total: total.toString(),
+                                      total: total.toString(), delivery: widget.delivery, deliveryId: widget.deliveryId,
                                     )),
                           );
                         },

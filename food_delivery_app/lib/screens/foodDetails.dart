@@ -33,6 +33,7 @@ class FoodDetailsState extends State<FoodDetails>
   final FirebaseAuth auth = FirebaseAuth.instance;
   AlertService alertService = AlertService();
   List<Map<String, dynamic>> ingredients = [];
+  // List<Map<String, dynamic>> agents = [];
   late final Map<String, dynamic> foodData;
 
   @override
@@ -64,6 +65,27 @@ class FoodDetailsState extends State<FoodDetails>
     } catch (e) {
       print("Failed to fetch ingredients: $e");
     }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchDeliveryAgents() async {
+    List<Map<String, dynamic>> agents = [];
+
+    try {
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('agents').get();
+      agents = snapshot.docs.map((doc) {
+        return {
+          "agent_id": doc.id,
+          "name": doc['name'],
+          "image": doc['image'],
+          "price": doc['price'],
+          "rate": doc['rate'],
+        };
+      }).toList();
+    } catch (e) {
+      print("Error fetching agents: $e");
+    }
+    return agents;
   }
 
   Future<void> getUserId() async {
@@ -142,21 +164,6 @@ class FoodDetailsState extends State<FoodDetails>
       print('Error adding to cart: $e');
     }
   }
-
-  List<Map<String, dynamic>> delivery = [
-    {
-      "image": "Assets/pick me foods.jpg",
-      "name": "Pick Me Foods",
-      "price": "Rs. 50.00",
-      "rate": "⭐ 4.5"
-    },
-    {
-      "image": "Assets/uber eats.jpg",
-      "name": "Uber Eats",
-      "price": "Free Delivery",
-      "rate": "⭐ 4.8"
-    }
-  ];
 
   void onQtyChanged(int newQuantity) {
     setState(() {
@@ -404,114 +411,156 @@ class FoodDetailsState extends State<FoodDetails>
                   );
 
                   showModalBottomSheet(
+                    backgroundColor: Colors.amber,
                     context: context,
-                    builder: (_) => BottomSheet(
-                      animationController: _controller,
-                      onClosing: () {
-                        TextButton.icon(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: Icon(Icons.close),
-                            label: Text('Close'));
-                      },
-                      builder: (BuildContext context) {
-                        return Column(
+                    builder: (_) => Column(
+                      // animationController: _controller,
+                      // onClosing: () {
+                      //   TextButton.icon(
+                      //       onPressed: () {
+                      //         Navigator.of(context).pop();
+                      //       },
+                      //       icon: Icon(Icons.close),
+                      //       label: Text('Close'));
+                      // },
+                      // builder: (BuildContext context) {
+                        // return Column(
                           children: [
+                            const SizedBox(height: 20),
                             Container(
+                                decoration: ShapeDecoration(
+                                    color: Colors.amber,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      topRight: Radius.circular(15),
+                                    ))),
+                                child: Text(
+                                  'Select Delivery Method',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 15),
+                            Container(
+                              color: Colors.white,
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 10),
-                              height: 275,
+                                horizontal: 5, vertical: 10),
+                              height: 375,
                               child: GestureDetector(
-                                child: ListView(
-                                    scrollDirection: Axis.vertical,
-                                    children:
-                                        List.generate(delivery.length, (index) {
-                                      return Card(
-                                        elevation: 5,
-                                        color: Colors.amber,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                        ),
-                                        child: Row(children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 5, vertical: 15),
-                                            child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: <Widget>[
-                                                  const SizedBox(width: 20),
-                                                  Image.asset(
-                                                    delivery[index]['image'],
-                                                    width: 80,
-                                                    height: 80,
-                                                  ),
-                                                  const SizedBox(width: 40),
-                                                  Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: <Widget>[
-                                                        Text(
-                                                          delivery[index]
-                                                              ['name'],
-                                                          style:
-                                                              const TextStyle(
+                                child: FutureBuilder(
+                                  future: fetchDeliveryAgents(),
+                                  builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return Center(child: CircularProgressIndicator());
+                                    }
+                                    if (snapshot.hasError) {
+                                      return Center(
+                                          child: Text('Error: ${snapshot.error}'));
+                                    }
+                                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                      return Center(
+                                          child: Text('No delivery agents available'));
+                                    }
+                                    List<Map<String, dynamic>> agents = snapshot.data!;
+                                    return ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: agents.length,
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                                          child: GestureDetector(
+                                            child: Card(
+                                              elevation: 5,
+                                              color: Colors.amber,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(
+                                                  horizontal: 5, vertical: 15),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      // const SizedBox(width: 20),
+                                                      Image.network(
+                                                        agents[index]['image'] ?? 'Assets/Foods/Chicken Burger.png',
+                                                        width: 80,
+                                                        height: 80,
+                                                      ),
+                                                      const SizedBox(width: 10),
+                                                      Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: <Widget>[
+                                                              Text(
+                                                                agents[index]['name'] ?? 'Unknown',
+                                                                style: const TextStyle(
                                                                   fontSize: 18,
-                                                                  color: Colors
-                                                                      .white),
-                                                        ),
-                                                        Text(
-                                                          delivery[index]
-                                                              ['price'],
-                                                          style:
-                                                              const TextStyle(
+                                                                  color: Colors.white),
+                                                              ),
+                                                              Text(
+                                                                "Rs. ${agents[index]['price']}.00",
+                                                                style: const TextStyle(
                                                                   fontSize: 18,
-                                                                  color: Colors
-                                                                      .white),
+                                                                  color: Colors.white),
+                                                              )
+                                                            ]),
+                                                        const SizedBox(width: 10),
+                                                        Column(
+                                                          mainAxisAlignment: MainAxisAlignment.end,
+                                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Icon(
+                                                                  Icons.star_rate_outlined,
+                                                                  color: Colors.black,
+                                                                ),
+                                                                const SizedBox(width: 4),
+                                                                Text(
+                                                                  agents[index]['rate'] ?? 'Unknown',
+                                                                  style: const TextStyle(
+                                                                    fontSize: 14,
+                                                                    color: Colors.white),
+                                                                )
+                                                              ]
+                                                            )
+                                                            // IconButton(
+                                                            //     onPressed: () {
+                                                            //       setState(() {
+                                                            //         isFav = !isFav;
+                                                            //       });
+                                                            //     },
+                                                            //     icon: Icon(
+                                                            //       isFav
+                                                            //         ? Icons.favorite_border
+                                                            //         : Icons.favorite,
+                                                            //       color: Colors.red,
+                                                            //     ))
+                                                          ],
                                                         )
                                                       ]),
-                                                  const SizedBox(width: 8),
-                                                  Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: [
-                                                      IconButton(
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              isFav = !isFav;
-                                                            });
-                                                          },
-                                                          icon: Icon(
-                                                            isFav
-                                                              ? Icons.favorite_border
-                                                              : Icons.favorite,
-                                                            color: Colors.red,
-                                                          ))
-                                                    ],
-                                                  )
-                                                ]),
+                                                ),
+                                              
+                                            ),
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => Cart(delivery: agents[index]['price'], deliveryId: agents[index]['agent_id'],)),
+                                              );
+                                            },
                                           ),
-                                        ]),
-                                      );
-                                    })),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Cart()),
-                                  );
-                                },
+                                        );
+                                      });
+                                  },                                  
+                                ),
                               ),
                             ),
                           ],
-                        );
-                      },
                     ),
                   );
                 },

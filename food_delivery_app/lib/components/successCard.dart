@@ -5,9 +5,15 @@ import 'package:food_delivery_app/screens/home.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:lottie/lottie.dart';
 
-class SuccessCard extends StatelessWidget {
-  const SuccessCard({super.key});
+class SuccessCard extends StatefulWidget {
+  final String deliveryId;
+  const SuccessCard({super.key, required this.deliveryId});
 
+  @override
+  State<SuccessCard> createState() => _SuccessCardState();
+}
+
+class _SuccessCardState extends State<SuccessCard> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -41,9 +47,13 @@ class SuccessCard extends StatelessWidget {
                 Button(
                   title: 'Track the Order',
                   onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const DeliveryPage(agentLocation: LatLng(6.9271, 79.8612),
-  userLocation: LatLng(6.9279, 79.8651),)));
+                    Navigator.push(
+                      context, MaterialPageRoute(
+                        builder: (context) => DeliveryPage(
+                          // agentLocation: LatLng(6.9271, 79.8612),
+                          userLocation: LatLng(6.9279, 79.8651),
+                          agentId: widget.deliveryId,
+                    )));
                   },
                   disable: false,
                   width: double.infinity,

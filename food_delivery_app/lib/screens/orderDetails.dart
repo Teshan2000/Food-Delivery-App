@@ -208,7 +208,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                       fontSize: 16, color: Colors.black),
                                 ),
                                 Text(
-                                  "Rs. 50.00",
+                                  "Rs. ${widget.order['delivery']}.00",
                                   style: const TextStyle(
                                       fontSize: 16, color: Colors.black),
                                 ),

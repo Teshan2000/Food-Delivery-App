@@ -9,13 +9,13 @@ import 'package:http/http.dart' as http;
 class DeliveryPage extends StatefulWidget {
   // final LatLng agentLocation;
   final LatLng userLocation;
-  final String agentDocId;
+  final String agentId;
 
   const DeliveryPage({
     Key? key,
     // required this.agentLocation,
     required this.userLocation,
-    required this.agentDocId,
+    required this.agentId,
   }) : super(key: key);
 
   @override
@@ -37,7 +37,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
   @override
   void initState() {
     super.initState();
-    fetchRoute();
+    listenToAgentLocation();
   }
 
   @override
@@ -47,15 +47,15 @@ class _DeliveryPageState extends State<DeliveryPage> {
     super.dispose();
   }
 
-  Future<void> fetchRoute() async {
+  Future<void> fetchRoute(LatLng start, LatLng end) async {
     final apiKey = '5b3ce3597851110001cf624804d4bc2113c54f67a423545ba6da57d2';
     final url = Uri.parse(
         'https://api.openrouteservice.org/v2/directions/driving-car/geojson');
 
     final body = {
       'coordinates': [
-        [agentLocation?.longitude, agentLocation?.latitude],
-        [widget.userLocation.longitude, widget.userLocation.latitude],
+        [start.longitude, start.latitude],
+        [end.longitude, end.latitude],
       ]
     };
 
@@ -83,16 +83,21 @@ class _DeliveryPageState extends State<DeliveryPage> {
   }
 
   void listenToAgentLocation() {
-    locationSubscription = _firestore.collection('agents').doc(widget.agentDocId).snapshots().listen((snapshot) {
+    locationSubscription = _firestore
+        .collection('agents')
+        .doc(widget.agentId)
+        .snapshots()
+        .listen((snapshot) {
       if (snapshot.exists) {
         final data = snapshot.data()!;
-        final newLocation = LatLng(data['lat'], data['lat']);
+        final geoPoint = data['location']; 
+        final newLocation = LatLng(geoPoint.latitude, geoPoint.longitude);
 
-        if (agentLocation == null) {
+        if (agentLocation == null || agentLocation != newLocation) {
           setState(() {
             agentLocation = newLocation;
           });
-          fetchRoute(a, widget.userLocation);
+          fetchRoute(newLocation, widget.userLocation);
         } else if (agentLocation != newLocation) {
           animateMarker(newLocation);
           fetchRoute(newLocation, widget.userLocation);
@@ -154,55 +159,58 @@ class _DeliveryPageState extends State<DeliveryPage> {
       body: Container(
         child: Stack(
           children: [
-            FlutterMap(
-                options: MapOptions(
-                  initialCenter: widget.agentLocation,
-                  initialZoom: 16.0,
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    userAgentPackageName: 'com.yourcompany.app',
-                  ),
-                  MarkerLayer(
-                    markers: [
-                      Marker(
-                        point: widget.agentLocation,
-                        width: 60,
-                        height: 60,
-                        child: Icon(Icons.delivery_dining,
-                            size: 40, color: Colors.red),
-                      ),
-                      Marker(
-                        point: widget.userLocation,
-                        width: 60,
-                        height: 60,
-                        child: Icon(Icons.location_pin,
-                            size: 40, color: Colors.blue),
-                      )
-                    ],
-                  ),
-                  if (routePoints.isNotEmpty)
-                    PolylineLayer(polylines: [
-                      Polyline(
-                        points: routePoints,
-                        strokeWidth: 5.0,
-                        color: Colors.red,
-                      )
-                    ])
-                ]),
+            agentLocation == null
+                ? const Center(child: CircularProgressIndicator())
+                : FlutterMap(
+                    options: MapOptions(
+                      initialCenter: agentLocation!,
+                      initialZoom: 16.0,
+                    ),
+                    children: [
+                        TileLayer(
+                          urlTemplate:
+                              "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                          userAgentPackageName: 'com.yourcompany.app',
+                        ),
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point: agentLocation!,
+                              width: 60,
+                              height: 60,
+                              child: Icon(Icons.delivery_dining,
+                                  size: 40, color: Colors.red),
+                            ),
+                            Marker(
+                              point: widget.userLocation,
+                              width: 60,
+                              height: 60,
+                              child: Icon(Icons.location_pin,
+                                  size: 40, color: Colors.blue),
+                            )
+                          ],
+                        ),
+                        if (routePoints.isNotEmpty)
+                          PolylineLayer(polylines: [
+                            Polyline(
+                              points: routePoints,
+                              strokeWidth: 5.0,
+                              color: Colors.red,
+                            )
+                          ])
+                      ]),
+
             Positioned(
                 // top: 50,
-                left: 0,
-                right: 0,
+                // left: 0,
+                // right: 0,
                 bottom: 0,
-                child: DraggableScrollableSheet(
-                  builder: (BuildContext context,
-                      ScrollController scrollController) {
-                    return SingleChildScrollView(
+                // child: DraggableScrollableSheet(
+                //   builder: (BuildContext context,
+                //       ScrollController scrollController) {
+                    child: SingleChildScrollView(
                       child: Container(
-                        height: height * 0.35,
+                        // height: height * 0.35,
                         width: width,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.only(
@@ -243,60 +251,82 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                       ),
                                     ),
                                   ]),
-                              // const SizedBox(height: 20),
+                              const SizedBox(height: 20),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  const Text(
+                                    "Delivery Status",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ]),
+                              const SizedBox(height: 20),
                               Stepper(
                                 currentStep: _currentStep,
+                                connectorColor: WidgetStatePropertyAll(Colors.amber),
+                                connectorThickness: 3.0,
                                 onStepTapped: (int index) {
                                   setState(() {
                                     _currentStep = index;
                                   });
                                 },
-                                controlsBuilder: (context, _) =>
-                                    const SizedBox(),
-                                steps: const [
+                                controlsBuilder: (context, _) => const SizedBox(),
+                                steps: [
                                   Step(
-                                      title: Text("Order preparing"),
-                                      content: Text(
-                                          "Your order has been placed prepared!"),
+                                      title: const Text("Order preparing"),
+                                      subtitle: const Text("Your order has been prepared!"),
+                                      content: const Text(""),
                                       isActive: true,
+                                      stepStyle: StepStyle(
+                                        color: Colors.amber,
+                                        connectorColor: Colors.amber,
+                                      ),
                                       state: StepState.complete),
-                                  Step(
+                                  const Step(
                                     title: Text("Order delivering"),
-                                    content: Text(
-                                        "Your order has been placed prepared!"),
+                                    content: Text("Your order has been placed delivered!"),
                                     isActive: false,
+                                    stepStyle: StepStyle(
+                                        color: Colors.amber,
+                                        connectorColor: Colors.amber,
+                                      ),
                                   ),
-                                  Step(
+                                  const Step(
                                     title: Text("Order arrived"),
-                                    content: Text(
-                                        "Your order has been placed prepared!"),
+                                    content: Text("Your order has been arrived!"),
                                     isActive: false,
+                                    stepStyle: StepStyle(
+                                        color: Colors.amber,
+                                        connectorColor: Colors.amber,
+                                      ),
                                   ),
                                 ],
                                 type: StepperType.vertical,
-                              ),
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              //   children: <Widget>[
-                              //     const Text(
-                              //       "Delivery Status",
-                              //       style: TextStyle(
-                              //         fontSize: 18,
-                              //       ),
-                              //     ),
-                              //   ]),
-                              // const SizedBox(height: 20),
-                              // Row(
-                              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              //   children: <Widget>[
-                              //     const Text(
-                              //       "Delivery Location",
-                              //       style: TextStyle(
-                              //         fontSize: 18,
-                              //       ),
-                              //     ),
-                              //   ]),
-                              //   const SizedBox(height: 20),
+                              ),                              
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  const Text(
+                                    "Delivery Location",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ]),
+                                const SizedBox(height: 20),
+                                Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  const Text(
+                                    "Delivery Agent",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ]),
+                                const SizedBox(height: 20),
                               Container(
                                 decoration: ShapeDecoration(
                                   color: Colors.amber,
@@ -426,9 +456,10 @@ class _DeliveryPageState extends State<DeliveryPage> {
                           ),
                         ),
                       ),
-                    );
-                  },
-                )),
+                    ),
+                  // },
+                // )
+                ),
           ],
         ),
       ),
