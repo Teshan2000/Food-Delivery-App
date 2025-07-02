@@ -9,15 +9,16 @@ import 'package:food_delivery_app/components/shippingForm.dart';
 import 'package:food_delivery_app/components/successCard.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/screens/cart.dart';
-import 'package:food_delivery_app/screens/categories.dart';
-import 'package:food_delivery_app/screens/home.dart';
-import 'package:lottie/lottie.dart';
 
 class Checkout extends StatefulWidget {
   final String total;
   final String deliveryId;
   final num delivery;
-  const Checkout({super.key, required this.total, required this.delivery, required this.deliveryId});
+  const Checkout(
+      {super.key,
+      required this.total,
+      required this.deliveryId,
+      required this.delivery});
 
   @override
   State<Checkout> createState() => _CheckoutState();
@@ -44,7 +45,7 @@ class _CheckoutState extends State<Checkout> {
     getUserId();
   }
 
-  Future<void> createOrder() async {
+  Future<String?> createOrder() async {
     final User? user = auth.currentUser;
     final userId = user?.uid;
     if (userId != null) {
@@ -58,7 +59,7 @@ class _CheckoutState extends State<Checkout> {
         if (cartSnapshot.docs.isEmpty) {
           alertService.showToast(
               context: context, text: 'Cart is empty!', icon: Icons.warning);
-          return;
+          return null;
         }
 
         DocumentReference orderRef = FirebaseFirestore.instance
@@ -77,11 +78,13 @@ class _CheckoutState extends State<Checkout> {
           };
         }).toList();
 
+        String orderId = orderRef.id;
+
         await orderRef.set({
-          'order_id': orderRef.id,
+          'order_id': orderId,
           'order_date': Timestamp.now(),
           'total_price': widget.total,
-          'status': 'Delivered',
+          'status': 'Pending',
           'delivery': widget.delivery,
           'delivery_id': widget.deliveryId,
           'items': orders,
@@ -94,27 +97,36 @@ class _CheckoutState extends State<Checkout> {
             context: context,
             text: 'Order completed successfully!',
             icon: Icons.info);
+
+        return orderId;
       } catch (e) {
         alertService.showToast(
             context: context, text: 'Order Failed!', icon: Icons.warning);
       }
     }
+    return null;
   }
+
+  String maskCardNumber(String cardNumber) {
+    if (cardNumber.length < 8) return cardNumber;
+    return '${cardNumber.substring(0, 4)} **** **** ${cardNumber.substring(cardNumber.length - 4)}';
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final User? user = auth.currentUser;
+    final ButtonStyle style = TextButton.styleFrom(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.amber,
+        textStyle: const TextStyle(fontSize: 16, color: Colors.white));
+
     if (user == null) {
       alertService.showToast(
           context: context,
           text: 'You are not Logged in!',
           icon: Icons.warning);
     }
-    final ButtonStyle style = ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.amber,
-        textStyle: const TextStyle(fontSize: 16, color: Colors.white));
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
@@ -155,10 +167,6 @@ class _CheckoutState extends State<Checkout> {
                     ),
                     TextButton(
                       onPressed: () {
-                        // AnimationController _controller = AnimationController(
-                        //   vsync: this,
-                        //   duration: Duration(milliseconds: 300),
-                        // );
                         showModalBottomSheet(
                           backgroundColor: Colors.amber,
                           context: context,
@@ -176,7 +184,7 @@ class _CheckoutState extends State<Checkout> {
                                 child: Text(
                                   'Add Shipping Details',
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 20, fontWeight: FontWeight.bold
                                   ),
                                 ),
                               ),
@@ -190,17 +198,17 @@ class _CheckoutState extends State<Checkout> {
                         "Add New",
                         style: TextStyle(
                           fontSize: 18,
-                          color: Colors.amber,
+                          color: Colors.amber, fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
                   ]),
             ),
-            const SizedBox(height: 10),
+            // const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Expanded(
-                child: Container(
+              child: Container(
+                  width: double.infinity,
                   decoration: ShapeDecoration(
                     color: Colors.amber,
                     shape: RoundedRectangleBorder(
@@ -236,10 +244,10 @@ class _CheckoutState extends State<Checkout> {
                                   });
                             })
                       ]),
-                ),
+                
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
@@ -270,14 +278,20 @@ class _CheckoutState extends State<Checkout> {
                                 child: Text(
                                   'Add Payment Details',
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 20, fontWeight: FontWeight.bold
                                   ),
                                 ),
                               ),
                               const SizedBox(height: 15),
                               Container(
-                                  height: 375,
-                                  color: Colors.white,
+                                  height: 385,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(15),
+                                      topRight: Radius.circular(15),
+                                    ),
+                                    color: Colors.white,
+                                  ),
                                   child: PaymentForm()),
                             ],
                           ),
@@ -287,17 +301,17 @@ class _CheckoutState extends State<Checkout> {
                         "Add New",
                         style: TextStyle(
                           fontSize: 18,
-                          color: Colors.amber,
+                          color: Colors.amber, fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
                   ]),
             ),
-            const SizedBox(height: 10),
+            // const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Expanded(
-                child: Container(
+              child: Container(
+                  width: double.infinity,
                   decoration: ShapeDecoration(
                     color: Colors.amber,
                     shape: RoundedRectangleBorder(
@@ -326,15 +340,14 @@ class _CheckoutState extends State<Checkout> {
                                     var data = paymentData[index];
                                     return PaymentDetails(
                                       cardHolder: data['cardHolder'],
-                                      cardNumber: data['cardNumber'],
+                                      cardNumber: maskCardNumber(data['cardNumber']),
                                     );
                                   });
                             })
-                      ]),
-                ),
+                      ]),                
               ),
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: const Divider(
@@ -342,16 +355,16 @@ class _CheckoutState extends State<Checkout> {
                 thickness: 1,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     const Text(
-                      "Order Summary",
+                      " Order Summary",
                       style: TextStyle(
-                        fontSize: 18,
+                        fontSize: 16, fontWeight: FontWeight.bold
                       ),
                     ),
                     TextButton(
@@ -360,7 +373,8 @@ class _CheckoutState extends State<Checkout> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => Cart(
-                              delivery: widget.delivery, deliveryId: widget.deliveryId,
+                              delivery: widget.delivery,
+                              deliveryId: widget.deliveryId,
                             ),
                           ),
                         );
@@ -368,26 +382,87 @@ class _CheckoutState extends State<Checkout> {
                       child: const Text(
                         "View Order",
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 16, fontWeight: FontWeight.bold,
                           color: Colors.amber,
                         ),
                       ),
                     ),
                   ]),
             ),
-            const SizedBox(height: 20),
+            // const SizedBox(height: 5),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Card(
+                color: Colors.amber,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        // const SizedBox(width: 20),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.asset(
+                            'Assets/pick me foods.jpg',
+                            width: 80,
+                            height: 80,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                'Pick me Foods',
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                "Rs. ${widget.delivery}.00",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                              )
+                            ]),
+                        const SizedBox(width: 10),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(children: [
+                              Icon(
+                                Icons.star,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '4.8',
+                                style: const TextStyle(
+                                    fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
+                              )
+                            ])
+                          ],
+                        )
+                      ]),
+                ),
+              ),
+            ),
+            const SizedBox(height: 15),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     const Text(
-                      'Total Price',
+                      ' Total Price',
                       style: TextStyle(fontSize: 16, color: Colors.black),
                     ),
-                    const SizedBox(height: 40, width: 180),
                     Text(
-                      'Rs. ${widget.total}.00',
+                      'Rs. ${widget.total}.00 ',
                       style: const TextStyle(fontSize: 16, color: Colors.black),
                     ),
                   ]),
@@ -397,24 +472,43 @@ class _CheckoutState extends State<Checkout> {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Button(
                 title: 'Place Order',
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                            title: Text("Checkout Confirmation"),
-                            content: Text("Are you sure you want to proceed?"),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  createOrder();
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    setState(() {
-                                      cart.clear();
-                                    });
-                                  });
-                                  Navigator.of(context).pop();
-                                  showDialog(
+                onPressed: () async {
+                  final confirmed = await showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      backgroundColor: Colors.white,
+                      title: Text("Checkout Confirmation"),
+                      content: Text("Are you sure you want to proceed?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: Text('Yes', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber),),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: Text('No', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.amber),),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (confirmed == true) {
+                    String? orderId = await createOrder();
+
+                    if (orderId != null) {
+                      cart.clear();
+
+                      // ✅ Use Navigator.push instead of showDialog
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => SuccessCard(
+                      //       deliveryId: widget.deliveryId,
+                      //       orderId: "orderId",
+                      //     ),
+                      //   ),
+                      // );
+                      showDialog(
                                     context: context,
                                     builder: (_) => Padding(
                                         padding: const EdgeInsets.symmetric(
@@ -422,19 +516,10 @@ class _CheckoutState extends State<Checkout> {
                                         child: Dialog(
                                             backgroundColor: Colors.transparent,
                                             insetPadding: EdgeInsets.all(10),
-                                            child: SuccessCard(deliveryId: widget.deliveryId,))),
+                                            child: SuccessCard(deliveryId: widget.deliveryId, orderId: orderId,))),
                                   );
-                                },
-                                child: Text('Yes'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('No'),
-                              ),
-                            ],
-                          ));
+                    }
+                  }
                 },
                 disable: false,
                 width: double.infinity,

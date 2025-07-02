@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
 import 'package:food_delivery_app/screens/deliveryPage.dart';
 import 'package:food_delivery_app/screens/home.dart';
+import 'package:food_delivery_app/screens/splash.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:lottie/lottie.dart';
 
 class SuccessCard extends StatefulWidget {
   final String deliveryId;
-  const SuccessCard({super.key, required this.deliveryId});
+  final String orderId;
+  const SuccessCard({super.key, required this.deliveryId, required this.orderId});
 
   @override
   State<SuccessCard> createState() => _SuccessCardState();
@@ -39,7 +41,7 @@ class _SuccessCardState extends State<SuccessCard> {
                       fontSize: 23, fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  "Your order #45gt5f4 is successfully placed!",
+                  "Your order #${(widget.orderId).substring(0, 5) + ''} is successfully placed!",
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16),
                 ),
@@ -51,8 +53,8 @@ class _SuccessCardState extends State<SuccessCard> {
                       context, MaterialPageRoute(
                         builder: (context) => DeliveryPage(
                           // agentLocation: LatLng(6.9271, 79.8612),
-                          userLocation: LatLng(6.9279, 79.8651),
-                          agentId: widget.deliveryId,
+                          userLocation: LatLng(6.839310338386326, 79.97242417007477),
+                          agentId: widget.deliveryId, orderId: widget.orderId,
                     )));
                   },
                   disable: false,
@@ -62,7 +64,7 @@ class _SuccessCardState extends State<SuccessCard> {
                   title: 'Back to Home',
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const Home()));
+                        MaterialPageRoute(builder: (context) => const SplashScreen()));
                   },
                   disable: false,
                   width: double.infinity,
