@@ -20,7 +20,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey,      
+      navigatorKey: navigatorKey,    
+      theme: ThemeData(
+        fontFamily: 'Lato',
+        useMaterial3: true,
+      ),  
       initialRoute: '/',
       routes: {
         '/':(context) => const SplashScreen(),
