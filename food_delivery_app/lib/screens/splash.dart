@@ -30,22 +30,64 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     backgroundColor: Colors.white,
+  //     body: Padding(padding: EdgeInsets.all(38),
+  //     child: Column(
+  //       children: [
+  //         const SizedBox(height: 170),
+  //         Center(
+  //           child: Image.asset(
+  //             'Assets/icon.png',
+  //             fit: BoxFit.cover,
+  //               width: MediaQuery.of(context).size.width,
+  //           ),
+  //         )
+  //       ],
+  //     ),),
+  //   );
+  // }
+
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(padding: EdgeInsets.all(38),
-      child: Column(
-        children: [
-          const SizedBox(height: 170),
-          Center(
-            child: Image.asset(
-              'Assets/icon.png',
-              fit: BoxFit.cover,
+      backgroundColor: Colors.amberAccent,
+      body: Padding(
+        padding: EdgeInsets.all(38),
+        child: Column(
+          children: [
+            const SizedBox(height: 80),
+            Center(
+              child: Image.asset(
+                'Assets/icon.png',
+                fit: BoxFit.cover,
                 width: MediaQuery.of(context).size.width,
+              ),
             ),
-          )
-        ],
-      ),),
+            const SizedBox(height: 20),
+            // Center(
+            //   child: Image.asset(
+            //     'Assets/splash.png',
+            //     fit: BoxFit.cover,
+            //     width: 300,
+            //   ),
+            // ),
+            Container(
+              width: 230,
+              child: Center(
+                child: Text(
+                  "Online Food Delivery Service",
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
