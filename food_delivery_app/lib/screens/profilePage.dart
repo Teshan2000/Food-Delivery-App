@@ -4,7 +4,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/paymentDetails.dart';
 import 'package:food_delivery_app/components/shippingDetails.dart';
-import 'package:food_delivery_app/components/shippingForm.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -103,9 +102,15 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  String maskCardNumber(String cardNumber) {
+    if (cardNumber.length < 8) return cardNumber; // fallback
+    return '${cardNumber.substring(0, 4)} **** **** ${cardNumber.substring(cardNumber.length - 4)}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.amber,
           title: const Center(
@@ -124,7 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         ),
         body: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
             child: SingleChildScrollView(
                 child: Column(children: [
               const SizedBox(
@@ -140,7 +145,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         backgroundImage: image.isEmpty
                             ? AssetImage('Assets/peter.jpg') as ImageProvider
                             : NetworkImage(image),
-                        radius: 60,
+                        radius: 75,
                       ),
                     ),
                     Positioned(
@@ -170,7 +175,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
               const SizedBox(
-                height: 50,
+                height: 30,
               ),
               Text(name),
               Column(children: [
@@ -290,65 +295,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   ExpansionTile(
                     key: UniqueKey(),
-                    leading: Icon(Icons.payment, color: isPaymentExpanded ? Colors.white : Colors.amber,),
-                    title: Text("Payment Details"),
-                    iconColor: Colors.white,
-                    textColor: Colors.white,
-                    backgroundColor: Colors.amber,
-                    collapsedBackgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                    visualDensity: VisualDensity.compact,
-                    onExpansionChanged: (expanded) {
-                      setState(() {
-                        isPaymentExpanded = expanded;
-                        if (expanded) isShippingExpanded = false;
-                      });
-                    },
-                    initiallyExpanded: isPaymentExpanded,
-                    children: [
-                      Container(
-                        decoration: ShapeDecoration(
-                          color: Colors.amber,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            StreamBuilder<QuerySnapshot>(
-                                stream: _firestore
-                                    .collection('users')
-                                    .doc(user?.uid)
-                                    .collection('paymentDetails')
-                                    .snapshots(),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return Text("No Payment Details added!");
-                                  }
-                                  var paymentData = snapshot.data!.docs;
-                                  return ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: paymentData.length,
-                                      itemBuilder: (context, index) {
-                                        var data = paymentData[index];
-                                        return PaymentDetails(
-                                          cardHolder: data['cardHolder'],
-                                          cardNumber: data['cardNumber'],
-                                        );
-                                      });
-                                }),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  ExpansionTile(
-                    key: UniqueKey(),
                     leading: Icon(Icons.location_city, color: isShippingExpanded ? Colors.white : Colors.amber,),
                     title: Text("Shipping Address"),
                     iconColor: Colors.white,
@@ -402,7 +348,66 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       )
                     ],
-                  )
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ExpansionTile(
+                    key: UniqueKey(),
+                    leading: Icon(Icons.payment, color: isPaymentExpanded ? Colors.white : Colors.amber,),
+                    title: Text("Payment Details"),
+                    iconColor: Colors.white,
+                    textColor: Colors.white,
+                    backgroundColor: Colors.amber,
+                    collapsedBackgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    visualDensity: VisualDensity.compact,
+                    onExpansionChanged: (expanded) {
+                      setState(() {
+                        isPaymentExpanded = expanded;
+                        if (expanded) isShippingExpanded = false;
+                      });
+                    },
+                    initiallyExpanded: isPaymentExpanded,
+                    children: [
+                      Container(
+                        decoration: ShapeDecoration(
+                          color: Colors.amber,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            StreamBuilder<QuerySnapshot>(
+                                stream: _firestore
+                                    .collection('users')
+                                    .doc(user?.uid)
+                                    .collection('paymentDetails')
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Text("No Payment Details added!");
+                                  }
+                                  var paymentData = snapshot.data!.docs;
+                                  return ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: paymentData.length,
+                                      itemBuilder: (context, index) {
+                                        var data = paymentData[index];
+                                        return PaymentDetails(
+                                          cardHolder: data['cardHolder'],
+                                          cardNumber: maskCardNumber(data['cardNumber']),
+                                        );
+                                      });
+                                }),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ],
               )
             ]))));

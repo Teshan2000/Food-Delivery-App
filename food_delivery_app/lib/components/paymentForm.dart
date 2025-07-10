@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/providers/alert_service.dart';
 
 class PaymentForm extends StatefulWidget {
   const PaymentForm({super.key});
@@ -14,6 +15,7 @@ class PaymentFormState extends State<PaymentForm> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final _formKey = GlobalKey<FormState>();
+  AlertService alertService = AlertService();
   final _cardNumberController = TextEditingController();
   final _expDateController = TextEditingController();
   final _cvvNumberController = TextEditingController();
@@ -25,8 +27,7 @@ class PaymentFormState extends State<PaymentForm> {
   void addPaymentDetails() async {
     user = auth.currentUser;
     if (user == null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('User not logged in!')));
+      alertService.showToast(context: context, text: 'You are not Logged in!', icon: Icons.warning);
       return;
     }
     try {
@@ -40,12 +41,10 @@ class PaymentFormState extends State<PaymentForm> {
         'cvvNumber': _cvvNumberController.text,
         'cardHolder': _cardHolderController.text
       });
-      Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Uploaded details successfully!')));
+      Navigator.pop(context);      
+      alertService.showToast(context: context, text: 'Details uploaded successfully!', icon: Icons.info);
     } catch (e) {
-      ScaffoldMessenger(
-          child: SnackBar(content: Text('Error uploading details: $e')));
+      alertService.showToast(context: context, text: 'Uploading Failed!', icon: Icons.warning);
     }
   }
 

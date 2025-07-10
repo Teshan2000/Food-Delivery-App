@@ -21,66 +21,114 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Colors.white,
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
+          DrawerHeader(
             decoration: BoxDecoration(
               color: Colors.amber,
+              borderRadius: BorderRadius.all(Radius.circular(15)),
             ),
-            child: UserAccountsDrawerHeader(
-              decoration: BoxDecoration(color: Colors.amber),
-              accountName: Text(
-                'Peter Parker',
-                style: TextStyle(fontSize: 18),
-              ),
-              accountEmail: Text('peterparker22@gmail.com'),
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('Assets/peter.jpg'),
-              ),
-              currentAccountPictureSize: Size.square(50),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(width: 5),
+                CircleAvatar(
+                  backgroundImage: AssetImage('Assets/peter.jpg'),
+                  radius: 30,
+                ),
+                const SizedBox(width: 15),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Peter Parker',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      'peterparker22@gmail.com',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.person),
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: const Icon(Icons.person),
+            ),
             title: const Text(
               'Profile',
             ),
+            trailing: const Icon(Icons.chevron_right),
             onTap: onProfilepressed,
           ),
           ListTile(
-            leading: const Icon(Icons.fastfood),
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: const Icon(Icons.fastfood),
+            ),
             title: const Text(
               'Categories',
             ),
+            trailing: const Icon(Icons.chevron_right),
             onTap: onCategoriesPressed,
           ),
           ListTile(
-            leading: const Icon(Icons.favorite),
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: const Icon(Icons.favorite),
+            ),
             title: const Text(
               'Favorites',
             ),
+            trailing: const Icon(Icons.chevron_right),
             onTap: onFavoritesPressed,
           ),
           ListTile(
-            leading: const Icon(Icons.shopping_cart),
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: const Icon(Icons.shopping_cart),
+            ),
             title: const Text(
               'Cart',
             ),
+            trailing: const Icon(Icons.chevron_right),
             onTap: onCartPressed,
           ),
           ListTile(
-            leading: const Icon(Icons.shopping_bag),
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: const Icon(Icons.shopping_bag),
+            ),
             title: const Text(
               'Orders',
             ),
+            trailing: const Icon(Icons.chevron_right),
             onTap: onOrdersPressed,
           ),
+          const SizedBox(height: 150),
           ListTile(
-            leading: const Icon(Icons.exit_to_app),
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: const Icon(Icons.exit_to_app),
+            ),
             title: const Text(
               'Logout',
             ),
+            trailing: const Icon(Icons.chevron_right),
             onTap: onLogoutPressed,
           ),
         ],

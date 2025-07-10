@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:food_delivery_app/providers/alert_service.dart';
 
 class ShippingForm extends StatefulWidget {
   const ShippingForm({super.key});
@@ -14,6 +15,7 @@ class ShippingFormState extends State<ShippingForm> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final _formKey = GlobalKey<FormState>();
+  AlertService alertService = AlertService();
   final _addressController = TextEditingController();
   final _cityController = TextEditingController();
   final _stateController = TextEditingController();
@@ -23,22 +25,20 @@ class ShippingFormState extends State<ShippingForm> {
   String userId = "";
   late User? user;
 
-  // @override
-  // void dispose() {
-  //   _addressController.dispose();
-  //   _cityController.dispose();
-  //   _stateController.dispose();
-  //   _zipController.dispose();
-  //   _countryController.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _addressController.dispose();
+    _cityController.dispose();
+    _stateController.dispose();
+    _zipController.dispose();
+    _countryController.dispose();
+    super.dispose();
+  }
 
   void addShippingDetails() async {
     user = auth.currentUser;
     if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('User not logged in!'))
-    );
+      alertService.showToast(context: context, text: 'You are not Logged in!', icon: Icons.warning);
       return;
     }
     try {
@@ -54,11 +54,9 @@ class ShippingFormState extends State<ShippingForm> {
         'country': _countryController.text
       });
       Navigator.pop(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text('Uploaded details successfully!')));
+      alertService.showToast(context: context, text: 'Details uploaded successfully!', icon: Icons.info);
     } catch (e) {
-      ScaffoldMessenger(
-          child: SnackBar(content: Text('Error uploading details: $e')));
+      alertService.showToast(context: context, text: 'Uploading Failed!', icon: Icons.warning);
     }
   }
 
@@ -244,8 +242,7 @@ class ShippingFormState extends State<ShippingForm> {
                         alignLabelWithHint: true,
                         fillColor: Colors.white,
                         filled: true,
-                        prefixIcon: const Icon(Icons.apartment_outlined),
-                        // emoji_transportation_outlined
+                        prefixIcon: const Icon(Icons.apartment_outlined),                        
                         prefixIconColor: Colors.amber,
                         enabledBorder: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.black),
