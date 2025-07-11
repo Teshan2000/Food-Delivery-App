@@ -1,8 +1,5 @@
-import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/appDrawer.dart';
-import 'package:food_delivery_app/components/categoryCard.dart';
-import 'package:food_delivery_app/components/foodCard.dart';
 import 'package:food_delivery_app/components/searchBar.dart';
 import 'package:food_delivery_app/screens/cart.dart';
 import 'package:food_delivery_app/screens/categories.dart';
@@ -12,8 +9,6 @@ import 'package:food_delivery_app/screens/login.dart';
 import 'package:food_delivery_app/screens/orders.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:food_delivery_app/screens/profile.dart';
 import 'package:food_delivery_app/screens/profilePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,50 +24,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   SharedPreferences? preferences;
   List<Map<String, dynamic>> _searchResults = [];
   bool _isSearching = false;
-  // String? userId;
+  String? userId;
 
-  // Future<String?> _getUserId() async {
-  //   final preferences = await SharedPreferences.getInstance();
-  //   return preferences.getString('userId');
-  // }
-
-  Future<void> _fetchSearchResults(String query) async {
-    if (query.isEmpty) {
-      setState(() {
-        _searchResults.clear();
-        _isSearching = false;
-      });
-      return;
-    }
-    setState(() {
-      _isSearching = true;
-    });
-    try {
-      QuerySnapshot snapshot = await FirebaseFirestore.instance
-          .collection('foods')
-          .where('name', isGreaterThanOrEqualTo: query)
-          .where('name', isLessThanOrEqualTo: query + '\uf8ff')
-          .get();
-
-      List<Map<String, dynamic>> results = snapshot.docs.map((doc) {
-        return {
-          "food_id": doc.id,
-          "name": doc['name'],
-          "image": doc['image'],
-          "price": doc['price'],
-        };
-      }).toList();
-
-      setState(() {
-        _searchResults = results;
-        _isSearching = false;
-      });
-    } catch (e) {
-      print('Error fetching search results: $e');
-      setState(() {
-        _isSearching = false;
-      });
-    }
+  Future<String?> _getUserId() async {
+    final preferences = await SharedPreferences.getInstance();
+    return preferences.getString('userId');
   }
 
   Future<void> updateSearchResults(
@@ -119,14 +75,22 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
-        title: const Text('Hello, Peter!'),
+        title: const Text('Hello, Peter'),
+        automaticallyImplyLeading: false,
         actions: const [
           EndDrawerButton(),
         ],
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20))),
         bottom: PreferredSize(
           preferredSize: const Size(double.infinity, 70),
-          child: Searchbar(
-            onSearchResultsUpdated: updateSearchResults,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3,),
+            child: Searchbar(
+              onSearchResultsUpdated: updateSearchResults,
+            ),
           ),
         ),
       ),
@@ -156,7 +120,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const Cart(),
+                builder: (context) => const Cart(
+                  delivery: 50,
+                  deliveryId: '',
+                ),
               ));
         },
         onOrdersPressed: () {
@@ -186,74 +153,74 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               else if (_searchResults.isNotEmpty)
                 Container(
                   height: MediaQuery.of(context).size.height,
-                  child: ListView.builder(
-                    itemCount: _searchResults.length,
-                    itemBuilder: (context, index) {
-                      final food = _searchResults[index];
-                      return GestureDetector(
-                        child: Card(
-                          elevation: 5,
-                          color: Colors.amber,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: ListView.builder(
+                      itemCount: _searchResults.length,
+                      itemBuilder: (context, index) {
+                        final food = _searchResults[index];
+                        return GestureDetector(
+                          child: Card(
+                            color: Colors.amber,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 15),
+                              child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    const SizedBox(width: 20),
+                                    Image.network(
+                                      food['image'] ??
+                                          'Assets/Foods/Chicken Burger.png',
+                                      width: 80,
+                                      height: 80,
+                                    ),
+                                    const SizedBox(width: 40),
+                                    Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            food['name'] ?? 'Name',
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.white, fontWeight: FontWeight.bold,),
+                                          ),
+                                          const SizedBox(height: 5),
+                                          Text(
+                                            "Rs. ${food['price'].toString()}.00",
+                                            style: const TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.white, fontWeight: FontWeight.bold,),
+                                          )
+                                        ])
+                                  ]),
+                            ),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 15),
-                            child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  const SizedBox(width: 20),
-                                  Image.network(
-                                    food['image'] ??
-                                        'Assets/Foods/Chicken Burger.png',
-                                    width: 80,
-                                    height: 80,
-                                  ),
-                                  const SizedBox(width: 40),
-                                  Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          food['name'] ?? 'Name',
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.white),
-                                        ),
-                                        Text(
-                                          "Rs. ${food['price'].toString()}.00",
-                                          style: const TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.white),
-                                        )
-                                      ])
-                                ]),
-                          ),
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => FoodDetails(
-                                      id: food[index]['food_id'],
-                                      name: food[index]['name'],
-                                      image: food[index]['image'],
-                                      price: food[index]['price'].toInt(),
-                                    )),
-                          );
-                        },
-                      );
-                    },
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FoodDetails(
+                                        id: food['food_id'],
+                                        name: food['name'],
+                                        image: food['image'],
+                                        price: food['price'].toInt(),
+                                      )),
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
                 )
-              //               else if (_searchTriggered) // If search has been triggered but no results found
-              // const Center(child: Text('No results found'))
-              else
-                Container(),
-              const SizedBox(height: 10),
+              else Container(),
+              const SizedBox(height: 5),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
                 child: Row(
@@ -262,7 +229,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                       const Text(
                         "Explore Foods",
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 17, fontWeight: FontWeight.bold
                         ),
                       ),
                       TextButton(
@@ -277,7 +244,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                         child: const Text(
                           "View All",
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 16, fontWeight: FontWeight.bold,
                             color: Colors.amber,
                           ),
                         ),
@@ -287,12 +254,10 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
               Column(
                 children: [
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-                    height: 165,
+                    padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+                    height: 162,
                     width: double.infinity,
-                    child: GestureDetector(
-                      child: ListView(
+                    child: ListView(
                           padding: EdgeInsets.symmetric(horizontal: 12),
                           scrollDirection: Axis.horizontal,
                           children: List.generate(categories.length, (index) {
@@ -302,34 +267,33 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                     const EdgeInsets.symmetric(horizontal: 2),
                                 child: Container(
                                   width: 90,
-                                  height: 145,
+                                  height: 135,
                                   decoration: ShapeDecoration(
                                     color: const Color(0xFFFFC107),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(90),
+                                      borderRadius: BorderRadius.circular(30),
                                     ),
                                   ),
                                   child: Column(
                                     children: [
                                       Container(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 16),
+                                            horizontal: 10, vertical: 14),
                                         child: Container(
-                                          width: 70,
-                                          height: 70,
+                                          width: 65,
+                                          height: 65,
                                           decoration: ShapeDecoration(
                                             color: const Color.fromARGB(
                                                 255, 255, 255, 255),
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
-                                                  BorderRadius.circular(90),
+                                                  BorderRadius.circular(20),
                                             ),
                                           ),
                                           child: Center(
                                             child: Text(
                                               categories[index]['image'],
-                                              style:
-                                                  const TextStyle(fontSize: 35),
+                                              style: const TextStyle(fontSize: 35,),
                                             ),
                                           ),
                                         ),
@@ -337,49 +301,26 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                       Text(
                                         categories[index]['name'],
                                         style: const TextStyle(
-                                            fontSize: 16, color: Colors.white),
+                                            fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
                                       )
                                     ],
                                   ),
                                 ),
                               ),
-                            ]);
-                          })),
-                      onTap: () {
-                        AnimationController _controller = AnimationController(
-                          vsync: this,
-                          duration: Duration(milliseconds: 300),
-                        );
-
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (_) => BottomSheet(
-                            animationController: _controller,
-                            onClosing: () {
-                              TextButton.icon(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  icon: Icon(Icons.close),
-                                  label: Text('Close'));
-                            },
-                            builder: (BuildContext context) {
-                              return CategoryCard();
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                            ]
+                          );
+                        }
+                      )
+                    ),                      
+                  ),                  
                 ],
               ),
-              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: const Text(
-                  "Most Popular",
+                  "Popular Foods",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 17, fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
                 ),
@@ -416,7 +357,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   child: Card(
-                                    elevation: 5,
+                                    // elevation: 5,
                                     color: Colors.amber,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30),
@@ -448,15 +389,18 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                                           'Name',
                                                       style: const TextStyle(
                                                           fontSize: 18,
-                                                          color: Colors.white),
+                                                          color: Colors.white,
+                                                          fontWeight: FontWeight.bold),
                                                     ),
+                                                    const SizedBox(height: 5),
                                                     Text(
                                                       "Rs. ${foods[index]['price'].toString()}.00",
                                                       style: const TextStyle(
                                                           fontSize: 18,
-                                                          color: Colors.white),
+                                                          color: Colors.white,
+                                                          fontWeight: FontWeight.bold),
                                                     )
-                                                  ])
+                                                  ]),                                                  
                                             ]),
                                       ),
                                     ]),

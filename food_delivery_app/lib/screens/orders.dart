@@ -11,7 +11,7 @@ class Orders extends StatefulWidget {
   State<Orders> createState() => _OrdersState();
 }
 
-enum FilterStatus { Delivered, Pending, Cancelled }
+enum FilterStatus { Delivered, Pending, Completed }
 
 class _OrdersState extends State<Orders> {
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -82,8 +82,8 @@ class _OrdersState extends State<Orders> {
                                           } else if (filterStatus == FilterStatus.Pending) {
                                             status = FilterStatus.Pending;
                                             _alignment = Alignment.center;
-                                          } else if (filterStatus == FilterStatus.Cancelled) {
-                                            status = FilterStatus.Cancelled;
+                                          } else if (filterStatus == FilterStatus.Completed ) {
+                                            status = FilterStatus.Completed ;
                                             _alignment = Alignment.centerRight;
                                           }
                                         });
@@ -130,14 +130,13 @@ class _OrdersState extends State<Orders> {
                                 }
                                 String orderStatus = status == FilterStatus.Delivered
                                   ? 'Delivered' : status == FilterStatus.Pending
-                                  ? 'Pending' : 'Canceled';
+                                  ? 'Pending' : 'Completed';
                                 var filteredOrders = snapshot.data!.where((order){
                                   return order['status']  == orderStatus;
                                 }).toList();
                                 if (filteredOrders.isEmpty) {
                                   return Center(child: Text("No orders yet."));
                                 }
-                                var orders = snapshot.data!;
                                 return ListView.builder(
                                   shrinkWrap: true,
                                   scrollDirection: Axis.vertical,
@@ -148,9 +147,8 @@ class _OrdersState extends State<Orders> {
                                     num totalQuantity = items.fold(
                                       0, (sum, item) => sum + (item['quantity'] ?? 0));
                                     return Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 5),
+                                      padding: const EdgeInsets.symmetric(vertical: 3),
                                       child: Card(
-                                        elevation: 5,
                                         color: Colors.amber,
                                         shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.circular(30),
@@ -169,7 +167,8 @@ class _OrdersState extends State<Orders> {
                                                     "Order #${(order['order_id']).substring(0, 5) + ''}",
                                                     style: const TextStyle(
                                                       fontSize: 16,
-                                                      color: Colors.white),
+                                                      color: Colors.white,
+                                                      fontWeight: FontWeight.bold,),
                                                   ),
                                                   GestureDetector(
                                                     child: Text(
@@ -235,7 +234,8 @@ class _OrdersState extends State<Orders> {
                                                           "Rs. ${order['total_price']}.00",
                                                           style: const TextStyle(
                                                             fontSize: 16,
-                                                            color: Colors.white),
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.bold,),
                                                         ),
                                                       ]
                                                     ),
@@ -261,17 +261,45 @@ class _OrdersState extends State<Orders> {
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: <Widget>[
+                                                      order['status'] == 'Delivered' ?
+                                                      TextButton(
+                                                        onPressed: () async{
+                                                          final User? user = auth.currentUser;
+                                                          if (user == null) return;
+
+                                                          try {
+                                                            await FirebaseFirestore.instance
+                                                                .collection('users')
+                                                                .doc(user.uid)
+                                                                .collection('orders')
+                                                                .doc(order['order_id'])
+                                                                .update({'status': 'Completed'});
+
+                                                            ScaffoldMessenger.of(context).showSnackBar(
+                                                              SnackBar(content: Text("Order marked as completed")),
+                                                            );
+                                                          } catch (e) {
+                                                            print("Error updating order status: $e");
+                                                          }
+                                                        }, 
+                                                        child: Text(
+                                                        "Complete",
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: Colors.white, fontWeight: FontWeight.bold,),
+                                                        ),
+                                                      ) :
                                                       Text(
                                                         "${order['status']}",
                                                         style: TextStyle(
                                                           fontSize: 16,
-                                                          color: Colors.white),
+                                                          color: Colors.white, fontWeight: FontWeight.bold,),
                                                       ),
                                                       Text(
                                                         "${DateFormat('yyyy-MM-dd').format(order['order_date'].toDate())}",
                                                         style: const TextStyle(
                                                           fontSize: 16,
-                                                          color: Colors.white),
+                                                          color: Colors.white, fontWeight: FontWeight.bold,),
                                                       ),
                                                     ]
                                                   ),

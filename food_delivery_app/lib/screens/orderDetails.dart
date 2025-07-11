@@ -18,6 +18,11 @@ class _OrderDetailsState extends State<OrderDetails> {
   bool isPaymentExpanded = false;
   bool isShippingExpanded = false;
 
+  String maskCardNumber(String cardNumber) {
+    if (cardNumber.length < 8) return cardNumber;
+    return '${cardNumber.substring(0, 4)} **** **** ${cardNumber.substring(cardNumber.length - 4)}';
+  }
+
   @override
   Widget build(BuildContext context) {
     final FirebaseAuth auth = FirebaseAuth.instance;
@@ -88,12 +93,9 @@ class _OrderDetailsState extends State<OrderDetails> {
                               itemCount: items.length,
                               itemBuilder: (context, index) {
                                 final item = items[index];
-                                num totalQuantity = items.fold(
-                                  0, (sum, item) => sum + (item['quantity'] ?? 0));
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                   child: Card(
-                                    elevation: 5,
                                     color: Colors.amber,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30),
@@ -110,7 +112,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                 width: 80,
                                                 height: 80,
                                               ),
-                                              // const SizedBox(width: 5),
                                               Column(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
@@ -121,13 +122,13 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                       item['name'],
                                                       style: const TextStyle(
                                                           fontSize: 18,
-                                                          color: Colors.white),
+                                                          color: Colors.white, fontWeight: FontWeight.bold),
                                                     ),
                                                     Text(
                                                       "Rs. ${item['price']}.00",
                                                       style: const TextStyle(
                                                           fontSize: 18,
-                                                          color: Colors.white),
+                                                          color: Colors.white, fontWeight: FontWeight.bold),
                                                     )
                                                   ]),
                                               const SizedBox(width: 10),
@@ -252,51 +253,6 @@ class _OrderDetailsState extends State<OrderDetails> {
                           children: [
                             ExpansionTile(
                               key: UniqueKey(),
-                              leading: Icon(Icons.payment),
-                              title: Text("Payment Details"),
-                              iconColor: Colors.white,
-                              textColor: Colors.white,
-                              backgroundColor: Colors.amber,
-                              collapsedBackgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20)),
-                              visualDensity: VisualDensity.compact,
-                              initiallyExpanded: isPaymentExpanded,
-                              onExpansionChanged: (expanded) {
-                                setState(() {
-                                  isPaymentExpanded = expanded;
-                                  if (expanded) isShippingExpanded = false;
-                                });
-                              },
-                              children: [
-                                StreamBuilder<QuerySnapshot>(
-                                    stream: _firestore
-                                        .collection('users')
-                                        .doc(user?.uid)
-                                        .collection('paymentDetails')
-                                        .snapshots(),
-                                    builder: (context, snapshot) {
-                                      if (!snapshot.hasData) {
-                                        return Text(
-                                            "No Payment Details added!");
-                                      }
-                                      var paymentData = snapshot.data!.docs;
-                                      return ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: paymentData.length,
-                                          itemBuilder: (context, index) {
-                                            var data = paymentData[index];
-                                            return PaymentDetails(
-                                              cardHolder: data['cardHolder'],
-                                              cardNumber: data['cardNumber'],
-                                            );
-                                          });
-                                    })
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            ExpansionTile(
-                              key: UniqueKey(),
                               leading: Icon(Icons.location_city),
                               title: Text("Shipping Address"),
                               iconColor: Colors.white,
@@ -317,7 +273,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                 StreamBuilder<QuerySnapshot>(
                                     stream: _firestore
                                         .collection('users')
-                                        .doc(user?.uid)
+                                        .doc(user.uid)
                                         .collection('shippingDetails')
                                         .snapshots(),
                                     builder: (context, snapshot) {
@@ -340,7 +296,52 @@ class _OrderDetailsState extends State<OrderDetails> {
                                           });
                                     })
                               ],
-                            )
+                            ),
+                            const SizedBox(height: 10),
+                            ExpansionTile(
+                              key: UniqueKey(),
+                              leading: Icon(Icons.payment),
+                              title: Text("Payment Details"),
+                              iconColor: Colors.white,
+                              textColor: Colors.white,
+                              backgroundColor: Colors.amber,
+                              collapsedBackgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              visualDensity: VisualDensity.compact,
+                              initiallyExpanded: isPaymentExpanded,
+                              onExpansionChanged: (expanded) {
+                                setState(() {
+                                  isPaymentExpanded = expanded;
+                                  if (expanded) isShippingExpanded = false;
+                                });
+                              },
+                              children: [
+                                StreamBuilder<QuerySnapshot>(
+                                    stream: _firestore
+                                        .collection('users')
+                                        .doc(user.uid)
+                                        .collection('paymentDetails')
+                                        .snapshots(),
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return Text(
+                                            "No Payment Details added!");
+                                      }
+                                      var paymentData = snapshot.data!.docs;
+                                      return ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: paymentData.length,
+                                          itemBuilder: (context, index) {
+                                            var data = paymentData[index];
+                                            return PaymentDetails(
+                                              cardHolder: data['cardHolder'],
+                                              cardNumber: maskCardNumber(data['cardNumber']),
+                                            );
+                                          });
+                                    })
+                              ],
+                            ),
                           ],
                         )
                       ])
