@@ -57,6 +57,14 @@ class _CategoriesState extends State<Categories> {
             icon: const Icon(Icons.fastfood),
           )
         ],
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20))),
+        bottom: PreferredSize(
+          preferredSize: const Size(double.infinity, 10),
+          child: SizedBox(),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -91,7 +99,7 @@ class _CategoriesState extends State<Categories> {
                                   decoration: ShapeDecoration(
                                     color: Colors.amber,
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(90),
+                                      borderRadius: BorderRadius.circular(30),
                                     ),
                                   ),
                                   child: Column(
@@ -100,14 +108,14 @@ class _CategoriesState extends State<Categories> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 10, vertical: 16),
                                         child: Container(
-                                          width: 70,
-                                          height: 70,
+                                          width: 65,
+                                          height: 65,
                                           decoration: ShapeDecoration(
                                             color: const Color.fromARGB(
                                                 255, 255, 255, 255),
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
-                                                  BorderRadius.circular(90),
+                                                  BorderRadius.circular(20),
                                             ),
                                           ),
                                           child: Center(
@@ -122,7 +130,9 @@ class _CategoriesState extends State<Categories> {
                                       Text(
                                         categories[index]['name'],
                                         style: const TextStyle(
-                                            fontSize: 16, color: Colors.white),
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
                                       )
                                     ],
                                   ),
@@ -138,17 +148,17 @@ class _CategoriesState extends State<Categories> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  category! ?? 'Foods',
+                  category!,
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.black,
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
               Container(
                 height: 800,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 child: FutureBuilder(
                   future: fetchFoodData(category),
                   builder: (context,
@@ -180,7 +190,6 @@ class _CategoriesState extends State<Categories> {
                         foods.length,
                         (index) => GestureDetector(
                           child: Card(
-                            elevation: 5,
                             color: Colors.amber,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30),
@@ -204,6 +213,7 @@ class _CategoriesState extends State<Categories> {
                                     foods[index]['name'] ?? 'Name',
                                     style: TextStyle(
                                       color: Colors.white,
+                                      fontWeight: FontWeight.bold,
                                       fontSize: 18,
                                     ),
                                   ),
@@ -211,6 +221,7 @@ class _CategoriesState extends State<Categories> {
                                     "Rs. ${foods[index]['price'].toString()}.00",
                                     style: TextStyle(
                                       color: Colors.white,
+                                      fontWeight: FontWeight.bold,
                                       fontSize: 18,
                                     ),
                                   )

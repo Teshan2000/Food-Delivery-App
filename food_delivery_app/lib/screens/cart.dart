@@ -17,7 +17,6 @@ class Cart extends StatefulWidget {
 
 class _CartState extends State<Cart> {
   final FirebaseAuth auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   AlertService alertService = AlertService();
   String userId = "";
   num? total, subTotal = 0;
@@ -159,7 +158,7 @@ class _CartState extends State<Cart> {
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         setState(() {
                           subTotal = 0;
-                          total = widget.delivery ?? 0;  
+                          total = widget.delivery;  
                         });
                       });
                       return Center(child: Text("Cart is empty"));

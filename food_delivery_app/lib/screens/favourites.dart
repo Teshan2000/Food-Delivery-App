@@ -2,10 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
+import 'package:food_delivery_app/screens/foodDetails.dart';
 
-class Favourites extends StatelessWidget {
+class Favourites extends StatefulWidget {
+  @override
+  State<Favourites> createState() => _FavouritesState();
+}
+
+class _FavouritesState extends State<Favourites> {
   final FirebaseAuth auth = FirebaseAuth.instance;
+
   AlertService alertService = AlertService();
+
   bool isFav = false;
 
   @override
@@ -23,6 +31,12 @@ class Favourites extends StatelessWidget {
         actions: [
           IconButton(onPressed: () {}, icon: const Icon(Icons.favorite))
         ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size(double.infinity, 10), child: SizedBox(),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
@@ -58,70 +72,84 @@ class Favourites extends StatelessWidget {
                                 var favourites = favoriteItems[index];
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 5),
-                                  child: Card(
-                                    elevation: 5,
-                                    color: Colors.amber,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: Row(children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5, vertical: 10),
-                                        child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: <Widget>[
-                                              const SizedBox(width: 20),
-                                              Image.network(
-                                                favourites['image'],
-                                                width: 80,
-                                                height: 80,
-                                              ),
-                                              const SizedBox(width: 30),
-                                              Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      favourites['name'],
-                                                      style: const TextStyle(
-                                                          fontSize: 18,
-                                                          color: Colors.white),
-                                                    ),
-                                                    Text(
-                                                      "Rs. ${favourites['price']}.00",
-                                                      style: const TextStyle(
-                                                          fontSize: 18,
-                                                          color: Colors.white),
-                                                    )
-                                                  ]),
-                                              const SizedBox(width: 25),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  IconButton(
-                                                      onPressed: () async {
-                                                        await FirebaseFirestore.instance
-                                                          .collection('users')
-                                                          .doc(user?.uid)
-                                                          .collection('favorites')
-                                                          .doc(favourites['food_id']).delete();
-                                                        alertService.showToast(context: context, text: 'Food removed from Favorites!', icon: Icons.info);
-                                                      },
-                                                      icon: Icon(
-                                                        isFav
-                                                            ? Icons
-                                                                .favorite_border
-                                                            : Icons.favorite,
-                                                        color: Colors.red,
-                                                      ))
-                                                ],
-                                              )
-                                            ]),
+                                  child: GestureDetector(
+                                    child: Card(
+                                      // elevation: 5,
+                                      color: Colors.amber,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
                                       ),
-                                    ]),
+                                      child: Row(children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 5, vertical: 10),
+                                          child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: <Widget>[
+                                                const SizedBox(width: 20),
+                                                Image.network(
+                                                  favourites['image'],
+                                                  width: 80,
+                                                  height: 80,
+                                                ),
+                                                const SizedBox(width: 30),
+                                                Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        favourites['name'],
+                                                        style: const TextStyle(
+                                                            fontSize: 18,
+                                                            color: Colors.white, fontWeight: FontWeight.bold),
+                                                      ),
+                                                      Text(
+                                                        "Rs. ${favourites['price']}.00",
+                                                        style: const TextStyle(
+                                                            fontSize: 18,
+                                                            color: Colors.white, fontWeight: FontWeight.bold),
+                                                      )
+                                                    ]),
+                                                const SizedBox(width: 25),
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    IconButton(
+                                                        onPressed: () async {
+                                                          await FirebaseFirestore.instance
+                                                            .collection('users')
+                                                            .doc(user?.uid)
+                                                            .collection('favorites')
+                                                            .doc(favourites['food_id']).delete();
+                                                          alertService.showToast(context: context, text: 'Food removed from Favorites!', icon: Icons.info);
+                                                        },
+                                                        icon: Icon(
+                                                          isFav
+                                                              ? Icons
+                                                                  .favorite_border
+                                                              : Icons.favorite,
+                                                          color: Colors.red,
+                                                        ))
+                                                  ],
+                                                )
+                                              ]),
+                                        ),
+                                      ]),
+                                    ),
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => FoodDetails(
+                                                  id: favourites['food_id'],
+                                                  name: favourites['name'],
+                                                  image: favourites['image'],
+                                                  price: favourites['price']
+                                                      .toInt(),
+                                                )),
+                                      );
+                                    },
                                   ),
                                 );
                               },                              

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
 import 'package:food_delivery_app/screens/deliveryPage.dart';
-import 'package:food_delivery_app/screens/home.dart';
 import 'package:food_delivery_app/screens/splash.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:lottie/lottie.dart';

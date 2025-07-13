@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/providers/alert_service.dart';
 
 class Searchbar extends StatefulWidget {
   final Function(List<Map<String, dynamic>>, bool) onSearchResultsUpdated;
@@ -11,6 +12,7 @@ class Searchbar extends StatefulWidget {
 }
 
 class _SearchbarState extends State<Searchbar> {
+  AlertService alertService = AlertService();
   final TextEditingController _searchController = TextEditingController();
   bool _isTyping = false;
 
@@ -33,6 +35,7 @@ class _SearchbarState extends State<Searchbar> {
   Future<void> _fetchSearchResults(String query) async {
     if (query.isEmpty) {
       widget.onSearchResultsUpdated([], false);
+      alertService.showToast(context: context, text: 'Food Not Found!', icon: Icons.warning);
       return;
     }
     widget.onSearchResultsUpdated([], true);
@@ -54,24 +57,11 @@ class _SearchbarState extends State<Searchbar> {
 
       widget.onSearchResultsUpdated(results, false);
     } catch (e) {
+      alertService.showToast(context: context, text: 'Food Seraching Failed!', icon: Icons.warning);
       print('Error fetching search results: $e');
       widget.onSearchResultsUpdated([], false);
     }
   }
-
-  // void _onSearch(String query) {
-  //   setState(() {
-  //     _isSearching = true;
-  //     _searchTriggered = true;
-  //   });
-
-  //   // Perform your search logic here...
-
-  //   setState(() {
-  //     _isSearching = false;
-  //     // Update _searchResults with the fetched data
-  //   });
-  // }
 
   void _clearSearch() {
     _searchController.clear();
@@ -92,6 +82,7 @@ class _SearchbarState extends State<Searchbar> {
             onChanged: (query) => _fetchSearchResults(query),
             decoration: InputDecoration(
               hintText: "Search Foods",
+              hintStyle: TextStyle(fontWeight: FontWeight.w700,),
               fillColor: Colors.white,
               filled: true,
               suffixIcon: _isTyping
@@ -99,7 +90,7 @@ class _SearchbarState extends State<Searchbar> {
                   : IconButton(onPressed: () {}, icon: Icon(Icons.search)),
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.white),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(15),
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: const BorderSide(
