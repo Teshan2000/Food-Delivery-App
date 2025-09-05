@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/registerForm.dart';
 import 'package:food_delivery_app/components/socialButton.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/screens/login.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -9,47 +10,64 @@ class RegisterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = ScreenSize.width(context);
+    double height = ScreenSize.height(context);
+
     return Scaffold(
-      backgroundColor: Colors.yellow,
+      backgroundColor: Colors.amberAccent,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 25),
+          padding: EdgeInsets.symmetric(
+            horizontal: width * 0.05, 
+            vertical: height * 0.03
+          ),
           child: SafeArea(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                const Center(
+                SizedBox(height: height * 0.03,),
+                Center(
                   child: Text(
                     'Welcome',
                     style: TextStyle(
-                      fontSize: 36,
+                      fontSize: width * 0.09,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Center(
+                SizedBox(height: height * 0.02,),
+                Center(
                   child: Text(
                     'Please create a new account',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: width * 0.045,
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: height * 0.04,),
                 RegisterForm(),
-                const SizedBox(height: 30),
-                const Center(
-                  child: Text(
-                    'or sign in with',
-                    style: TextStyle(color: Colors.black),
-                  ),
+                SizedBox(height: height * 0.05,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: width * 0.3,
+                      child: Divider(thickness: 1.5, color: Colors.black)),
+                    Text(
+                      'or sign in with',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: width * 0.04,
+                      ),
+                    ),
+                    SizedBox(
+                      width: width * 0.3,
+                      child: Divider(thickness: 1.5, color: Colors.black)),
+                  ],
                 ),
-                const SizedBox(height: 25),
+                SizedBox(height: height * 0.03,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -57,22 +75,22 @@ class RegisterPage extends StatelessWidget {
                     SocialButton(social: 'Facebook',),
                   ],
                 ),  
-                const SizedBox(height: 30),
+                SizedBox(height: height * 0.04,),
                 Center(
                   child: Text.rich(
                     TextSpan(
                       text: "Already have an account? ",
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.black,
-                        fontSize: 17,
+                        fontSize: width * 0.045,
                       ),
                       children: <TextSpan>[
                         TextSpan(
                           text: "  Sign In",
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
-                            fontSize: 17,
+                            fontSize: width * 0.045,
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {

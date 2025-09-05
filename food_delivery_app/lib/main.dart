@@ -6,8 +6,8 @@ import 'package:food_delivery_app/screens/splash.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -20,16 +20,23 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      navigatorKey: navigatorKey,    
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         fontFamily: 'Lato',
         useMaterial3: true,
-      ),  
+      ),
       initialRoute: '/',
       routes: {
-        '/':(context) => const SplashScreen(),
+        '/': (context) => const SplashScreen(),
       },
     );
   }
 }
 
+class ScreenSize {
+  static double width(BuildContext context) =>
+      MediaQuery.of(context).size.width;
+
+  static double height(BuildContext context) =>
+      MediaQuery.of(context).size.height;
+}

@@ -30,25 +30,6 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     backgroundColor: Colors.white,
-  //     body: Padding(padding: EdgeInsets.all(38),
-  //     child: Column(
-  //       children: [
-  //         const SizedBox(height: 170),
-  //         Center(
-  //           child: Image.asset(
-  //             'Assets/icon.png',
-  //             fit: BoxFit.cover,
-  //               width: MediaQuery.of(context).size.width,
-  //           ),
-  //         )
-  //       ],
-  //     ),),
-  //   );
-  // }
-
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.amberAccent,
@@ -65,13 +46,6 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            // Center(
-            //   child: Image.asset(
-            //     'Assets/splash.png',
-            //     fit: BoxFit.cover,
-            //     width: 300,
-            //   ),
-            // ),
             Container(
               width: 230,
               child: Center(
