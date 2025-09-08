@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
 import 'package:food_delivery_app/components/passwordForm.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
 import 'package:food_delivery_app/screens/home.dart';
@@ -79,6 +80,9 @@ class LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    double width = ScreenSize.width(context);
+    double height = ScreenSize.height(context);
+    
     return Form(
       key: _formKey,
       child: Column(
@@ -92,6 +96,8 @@ class LoginFormState extends State<LoginForm> {
               hintText: 'Email Address',
               labelText: 'Email Address',
               alignLabelWithHint: true,
+              hintStyle: TextStyle(fontSize: width * 0.04,),
+              labelStyle: TextStyle(fontSize: width * 0.04,),
               fillColor: Colors.white,
               filled: true,
               prefixIcon: const Icon(Icons.email_outlined),
@@ -101,16 +107,16 @@ class LoginFormState extends State<LoginForm> {
                 borderRadius: BorderRadius.circular(10),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
+                borderSide: BorderSide(
                   color: Colors.amber,
-                  width: 2,
+                  width: width * 0.05,
                 ),
                 borderRadius: BorderRadius.circular(15),
               ),
               errorBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
+                borderSide: BorderSide(
                   color: Colors.red,
-                  width: 2,
+                  width: width * 0.05,
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -128,7 +134,7 @@ class LoginFormState extends State<LoginForm> {
               });
             },
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: height * 0.02,),
           TextFormField(
             controller: _passController,
             keyboardType: TextInputType.visiblePassword,
@@ -138,6 +144,8 @@ class LoginFormState extends State<LoginForm> {
                 hintText: 'Password',
                 labelText: 'Password',
                 alignLabelWithHint: true,
+                hintStyle: TextStyle(fontSize: width * 0.04,),
+                labelStyle: TextStyle(fontSize: width * 0.04,),
                 fillColor: Colors.white,
                 filled: true,
                 prefixIcon: const Icon(Icons.lock_outline),
@@ -147,16 +155,16 @@ class LoginFormState extends State<LoginForm> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
+                  borderSide: BorderSide(
                     color: Colors.amber,
-                    width: 2,
+                    width: width * 0.05,
                   ),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 errorBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
+                  borderSide: BorderSide(
                     color: Colors.red,
-                    width: 2,
+                    width: width * 0.05,
                   ),
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -188,7 +196,7 @@ class LoginFormState extends State<LoginForm> {
               });
             },
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: height * 0.02,),
           Center(
             child: TextButton(
               child: Text(
@@ -197,7 +205,7 @@ class LoginFormState extends State<LoginForm> {
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: width * 0.04,
                   decorationStyle: TextDecorationStyle.solid,
                 ),
               ),
@@ -205,11 +213,11 @@ class LoginFormState extends State<LoginForm> {
                 showDialog(
                   context: context,
                   builder: (_) => Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: width * 0.06, vertical: width * 0.06,),
                       child: Dialog(
                           backgroundColor: Colors.transparent,
-                          insetPadding: EdgeInsets.all(10),
+                          insetPadding: EdgeInsets.all(width * 0.05,),
                           child: Stack(
                             clipBehavior: Clip.none,
                             alignment: Alignment.center,
@@ -217,7 +225,7 @@ class LoginFormState extends State<LoginForm> {
                               SingleChildScrollView(
                                 child: Container(
                                   width: double.infinity,
-                                  height: 350,
+                                  height: height * 0.45,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(15),
                                       color: Colors.white),
@@ -231,7 +239,7 @@ class LoginFormState extends State<LoginForm> {
               },
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: height * 0.03,),
           Button(
             title: 'Sign In',
             onPressed: () {
@@ -240,7 +248,7 @@ class LoginFormState extends State<LoginForm> {
               }
             },
             disable: false,
-            width: double.infinity,
+            width: width * 0.9, height: height * 0.05,
           ),
         ],
       ),

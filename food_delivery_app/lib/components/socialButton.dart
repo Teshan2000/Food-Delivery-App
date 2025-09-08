@@ -59,15 +59,15 @@ class SocialButton extends StatelessWidget {
           children: [
             Image.asset(
               'Assets/$social.jpg',
-              width: width * 0.08,
-              height: width * 0.08,
+              width: width * 0.07,
+              height: width * 0.07,
             ),
             SizedBox(width: width * 0.03),
             Text(
               social.toUpperCase(),
               style: TextStyle(
                 color: Colors.black,
-                fontSize: width * 0.04,
+                fontSize: width * 0.03,
               ),
             ),
           ],

@@ -4,12 +4,14 @@ class Button extends StatelessWidget {
   const Button({
     super.key,
     required this.width,
+    required this.height,
     required this.title,
     required this.disable,
-    required this.onPressed,
+    required this.onPressed, 
   });
 
   final double width;
+  final double height;
   final String title;
   final bool disable;
   final Function() onPressed;
@@ -18,6 +20,7 @@ class Button extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
+      height: height,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.amber,
@@ -29,8 +32,8 @@ class Button extends StatelessWidget {
         onPressed: disable ? null : onPressed,
         child: Text(
           title,
-          style: const TextStyle(
-            fontSize: 18, fontWeight: FontWeight.bold
+          style: TextStyle(
+            fontSize: width * 0.04, fontWeight: FontWeight.bold
           ),
         ),
       ),

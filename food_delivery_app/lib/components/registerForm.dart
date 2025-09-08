@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/providers/auth_service.dart';
 import 'package:food_delivery_app/screens/login.dart';
@@ -48,6 +49,9 @@ class RegisterFormState extends State<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
+    double width = ScreenSize.width(context);
+    double height = ScreenSize.height(context);
+    
     return Form(
       key: _formKey,
       child: Column(
@@ -61,6 +65,8 @@ class RegisterFormState extends State<RegisterForm> {
               hintText: 'Username',
               labelText: 'Username',
               alignLabelWithHint: true,
+              hintStyle: TextStyle(fontSize: width * 0.04,),
+              labelStyle: TextStyle(fontSize: width * 0.04,),
               fillColor: Colors.white,
               filled: true,
               prefixIcon: const Icon(Icons.person_outlined),
@@ -106,6 +112,8 @@ class RegisterFormState extends State<RegisterForm> {
               hintText: 'Email Address',
               labelText: 'Email Address',
               alignLabelWithHint: true,
+              hintStyle: TextStyle(fontSize: width * 0.04,),
+              labelStyle: TextStyle(fontSize: width * 0.04,),
               fillColor: Colors.white,
               filled: true,
               prefixIcon: const Icon(Icons.email_outlined),
@@ -152,6 +160,8 @@ class RegisterFormState extends State<RegisterForm> {
                 hintText: 'Password',
                 labelText: 'Password',
                 alignLabelWithHint: true,
+                hintStyle: TextStyle(fontSize: width * 0.04,),
+                labelStyle: TextStyle(fontSize: width * 0.04,),
                 fillColor: Colors.white,
                 filled: true,
                 prefixIcon: const Icon(Icons.lock_outline),
@@ -211,7 +221,7 @@ class RegisterFormState extends State<RegisterForm> {
               }
             },
             disable: false,
-            width: double.infinity,
+            width: width * 0.9, height: height * 0.05,
           ),
         ],
       ),
