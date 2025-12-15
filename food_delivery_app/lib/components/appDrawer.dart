@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/main.dart';
 
 class AppDrawer extends StatelessWidget {
   final Function() onProfilepressed;
@@ -20,8 +21,11 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double height = ScreenSize.height(context);
+    
     return Drawer(
       backgroundColor: Colors.white,
+      width: 320, 
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
@@ -33,12 +37,12 @@ class AppDrawer extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const SizedBox(width: 5),
+                SizedBox(height: height * 0.02,),
                 CircleAvatar(
                   backgroundImage: AssetImage('Assets/peter.jpg'),
                   radius: 30,
                 ),
-                const SizedBox(width: 15),
+                SizedBox(height: height * 0.2,),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,

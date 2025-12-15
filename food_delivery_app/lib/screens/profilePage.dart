@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/paymentDetails.dart';
 import 'package:food_delivery_app/components/shippingDetails.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -64,20 +65,29 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _updateProfile(String newName, String imageUrl) async {
     try {
       await _firestore
-        .collection('users')
-        .doc(user?.uid)
-        .collection('profile')
-        .doc('details')
-        .set({'name': newName, 'profileImage': imageUrl, 'email': user?.email});
+          .collection('users')
+          .doc(user?.uid)
+          .collection('profile')
+          .doc('details')
+          .set({
+        'name': newName,
+        'profileImage': imageUrl,
+        'email': user?.email
+      });
       setState(() {
         name = newName;
         image = imageUrl;
       });
-      alertService.showToast(context: context, text: 'Profile Updated successfully!', icon: Icons.info);
+      alertService.showToast(
+          context: context,
+          text: 'Profile Updated successfully!',
+          icon: Icons.info);
     } catch (e) {
-      alertService.showToast(context: context, text: 'Profile Updating Failed!', icon: Icons.warning);
+      alertService.showToast(
+          context: context,
+          text: 'Profile Updating Failed!',
+          icon: Icons.warning);
     }
-    
   }
 
   Future<void> _uploadProfileImage() async {
@@ -96,21 +106,27 @@ class _ProfilePageState extends State<ProfilePage> {
 
         await _updateProfile(name, imageUrl);
       } catch (e) {
-        alertService.showToast(context: context, text: 'Profile Image Updating Failed!', icon: Icons.warning);
+        alertService.showToast(
+            context: context,
+            text: 'Profile Image Updating Failed!',
+            icon: Icons.warning);
         print("Error uploading image: $e");
       }
     }
   }
 
   String maskCardNumber(String cardNumber) {
-    if (cardNumber.length < 8) return cardNumber; // fallback
+    if (cardNumber.length < 8) return cardNumber;
     return '${cardNumber.substring(0, 4)} **** **** ${cardNumber.substring(cardNumber.length - 4)}';
   }
 
   @override
   Widget build(BuildContext context) {
+    double width = ScreenSize.width(context);
+    double height = ScreenSize.height(context);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           backgroundColor: Colors.amber,
           title: const Center(
@@ -119,22 +135,22 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20))
-          ),
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20))),
           actions: [
             IconButton(onPressed: () {}, icon: const Icon(Icons.person_outline))
           ],
           bottom: PreferredSize(
-          preferredSize: const Size(double.infinity, 10), child: SizedBox(),
-        ),
+            preferredSize: const Size(double.infinity, 10),
+            child: SizedBox(),
+          ),
         ),
         body: Container(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
             child: SingleChildScrollView(
                 child: Column(children: [
-              const SizedBox(
-                height: 10,
-              ),
+              SizedBox(height: height * 0.02,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -174,134 +190,129 @@ class _ProfilePageState extends State<ProfilePage> {
                   ]),
                 ],
               ),
-              const SizedBox(
-                height: 30,
-              ),
-              Text(name),
+              SizedBox(height: height * 0.05,),
               Column(children: [
-                Row(children: [
-                  SizedBox(
-                    width: 350,
-                    child: TextFormField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        hintText: 'Name',
-                        labelText: 'Name',
-                        alignLabelWithHint: true,
-                        prefixIcon: const Icon(
-                          Icons.person,
-                        ),
-                        suffixIcon: const Icon(Icons.edit),
-                        prefixIconColor: Colors.amber,
-                        suffixIconColor: Colors.amber,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 1),
-                        // enabledBorder: OutlineInputBorder(
-                        //     borderRadius: BorderRadius.circular(10)),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: Colors.amber,
-                            )),
-                        errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: Colors.red,
-                            )),
-                      ),
-                      onFieldSubmitted: (value) {
-                        _updateProfile(value, image);
-                      },
+                TextFormField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    hintText: 'Name',
+                    labelText: 'Name',
+                    alignLabelWithHint: true,
+                    hintStyle: TextStyle(
+                      fontSize: width * 0.04,
                     ),
-                  ),
-                ]),
-                const SizedBox(
-                  height: 30,
-                ),
-                Row(children: [
-                  SizedBox(
-                    width: 350,
-                    child: TextFormField(
-                      // controller: emailController,
-                      initialValue: email,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        hintText: 'Email',
-                        labelText: 'Email',
-                        alignLabelWithHint: true,
-                        prefixIcon: const Icon(Icons.email),
-                        suffixIcon: const Icon(Icons.edit),
-                        prefixIconColor: Colors.amber,
-                        suffixIconColor: Colors.amber,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 1),
-                        // enabledBorder: OutlineInputBorder(
-                        //     borderRadius: BorderRadius.circular(10)),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: Colors.amber,
-                            )),
-                        errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: Colors.red,
-                            )),
-                      ),
+                    labelStyle: TextStyle(
+                      fontSize: width * 0.04,
                     ),
-                  ),
-                ]),
-                const SizedBox(
-                  height: 30,
-                ),
-                Row(children: [
-                  SizedBox(
-                    width: 350,
-                    child: TextFormField(
-                      // controller: phoneController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        hintText: 'Phone',
-                        labelText: 'Phone',
-                        alignLabelWithHint: true,
-                        suffixIcon: Icon(Icons.edit),
-                        prefixIcon: const Icon(Icons.phone),
-                        // suffixIcon: const Icon(Icons.edit),
-                        prefixIconColor: Colors.amber,
-                        suffixIconColor: Colors.amber,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 1),
-                        // enabledBorder: OutlineInputBorder(
-                        //     borderRadius: BorderRadius.circular(10)),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: Colors.amber,
-                            )),
-                        errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: Colors.red,
-                            )),
-                      ),
+                    prefixIcon: const Icon(
+                      Icons.person,
                     ),
+                    suffixIcon: const Icon(Icons.edit),
+                    prefixIconColor: Colors.amber,
+                    suffixIconColor: Colors.amber,
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.amber,
+                          width: width * 0.05,
+                        )),
+                    errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: width * 0.05,
+                        )),
                   ),
-                ]),
-                const SizedBox(
-                  height: 30,
+                  onFieldSubmitted: (value) {
+                    _updateProfile(value, image);
+                  },
                 ),
+                SizedBox(height: height * 0.04,),
+                TextFormField(
+                  initialValue: email,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    hintText: 'Email',
+                    labelText: 'Email',
+                    alignLabelWithHint: true,
+                    hintStyle: TextStyle(
+                      fontSize: width * 0.04,
+                    ),
+                    labelStyle: TextStyle(
+                      fontSize: width * 0.04,
+                    ),
+                    prefixIcon: const Icon(Icons.email),
+                    suffixIcon: const Icon(Icons.edit),
+                    prefixIconColor: Colors.amber,
+                    suffixIconColor: Colors.amber,
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.amber,
+                          width: width * 0.05,
+                        )),
+                    errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: width * 0.05,
+                        )),
+                  ),
+                ),
+                SizedBox(height: height * 0.04,),
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: 'Phone',
+                    labelText: 'Phone',
+                    alignLabelWithHint: true,
+                    hintStyle: TextStyle(
+                      fontSize: width * 0.04,
+                    ),
+                    labelStyle: TextStyle(
+                      fontSize: width * 0.04,
+                    ),
+                    suffixIcon: Icon(Icons.edit),
+                    prefixIcon: const Icon(Icons.phone),
+                    prefixIconColor: Colors.amber,
+                    suffixIconColor: Colors.amber,
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.amber,
+                          width: width * 0.05,
+                        )),
+                    errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: width * 0.05,
+                        )),
+                  ),
+                ),
+                SizedBox(height: height * 0.04,),
               ]),
               Column(
                 children: [
                   ExpansionTile(
                     key: UniqueKey(),
-                    leading: Icon(Icons.location_city, color: isShippingExpanded ? Colors.white : Colors.amber,),
+                    leading: Icon(
+                      Icons.location_city,
+                      color: isShippingExpanded ? Colors.white : Colors.amber,
+                    ),
                     title: Text("Shipping Address"),
                     iconColor: Colors.white,
                     textColor: Colors.white,
                     backgroundColor: Colors.amber,
                     collapsedBackgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     visualDensity: VisualDensity.compact,
                     onExpansionChanged: (expanded) {
                       setState(() {
@@ -339,8 +350,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                       itemBuilder: (context, index) {
                                         var data = addressData[index];
                                         return ShippingDetails(
-                                          address1: "${data['address']}, ${data['city']}", 
-                                          address2: "${data['state']}, ${data['country']}, ${data['zipCode']}",
+                                          address1:
+                                              "${data['address']}, ${data['city']}",
+                                          address2:
+                                              "${data['state']}, ${data['country']}, ${data['zipCode']}",
                                         );
                                       });
                                 }),
@@ -349,18 +362,20 @@ class _ProfilePageState extends State<ProfilePage> {
                       )
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  SizedBox(height: height * 0.02,),
                   ExpansionTile(
                     key: UniqueKey(),
-                    leading: Icon(Icons.payment, color: isPaymentExpanded ? Colors.white : Colors.amber,),
+                    leading: Icon(
+                      Icons.payment,
+                      color: isPaymentExpanded ? Colors.white : Colors.amber,
+                    ),
                     title: Text("Payment Details"),
                     iconColor: Colors.white,
                     textColor: Colors.white,
                     backgroundColor: Colors.amber,
                     collapsedBackgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     visualDensity: VisualDensity.compact,
                     onExpansionChanged: (expanded) {
                       setState(() {
@@ -399,7 +414,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         var data = paymentData[index];
                                         return PaymentDetails(
                                           cardHolder: data['cardHolder'],
-                                          cardNumber: maskCardNumber(data['cardNumber']),
+                                          cardNumber: maskCardNumber(
+                                              data['cardNumber']),
                                         );
                                       });
                                 }),

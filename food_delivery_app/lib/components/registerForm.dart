@@ -76,14 +76,14 @@ class RegisterFormState extends State<RegisterForm> {
                 borderRadius: BorderRadius.circular(10),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
+                borderSide: BorderSide(
                   color: Colors.amber,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(15),
               ),
               errorBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
+                borderSide: BorderSide(
                   color: Colors.red,
                   width: 2,
                 ),
@@ -103,7 +103,7 @@ class RegisterFormState extends State<RegisterForm> {
               }
             },
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: height * 0.02,),
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
@@ -123,14 +123,14 @@ class RegisterFormState extends State<RegisterForm> {
                 borderRadius: BorderRadius.circular(10),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
+                borderSide: BorderSide(
                   color: Colors.amber,
                   width: 2,
                 ),
                 borderRadius: BorderRadius.circular(15),
               ),
               errorBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
+                borderSide: BorderSide(
                   color: Colors.red,
                   width: 2,
                 ),
@@ -150,7 +150,7 @@ class RegisterFormState extends State<RegisterForm> {
               });
             },
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: height * 0.02,),
           TextFormField(
             controller: _passController,
             keyboardType: TextInputType.visiblePassword,
@@ -171,14 +171,14 @@ class RegisterFormState extends State<RegisterForm> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
+                  borderSide: BorderSide(
                     color: Colors.amber,
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 errorBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
+                  borderSide: BorderSide(
                     color: Colors.red,
                     width: 2,
                   ),
@@ -212,7 +212,7 @@ class RegisterFormState extends State<RegisterForm> {
               });
             },
           ),
-          const SizedBox(height: 40),
+          SizedBox(height: height * 0.03,),
           Button(
             title: 'Sign Up',
             onPressed: () {
