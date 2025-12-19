@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/screens/checkout.dart';
 
@@ -27,7 +28,6 @@ class _CartState extends State<Cart> {
   void initState() {
     super.initState();
     getUserId();
-    // fetchCartData();
   }
 
   void didChangeCount(int newQuantity, String cartItemId) {
@@ -64,37 +64,6 @@ class _CartState extends State<Cart> {
     }
   }
 
-  // Future<void> fetchCartData() async {
-  //   final User? user = auth.currentUser;
-  //   try {
-  //     final userId = user?.uid;
-  //     if (userId != null) {
-  //       // Fetch cart items
-  //       QuerySnapshot snapshot = await _firestore
-  //           .collection('users')
-  //           .doc(userId)
-  //           .collection('cart')
-  //           .get();
-
-  //       // Map data
-  //       final items = snapshot.docs
-  //           .map((doc) => doc.data() as Map<String, dynamic>)
-  //           .toList();
-  //       setState(() {
-  //         cart = items;
-  //         subTotal = cart.fold(0, (total, item) {
-  //           return total! +
-  //               (int.parse(item['price'].replaceAll("Rs.", "").trim()) *
-  //                   (item['quantity'] ?? 1));
-  //         });
-  //         total = (subTotal! + delivery);
-  //       });
-  //     }
-  //   } catch (e) {
-  //     print("Error fetching cart data: $e");
-  //   }
-  // }
-
   Future<void> getUserId() async {
     final User? user = auth.currentUser;
     if (user != null) {
@@ -104,6 +73,10 @@ class _CartState extends State<Cart> {
 
   @override
   Widget build(BuildContext context) {
+    double width = ScreenSize.width(context);
+    double height = ScreenSize.height(context);
+    bool isLandscape = ScreenSize.orientation(context);
+    
     final User? user = auth.currentUser;
     if (user == null) {
       return Center(child: Text("Please log in."));
@@ -197,17 +170,15 @@ class _CartState extends State<Cart> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: Card(
-                              // elevation: 5,
                               color: Colors.amber,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30),
                               ),
-                              child: Row(children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: 15),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 15),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: <Widget>[
                                       const SizedBox(width: 20),
@@ -314,7 +285,6 @@ class _CartState extends State<Cart> {
                                     ],
                                   ),
                                 ),
-                              ]),
                             ),
                           ),
                         );
@@ -392,7 +362,8 @@ class _CartState extends State<Cart> {
                             );
                           },
                           disable: false,
-                          width: double.infinity,
+                          width: isLandscape ? width * 0.95 : width * 0.9, 
+                          height: isLandscape ? width * 0.05 : height * 0.05,
                         ),                      
                       ],
                     ),

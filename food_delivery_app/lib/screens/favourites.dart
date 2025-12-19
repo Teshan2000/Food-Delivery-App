@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/screens/foodDetails.dart';
 
@@ -17,7 +18,7 @@ class _FavouritesState extends State<Favourites> {
   bool isFav = false;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {    
     final User? user = auth.currentUser;
     if (user == null) {
       alertService.showToast(context: context, text: 'You are not Logged in!', icon: Icons.warning);
@@ -74,26 +75,22 @@ class _FavouritesState extends State<Favourites> {
                                   padding: const EdgeInsets.symmetric(vertical: 5),
                                   child: GestureDetector(
                                     child: Card(
-                                      // elevation: 5,
                                       color: Colors.amber,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(30),
                                       ),
-                                      child: Row(children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 5, vertical: 10),
-                                          child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 5, vertical: 10),
+                                        child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                               children: <Widget>[
-                                                const SizedBox(width: 20),
                                                 Image.network(
                                                   favourites['image'],
                                                   width: 80,
                                                   height: 80,
                                                 ),
-                                                const SizedBox(width: 30),
                                                 Column(
                                                     mainAxisAlignment: MainAxisAlignment.start,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,7 +108,6 @@ class _FavouritesState extends State<Favourites> {
                                                             color: Colors.white, fontWeight: FontWeight.bold),
                                                       )
                                                     ]),
-                                                const SizedBox(width: 25),
                                                 Column(
                                                   mainAxisAlignment: MainAxisAlignment.end,
                                                   children: [
@@ -135,7 +131,6 @@ class _FavouritesState extends State<Favourites> {
                                                 )
                                               ]),
                                         ),
-                                      ]),
                                     ),
                                     onTap: () {
                                       Navigator.push(

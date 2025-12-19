@@ -39,4 +39,7 @@ class ScreenSize {
 
   static double height(BuildContext context) =>
       MediaQuery.of(context).size.height;
+
+  static bool orientation(BuildContext context) =>
+      MediaQuery.of(context).orientation == Orientation.landscape;
 }

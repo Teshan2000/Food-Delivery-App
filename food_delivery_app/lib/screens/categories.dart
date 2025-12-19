@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/screens/foodDetails.dart';
 
 class Categories extends StatefulWidget {
@@ -47,6 +48,9 @@ class _CategoriesState extends State<Categories> {
 
   @override
   Widget build(BuildContext context) {
+    double height = ScreenSize.height(context);
+    bool isLandscape = ScreenSize.orientation(context);
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
@@ -71,7 +75,7 @@ class _CategoriesState extends State<Categories> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              const SizedBox(height: 10),
+              SizedBox(height: height * 0.02,),
               Column(
                 children: [
                   Container(
@@ -91,8 +95,7 @@ class _CategoriesState extends State<Categories> {
                             },
                             child: Column(children: [
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 2),
+                                padding: EdgeInsets.symmetric(horizontal: isLandscape ? 4 : 2),
                                 child: Container(
                                   width: 90,
                                   height: 145,
@@ -144,7 +147,7 @@ class _CategoriesState extends State<Categories> {
                   )
                 ],
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: height * 0.03,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
@@ -180,15 +183,17 @@ class _CategoriesState extends State<Categories> {
                       );
                     }
                     List<Map<String, dynamic>> foods = snapshot.data!;
-                    return GridView.count(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      children: List.generate(
-                        foods.length,
-                        (index) => GestureDetector(
+                    return GridView.builder(
+                      padding: const EdgeInsets.all(5),
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 220,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                      ),
+                      itemCount: foods.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
                           child: Card(
                             color: Colors.amber,
                             shape: RoundedRectangleBorder(
@@ -241,8 +246,8 @@ class _CategoriesState extends State<Categories> {
                                       )),
                             );
                           },
-                        ),
-                      ),
+                        );
+                      },
                     );
                   },
                 ),
