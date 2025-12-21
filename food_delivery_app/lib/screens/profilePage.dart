@@ -198,12 +198,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     hintText: 'Name',
                     labelText: 'Name',
                     alignLabelWithHint: true,
-                    hintStyle: TextStyle(
-                      fontSize: width * 0.04,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: width * 0.04,
-                    ),
                     prefixIcon: const Icon(
                       Icons.person,
                     ),
@@ -237,12 +231,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     hintText: 'Email',
                     labelText: 'Email',
                     alignLabelWithHint: true,
-                    hintStyle: TextStyle(
-                      fontSize: width * 0.04,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: width * 0.04,
-                    ),
                     prefixIcon: const Icon(Icons.email),
                     suffixIcon: const Icon(Icons.edit),
                     prefixIconColor: Colors.amber,
@@ -270,12 +258,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     hintText: 'Phone',
                     labelText: 'Phone',
                     alignLabelWithHint: true,
-                    hintStyle: TextStyle(
-                      fontSize: width * 0.04,
-                    ),
-                    labelStyle: TextStyle(
-                      fontSize: width * 0.04,
-                    ),
                     suffixIcon: Icon(Icons.edit),
                     prefixIcon: const Icon(Icons.phone),
                     prefixIconColor: Colors.amber,

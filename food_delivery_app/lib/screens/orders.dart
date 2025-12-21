@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/screens/orderDetails.dart';
 import 'package:intl/intl.dart';
 
@@ -31,6 +32,10 @@ class _OrdersState extends State<Orders> {
 
   @override
   Widget build(BuildContext context) {
+    double width = ScreenSize.width(context);
+    double height = ScreenSize.height(context);
+    bool isLandscape = ScreenSize.orientation(context);
+    
     final User? user = auth.currentUser;
     if (user == null) {
       return Center(child: Text("Please log in."));
@@ -51,72 +56,75 @@ class _OrdersState extends State<Orders> {
             preferredSize: const Size(double.infinity, 10), child: SizedBox(),
           ),
         ),
-        body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            child: SafeArea(
-              child: SingleChildScrollView(
+        body: SafeArea(            
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Column(children: [
-                        Stack(
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              height: 35,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  for (FilterStatus filterStatus
-                                      in FilterStatus.values)
-                                    Expanded(
-                                        child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (filterStatus == FilterStatus.Delivered) {
-                                            status = FilterStatus.Delivered;
-                                            _alignment = Alignment.centerLeft;
-                                          } else if (filterStatus == FilterStatus.Pending) {
-                                            status = FilterStatus.Pending;
-                                            _alignment = Alignment.center;
-                                          } else if (filterStatus == FilterStatus.Completed ) {
-                                            status = FilterStatus.Completed ;
-                                            _alignment = Alignment.centerRight;
-                                          }
-                                        });
-                                      },
-                                      child: Center(child: Text(filterStatus.name)),
-                                    ))
-                                ],
-                              ),
-                            ),
-                            AnimatedAlign(
-                              alignment: _alignment,
-                              duration: Duration(milliseconds: 200),
-                              child: Container(
-                                width: 100,
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: isLandscape ? 5 : 7),
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: double.infinity,
                                 height: 35,
                                 decoration: BoxDecoration(
-                                  color: Colors.amber,
-                                  borderRadius: BorderRadius.circular(15)),
-                                child: Center(
-                                    child: Text(
-                                  status.name,
-                                  style: TextStyle(
                                     color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )),
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    for (FilterStatus filterStatus
+                                        in FilterStatus.values)
+                                      Expanded(
+                                          child: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            if (filterStatus == FilterStatus.Delivered) {
+                                              status = FilterStatus.Delivered;
+                                              _alignment = Alignment.centerLeft;
+                                            } else if (filterStatus == FilterStatus.Pending) {
+                                              status = FilterStatus.Pending;
+                                              _alignment = Alignment.center;
+                                            } else if (filterStatus == FilterStatus.Completed ) {
+                                              status = FilterStatus.Completed ;
+                                              _alignment = Alignment.centerRight;
+                                            }
+                                          });
+                                        },
+                                        child: Center(child: Text(filterStatus.name)),
+                                      ))
+                                  ],
+                                ),
                               ),
-                            )
-                          ],
+                              AnimatedAlign(
+                                alignment: _alignment,
+                                duration: Duration(milliseconds: 200),
+                                child: Container(
+                                  width: isLandscape ? 180 : 100,
+                                  height: 35,
+                                  decoration: BoxDecoration(
+                                    color: Colors.amber,
+                                    borderRadius: BorderRadius.circular(15)),
+                                  child: Center(
+                                      child: Text(
+                                    status.name,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 5),
-                          height: 1275,                          
+                          height: height,                          
                           child: StreamBuilder<List<Map<String, dynamic>>>(
                             stream: fetchOrders(),
                               builder: (context, snapshot) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/screens/home.dart';
 import 'package:food_delivery_app/screens/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,33 +32,42 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Widget build(BuildContext context) {
+    double width = ScreenSize.width(context);
+    double height = ScreenSize.height(context);
+    bool isLandscape = ScreenSize.orientation(context);
+
     return Scaffold(
       backgroundColor: Colors.amberAccent,
       body: Padding(
-        padding: EdgeInsets.all(38),
+        padding: isLandscape ? EdgeInsets.all(0) : EdgeInsets.all(38),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 80),
             Center(
               child: Image.asset(
                 'Assets/icon.png',
                 fit: BoxFit.cover,
-                width: MediaQuery.of(context).size.width,
+                width: isLandscape ? width * 0.3 : width,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(
+              height: isLandscape ? height * 0 : height * 0.01,
+            ),
             Container(
-              width: 230,
+              width: isLandscape ? 300 : 230,
               child: Center(
                 child: Text(
                   "Online Food Delivery Service",
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontSize: 40,
+                  style: TextStyle(
+                      fontSize: isLandscape ? 35 : 40,
                       fontWeight: FontWeight.bold,
                       color: Colors.black),
                 ),
               ),
+            ),
+            SizedBox(
+              height: isLandscape ? height * 0.01 : height * 0.01,
             ),
           ],
         ),

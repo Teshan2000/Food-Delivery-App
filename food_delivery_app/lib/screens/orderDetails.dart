@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/paymentDetails.dart';
 import 'package:food_delivery_app/components/shippingDetails.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:intl/intl.dart';
 
 class OrderDetails extends StatefulWidget {
@@ -25,6 +26,10 @@ class _OrderDetailsState extends State<OrderDetails> {
 
   @override
   Widget build(BuildContext context) {
+    double width = ScreenSize.width(context);
+    double height = ScreenSize.height(context);
+    bool isLandscape = ScreenSize.orientation(context);
+    
     final FirebaseAuth auth = FirebaseAuth.instance;
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
     final items = widget.order['items'] as List<dynamic>;
@@ -61,9 +66,7 @@ class _OrderDetailsState extends State<OrderDetails> {
             child: SafeArea(
               child: SingleChildScrollView(
                 child: Column(
-                    children: <Widget>[
-                      Column(
-                        children: [
+                    children: <Widget>[                    
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 10),
@@ -87,7 +90,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     ]),
                               ),
                         Container(
-                            height: 260,
+                            height: items.length == 3 ? 360 : items.length == 2 ? 260 : 140,
                             child: ListView.builder(
                               scrollDirection: Axis.vertical,
                               itemCount: items.length,
@@ -113,10 +116,8 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                 height: 80,
                                               ),
                                               Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: <Widget>[
                                                     Text(
                                                       item['name'],
@@ -130,27 +131,19 @@ class _OrderDetailsState extends State<OrderDetails> {
                                                           fontSize: 18,
                                                           color: Colors.white, fontWeight: FontWeight.bold),
                                                     )
-                                                  ]),
-                                              const SizedBox(width: 10),
+                                                  ]),                                              
                                               Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  crossAxisAlignment: CrossAxisAlignment.end,
                                                   children: <Widget>[
                                                     Container(
                                                       width: 30,
                                                       height: 30,
-                                                      decoration:
-                                                          ShapeDecoration(
-                                                        color: const Color
-                                                            .fromARGB(
+                                                      decoration: ShapeDecoration(
+                                                        color: const Color.fromARGB(
                                                             255, 255, 255, 255),
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(90),
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(90),
                                                         ),
                                                       ),
                                                       child: Center(
@@ -183,7 +176,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: isLandscape ? width * 0.02 : height * 0.02,),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Row(
@@ -196,7 +189,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                 ),
                               ]),
                         ),
-                        const SizedBox(height: 15),
+                        SizedBox(height: isLandscape ? width * 0.02 : height * 0.02,),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 15, vertical: 10),
@@ -233,7 +226,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                 ),
                               ]),
                         ),                        
-                        const SizedBox(height: 15),
+                        SizedBox(height: isLandscape ? width * 0.01 : height * 0.01,),
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 0, vertical: 0),
@@ -248,7 +241,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 15),
+                        SizedBox(height: isLandscape ? width * 0.02 : height * 0.02,),
                         Column(
                           children: [
                             ExpansionTile(
@@ -297,7 +290,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                     })
                               ],
                             ),
-                            const SizedBox(height: 10),
+                            SizedBox(height: isLandscape ? width * 0.01 : height * 0.01,),
                             ExpansionTile(
                               key: UniqueKey(),
                               leading: Icon(Icons.payment),
@@ -344,7 +337,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                             ),
                           ],
                         )
-                      ])
+                      // ])
                     ]),
               ),
             )));
