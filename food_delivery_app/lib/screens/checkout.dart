@@ -7,6 +7,7 @@ import 'package:food_delivery_app/components/paymentForm.dart';
 import 'package:food_delivery_app/components/shippingDetails.dart';
 import 'package:food_delivery_app/components/shippingForm.dart';
 import 'package:food_delivery_app/components/successCard.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:food_delivery_app/screens/cart.dart';
 
@@ -115,6 +116,10 @@ class _CheckoutState extends State<Checkout> {
 
   @override
   Widget build(BuildContext context) {
+    double width = ScreenSize.width(context);
+    double height = ScreenSize.height(context);
+    bool isLandscape = ScreenSize.orientation(context);
+    
     final User? user = auth.currentUser;
     final ButtonStyle style = TextButton.styleFrom(
         foregroundColor: Colors.white,
@@ -153,7 +158,7 @@ class _CheckoutState extends State<Checkout> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-            const SizedBox(height: 10),
+            SizedBox(height: isLandscape ? width * 0.01 : height * 0.01,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
@@ -168,29 +173,32 @@ class _CheckoutState extends State<Checkout> {
                     TextButton(
                       onPressed: () {
                         showModalBottomSheet(
+                          scrollControlDisabledMaxHeightRatio: isLandscape ? height * 0.0026 : height * 0.001,
                           backgroundColor: Colors.amber,
                           context: context,
-                          builder: (_) => Column(
-                            children: [
-                              const SizedBox(height: 20),
-                              Container(
-                                decoration: ShapeDecoration(
-                                    color: Colors.amber,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15),
-                                      topRight: Radius.circular(15),
-                                    ))),
-                                child: Text(
-                                  'Add Shipping Details',
-                                  style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold
+                          builder: (_) => SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 20),
+                                Container(
+                                  decoration: ShapeDecoration(
+                                      color: Colors.amber,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(15),
+                                        topRight: Radius.circular(15),
+                                      ))),
+                                  child: Text(
+                                    'Add Shipping Details',
+                                    style: TextStyle(
+                                      fontSize: 20, fontWeight: FontWeight.bold
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 15),
-                              ShippingForm(),
-                            ],
+                                const SizedBox(height: 15),
+                                ShippingForm(),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -204,7 +212,6 @@ class _CheckoutState extends State<Checkout> {
                     ),
                   ]),
             ),
-            // const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Container(
@@ -247,7 +254,7 @@ class _CheckoutState extends State<Checkout> {
                 
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: isLandscape ? width * 0.02 : height * 0.02,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
@@ -262,38 +269,41 @@ class _CheckoutState extends State<Checkout> {
                     TextButton(
                       onPressed: () {
                         showModalBottomSheet(
+                          scrollControlDisabledMaxHeightRatio: isLandscape ? height * 0.0026 : height * 0.001,
                           backgroundColor: Colors.amber,
                           context: context,
-                          builder: (_) => Column(
-                            children: [
-                              const SizedBox(height: 20),
-                              Container(
-                                decoration: ShapeDecoration(
-                                    color: Colors.amber,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15),
-                                      topRight: Radius.circular(15),
-                                    ))),
-                                child: Text(
-                                  'Add Payment Details',
-                                  style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold
+                          builder: (_) => SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 20),
+                                Container(
+                                  decoration: ShapeDecoration(
+                                      color: Colors.amber,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(15),
+                                        topRight: Radius.circular(15),
+                                      ))),
+                                  child: Text(
+                                    'Add Payment Details',
+                                    style: TextStyle(
+                                      fontSize: 20, fontWeight: FontWeight.bold
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 15),
-                              Container(
-                                  height: 385,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15),
-                                      topRight: Radius.circular(15),
+                                const SizedBox(height: 15),
+                                Container(
+                                    height: 385,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(15),
+                                        topRight: Radius.circular(15),
+                                      ),
+                                      color: Colors.white,
                                     ),
-                                    color: Colors.white,
-                                  ),
-                                  child: PaymentForm()),
-                            ],
+                                    child: PaymentForm()),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -307,7 +317,6 @@ class _CheckoutState extends State<Checkout> {
                     ),
                   ]),
             ),
-            // const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Container(
@@ -347,7 +356,7 @@ class _CheckoutState extends State<Checkout> {
                       ]),                
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: isLandscape ? width * 0.02 : height * 0.02,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: const Divider(
@@ -355,7 +364,7 @@ class _CheckoutState extends State<Checkout> {
                 thickness: 1,
               ),
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: isLandscape ? width * 0.001 : height * 0.001,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
@@ -389,7 +398,6 @@ class _CheckoutState extends State<Checkout> {
                     ),
                   ]),
             ),
-            // const SizedBox(height: 5),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Card(
@@ -403,7 +411,6 @@ class _CheckoutState extends State<Checkout> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        // const SizedBox(width: 20),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(8.0),
                           child: Image.asset(
@@ -412,7 +419,6 @@ class _CheckoutState extends State<Checkout> {
                             height: 80,
                           ),
                         ),
-                        const SizedBox(width: 10),
                         Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -428,7 +434,6 @@ class _CheckoutState extends State<Checkout> {
                                     fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
                               )
                             ]),
-                        const SizedBox(width: 10),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -451,7 +456,7 @@ class _CheckoutState extends State<Checkout> {
                 ),
               ),
             ),
-            const SizedBox(height: 15),
+            SizedBox(height: isLandscape ? width * 0.02 : height * 0.02,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
@@ -467,7 +472,7 @@ class _CheckoutState extends State<Checkout> {
                     ),
                   ]),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: isLandscape ? width * 0.03 : height * 0.03,),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Button(
@@ -497,33 +502,30 @@ class _CheckoutState extends State<Checkout> {
 
                     if (orderId != null) {
                       cart.clear();
-
-                      // ✅ Use Navigator.push instead of showDialog
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => SuccessCard(
-                      //       deliveryId: widget.deliveryId,
-                      //       orderId: "orderId",
-                      //     ),
-                      //   ),
-                      // );
                       showDialog(
-                                    context: context,
-                                    builder: (_) => Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 10),
-                                        child: Dialog(
-                                            backgroundColor: Colors.transparent,
-                                            insetPadding: EdgeInsets.all(10),
-                                            child: SuccessCard(deliveryId: widget.deliveryId, orderId: orderId,))),
-                                  );
+                        context: context,
+                        builder: (_) => Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                          child: Dialog(
+                            backgroundColor: Colors.transparent,
+                            insetPadding: EdgeInsets.all(10),
+                            child: SuccessCard(
+                              deliveryId: widget.deliveryId, 
+                              orderId: orderId,)
+                          )
+                        ),
+                      );
                     }
                   }
                 },
                 disable: false,
-                width: double.infinity,
+                width: isLandscape ? width * 0.98 : width * 0.9, 
+                height: isLandscape ? width * 0.05 : height * 0.05,
               ),
+            ),
+            SizedBox(
+              height: height * 0.03,
             ),
           ]))),
     );

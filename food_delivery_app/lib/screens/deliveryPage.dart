@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
@@ -223,7 +224,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
       _currentStep = 2; // Assuming last step index is 2 (0, 1, 2)
     });
 
-    // ✅ Update Firestore order status to 'Delivered'
     FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -241,8 +241,9 @@ class _DeliveryPageState extends State<DeliveryPage> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    double width = ScreenSize.width(context);
+    double height = ScreenSize.height(context);
+    bool isLandscape = ScreenSize.orientation(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -301,7 +302,6 @@ class _DeliveryPageState extends State<DeliveryPage> {
                               width: 60,
                               height: 60,
                               child: AnimatedUserMarker(),
-                              // child: AnimatedUserMarker(),
                             )
                           ],
                         ),
@@ -314,145 +314,139 @@ class _DeliveryPageState extends State<DeliveryPage> {
                             )
                           ])
                       ]),
-            Positioned(
-              // top: 50,
-              // left: 0,
-              // right: 0,
-              bottom: 0,
-              // child: DraggableScrollableSheet(
-              //   builder: (BuildContext context,
-              //       ScrollController scrollController) {
-              child: SingleChildScrollView(
-                child: Container(
-                  height: height * 0.53,
-                  width: width,
-                  decoration: BoxDecoration(
+            Positioned.fill(
+              child: DraggableScrollableSheet(
+                initialChildSize: isLandscape ? 0.35 : 0.45,
+                minChildSize: isLandscape ? 0.25 : 0.30,
+                maxChildSize: isLandscape ? 0.65 : 0.80,
+                snap: true,
+                builder: (context, scrollController) {
+                  return Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.amber,
                       borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15)),
-                      shape: BoxShape.rectangle,
-                      color: Colors.amber),
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: ShapeDecoration(
-                          color: Colors.amber,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(15),
-                                  topRight: Radius.circular(15))),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 20, right: 5, top: 15, bottom: 15),
-                          child: Row(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15),
+                      ),
+                    ),
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 10),
+                          Container(
+                            width: 40,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: Colors.black26,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20, right: 5, top: 15, bottom: 15),
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
+                                  children: const [
+                                    Text(
                                       "Order Delivery",
-                                      style: TextStyle(
-                                        fontSize: 19,
-                                      ),
+                                      style: TextStyle(fontSize: 19),
                                     ),
-                                    const Text(
+                                    Text(
                                       "Estimated Time: 30 mins",
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                      ),
+                                      style: TextStyle(fontSize: 15),
                                     ),
                                   ],
                                 ),
                                 IconButton(
-                                    onPressed: () {
-                                      simulateAgentAlongRoute(
-                                          routePoints, widget.agentId);
-                                    },
-                                    icon: Icon(Icons.refresh))
-                              ]),
-                        ),
-                      ),                      
-                      Container(
-                        height: height * 0.43,
-                        decoration: ShapeDecoration(
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(15),
-                                topRight: Radius.circular(15)),
+                                  onPressed: () {
+                                    simulateAgentAlongRoute(
+                                        routePoints, widget.agentId);
+                                  },
+                                  icon: const Icon(Icons.refresh),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 10),
-                            Stepper(
-                                currentStep: _currentStep,
-                                steps: _deliverySteps,
-                                connectorColor:
-                                    WidgetStatePropertyAll(Colors.amber),
-                                connectorThickness: 3.0,
-                                type: StepperType.vertical,
-                                physics: const ClampingScrollPhysics(),
-                                onStepTapped: (step) =>
-                                    setState(() => _currentStep = step),
-                                controlsBuilder: (BuildContext context,
-                                    ControlsDetails details) {
-                                  return const SizedBox.shrink();
-                                }),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 15,
-                              ),
-                              child: Button(
-                                title: 'Complete Order',
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return RatingDialog(
-                                            initialRating: 1.0,
-                                            title: const Text(
-                                              'Rate the Delivery',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 25,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            message: const Text(
-                                              'Please help us to rate our Delivery Agent',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                            image:
-                                                Image.asset('Assets/icon.png'),
-                                            submitButtonText: 'Submit',
-                                            submitButtonTextStyle: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 17),
-                                            commentHint: 'Add Your Review',
-                                            onSubmitted: (response) async {
-                                              alertService.showToast(
-                                                context: context, text: 'Your Review submitted!', 
-                                                icon: Icons.info);
-                                            });
-                                      });
-                                },
-                                disable: false,
-                                width: double.infinity,
+                          Container(
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15),
                               ),
                             ),
-                          ],
-                        ),
+                            child: Column(
+                              children: [
+                                SizedBox(height: height * 0.02),
+                                Stepper(
+                                  currentStep: _currentStep,
+                                  steps: _deliverySteps,
+                                  connectorColor: const WidgetStatePropertyAll(Colors.amber),
+                                  connectorThickness: 3.0,
+                                  type: StepperType.vertical,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  onStepTapped: (step) =>
+                                      setState(() => _currentStep = step),
+                                  controlsBuilder:
+                                      (_, __) => const SizedBox.shrink(),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                                  child: Button(
+                                    title: 'Complete Order',
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) => RatingDialog(
+                                          initialRating: 1.0,
+                                          title: const Text(
+                                            'Rate the Delivery',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          message: const Text(
+                                            'Please help us to rate our Delivery Agent',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(fontSize: 15),
+                                          ),
+                                          image: Image.asset('Assets/icon.png', width: isLandscape ? width * 0.15 : width,),
+                                          submitButtonText: 'Submit',
+                                          submitButtonTextStyle:
+                                              const TextStyle(fontSize: 17, color: Colors.black),
+                                          commentHint: 'Add Your Review',
+                                          onSubmitted: (_) {
+                                            alertService.showToast(
+                                              context: context,
+                                              text: 'Your Review submitted!',
+                                              icon: Icons.info,
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    disable: false,
+                                    width:
+                                        isLandscape ? width * 0.98 : width * 0.9,
+                                    height:
+                                        isLandscape ? width * 0.05 : height * 0.05,
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  // ),
-                ),
+                    ),
+                  );
+                },
               ),
             ),
           ],

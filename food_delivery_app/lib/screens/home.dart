@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/appDrawer.dart';
 import 'package:food_delivery_app/components/searchBar.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/screens/cart.dart';
 import 'package:food_delivery_app/screens/categories.dart';
 import 'package:food_delivery_app/screens/favourites.dart';
@@ -72,6 +73,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    bool isLandscape = ScreenSize.orientation(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
@@ -263,8 +266,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                           children: List.generate(categories.length, (index) {
                             return Column(children: [
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 2),
+                                padding: EdgeInsets.symmetric(horizontal: isLandscape ? 4 : 2),
                                 child: Container(
                                   width: 90,
                                   height: 135,
@@ -357,27 +359,23 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   child: Card(
-                                    // elevation: 5,
                                     color: Colors.amber,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(30),
                                     ),
-                                    child: Row(children: [
-                                      Padding(
+                                    child: Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 5, vertical: 15),
                                         child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                             children: <Widget>[
-                                              const SizedBox(width: 20),
                                               Image.network(
                                                 foods[index]['image'] ??
                                                     'Assets/Foods/Chicken Burger.png',
                                                 width: 80,
                                                 height: 80,
                                               ),
-                                              const SizedBox(width: 40),
                                               Column(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
@@ -400,10 +398,18 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
                                                           color: Colors.white,
                                                           fontWeight: FontWeight.bold),
                                                     )
-                                                  ]),                                                  
+                                                  ]),      
+                                                  Column(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.favorite,
+                                                      color: Colors.amber,
+                                                    )
+                                                  ],
+                                                )                                           
                                             ]),
                                       ),
-                                    ]),
                                   ),
                                   onTap: () {
                                     Navigator.push(

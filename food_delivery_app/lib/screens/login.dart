@@ -12,64 +12,72 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = ScreenSize.width(context);
     double height = ScreenSize.height(context);
+    bool isLandscape = ScreenSize.orientation(context);
 
     return Scaffold(
       backgroundColor: Colors.amberAccent,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: width * 0.05, 
-            vertical: height * 0.03
-          ),
+              horizontal: width * 0.05, vertical: height * 0.03),
           child: SafeArea(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: height * 0.03,),
+                SizedBox(
+                  height: height * 0.03,
+                ),
                 Center(
                   child: Text(
                     'Welcome',
                     style: TextStyle(
-                      fontSize: width * 0.09,
+                      fontSize: 36,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                SizedBox(height: height * 0.02,),
+                SizedBox(
+                  height: height * 0.02,
+                ),
                 Center(
                   child: Text(
                     'Please login into your account',
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: width * 0.045,
+                      fontSize: 18,
                     ),
                   ),
                 ),
-                SizedBox(height: height * 0.04,),
+                SizedBox(
+                  height: height * 0.1,
+                ),
                 const LoginForm(),
-                SizedBox(height: height * 0.05,),
+                SizedBox(
+                  height: height * 0.1,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
-                      width: width * 0.3,
-                      child: Divider(thickness: 1.5, color: Colors.black)),
+                        width: isLandscape ? width * 0.36 : width * 0.3,
+                        child: Divider(thickness: 1.5, color: Colors.black)),
                     Text(
                       'or sign in with',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: width * 0.04,
                       ),
                     ),
                     SizedBox(
-                      width: width * 0.3,
-                      child: Divider(thickness: 1.5, color: Colors.black)),
+                        width: isLandscape ? width * 0.36 : width * 0.3,
+                        child: Divider(thickness: 1.5, color: Colors.black)),
                   ],
                 ),
-                SizedBox(height: height * 0.03,),
+                SizedBox(
+                  height: height * 0.06,
+                ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SocialButton(
                       social: 'Google',
@@ -79,7 +87,9 @@ class LoginPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: height * 0.04,),
+                SizedBox(
+                  height: height * 0.04,
+                ),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -88,7 +98,7 @@ class LoginPage extends StatelessWidget {
                           text: "Don't have an account? ",
                           style: TextStyle(
                             color: Colors.black,
-                            fontSize: width * 0.045,
+                            fontSize: 17,
                           ),
                           children: <TextSpan>[
                             TextSpan(
@@ -96,7 +106,7 @@ class LoginPage extends StatelessWidget {
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
-                                fontSize: width * 0.045,
+                                fontSize: 17,
                                 decorationStyle: TextDecorationStyle.solid,
                               ),
                               recognizer: TapGestureRecognizer()

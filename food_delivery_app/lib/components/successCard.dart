@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/screens/deliveryPage.dart';
 import 'package:food_delivery_app/screens/splash.dart';
 import 'package:latlong2/latlong.dart';
@@ -17,6 +18,10 @@ class SuccessCard extends StatefulWidget {
 class _SuccessCardState extends State<SuccessCard> {
   @override
   Widget build(BuildContext context) {
+    double width = ScreenSize.width(context);
+    double height = ScreenSize.height(context);
+    bool isLandscape = ScreenSize.orientation(context);
+
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -32,7 +37,7 @@ class _SuccessCardState extends State<SuccessCard> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Lottie.asset('Assets/5lKST8Beoq.json',
-                    fit: BoxFit.contain, width: 120),
+                    fit: BoxFit.contain, width: isLandscape ? 180 : 120),
                 Text(
                   "Order Successful!",
                   textAlign: TextAlign.center,
@@ -44,7 +49,7 @@ class _SuccessCardState extends State<SuccessCard> {
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16),
                 ),
-                const SizedBox(height: 35),
+                SizedBox(height: isLandscape ? width * 0.03 : height * 0.03,),
                 Button(
                   title: 'Track the Order',
                   onPressed: () {
@@ -57,7 +62,8 @@ class _SuccessCardState extends State<SuccessCard> {
                     )));
                   },
                   disable: false,
-                  width: double.infinity,
+                  width: isLandscape ? width * 0.98 : width * 0.9, 
+                  height: isLandscape ? width * 0.05 : height * 0.05,
                 ),
                 Button(
                   title: 'Back to Home',
@@ -66,7 +72,8 @@ class _SuccessCardState extends State<SuccessCard> {
                         MaterialPageRoute(builder: (context) => const SplashScreen()));
                   },
                   disable: false,
-                  width: double.infinity,
+                  width: isLandscape ? width * 0.98 : width * 0.9, 
+                  height: isLandscape ? width * 0.05 : height * 0.05,
                 ),
               ],
             ),
