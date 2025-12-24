@@ -82,6 +82,7 @@ class LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     double width = ScreenSize.width(context);
     double height = ScreenSize.height(context);
+    bool isLandscape = ScreenSize.orientation(context);
     
     return Form(
       key: _formKey,
@@ -96,8 +97,6 @@ class LoginFormState extends State<LoginForm> {
               hintText: 'Email Address',
               labelText: 'Email Address',
               alignLabelWithHint: true,
-              hintStyle: TextStyle(fontSize: width * 0.04,),
-              labelStyle: TextStyle(fontSize: width * 0.04,),
               fillColor: Colors.white,
               filled: true,
               prefixIcon: const Icon(Icons.email_outlined),
@@ -134,7 +133,7 @@ class LoginFormState extends State<LoginForm> {
               });
             },
           ),
-          SizedBox(height: height * 0.02,),
+          SizedBox(height: height * 0.04,),
           TextFormField(
             controller: _passController,
             keyboardType: TextInputType.visiblePassword,
@@ -143,9 +142,7 @@ class LoginFormState extends State<LoginForm> {
             decoration: InputDecoration(
                 hintText: 'Password',
                 labelText: 'Password',
-                alignLabelWithHint: true,
-                hintStyle: TextStyle(fontSize: width * 0.04,),
-                labelStyle: TextStyle(fontSize: width * 0.04,),
+                alignLabelWithHint: true,                
                 fillColor: Colors.white,
                 filled: true,
                 prefixIcon: const Icon(Icons.lock_outline),
@@ -196,7 +193,7 @@ class LoginFormState extends State<LoginForm> {
               });
             },
           ),
-          SizedBox(height: height * 0.02,),
+          SizedBox(height: height * 0.04,),
           Center(
             child: TextButton(
               child: Text(
@@ -205,7 +202,7 @@ class LoginFormState extends State<LoginForm> {
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: width * 0.04,
+                  fontSize: 16,
                   decorationStyle: TextDecorationStyle.solid,
                 ),
               ),
@@ -248,7 +245,8 @@ class LoginFormState extends State<LoginForm> {
               }
             },
             disable: false,
-            width: width * 0.9, height: height * 0.05,
+            width: isLandscape ? width * 0.98 : width * 0.9, 
+            height: isLandscape ? width * 0.05 : height * 0.05,
           ),
         ],
       ),

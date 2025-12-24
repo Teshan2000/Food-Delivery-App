@@ -15,6 +15,7 @@ class SocialButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = ScreenSize.width(context);
+    bool isLandscape = ScreenSize.orientation(context);
     
     return OutlinedButton(
       onPressed: () async {
@@ -46,28 +47,27 @@ class SocialButton extends StatelessWidget {
       },
       style: OutlinedButton.styleFrom(
         backgroundColor: Colors.white,
-        padding: EdgeInsets.symmetric(vertical: width * 0.025),
+        padding: EdgeInsets.symmetric(vertical: 10),
         shape: const RoundedRectangleBorder(
           side: BorderSide(width: 5, color: Colors.black),
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
       ),
       child: SizedBox(
-        width: width * 0.35,
+        width: isLandscape ? 355 : 170,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
               'Assets/$social.jpg',
-              width: width * 0.07,
-              height: width * 0.07,
+              width: 40,
+              height: 40,
             ),
             SizedBox(width: width * 0.03),
             Text(
               social.toUpperCase(),
               style: TextStyle(
                 color: Colors.black,
-                fontSize: width * 0.03,
               ),
             ),
           ],

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
-import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 
 class PasswordForm extends StatefulWidget {
@@ -20,37 +19,34 @@ class _PasswordFormState extends State<PasswordForm> {
     try {
       await FirebaseAuth.instance
           .sendPasswordResetEmail(email: _emailController.text);
-      alertService.showToast(context: context, text: 'Email sent successfully!', icon: Icons.info);
+      alertService.showToast(context: context, text: 'Password Reset Email sent successfully!', icon: Icons.info);
     } catch (e) {
       print('An error occurred: $e');
-      alertService.showToast(context: context, text: 'Email sending Failed!', icon: Icons.warning);
+      alertService.showToast(context: context, text: 'Password Reset Email sending Failed!', icon: Icons.warning);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    double width = ScreenSize.width(context);
-    double height = ScreenSize.height(context);
-    
     return Form(
       key: _formKey,
       child: Column(
         children: [
           Text(
             'Reset Your Password',
-            style: TextStyle(fontSize: width * 0.04, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: height * 0.02,),
-          Center(
+          const SizedBox(height: 25),
+          const Center(
             child: Text(
               'Please enter your registered email',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: width * 0.03,
+                fontSize: 18,
               ),
             ),
           ),
-          SizedBox(height: height * 0.02,),
+          const SizedBox(height: 20),
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
@@ -59,8 +55,6 @@ class _PasswordFormState extends State<PasswordForm> {
               hintText: "Email Address",
               labelText: "Email Address",
               alignLabelWithHint: true,
-              hintStyle: TextStyle(fontSize: width * 0.04,),
-              labelStyle: TextStyle(fontSize: width * 0.04,),
               prefixIcon: Icon(Icons.email_outlined),
               prefixIconColor: Colors.amber,
               enabledBorder: OutlineInputBorder(
@@ -68,16 +62,16 @@ class _PasswordFormState extends State<PasswordForm> {
                 borderRadius: BorderRadius.circular(10),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: Colors.amber,
-                  width: width * 0.05,
+                  width: 2,
                 ),
                 borderRadius: BorderRadius.circular(15),
               ),
               errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: Colors.red,
-                  width: width * 0.05,
+                  width: 2,
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -89,15 +83,12 @@ class _PasswordFormState extends State<PasswordForm> {
               return null;
             },
           ),
-         SizedBox(height: height * 0.03,),
-          Button(            
-            title: 'Reset Password',
+          const SizedBox(height: 40),
+          Button(
+            width: double.infinity,
+            title: 'Submit Email',
             disable: false,
-            onPressed: () {
-              resetPassword();
-            },
-            width: width * 0.9, 
-            height: height * 0.05,
+            onPressed: () {},
           ),
         ],
       ),

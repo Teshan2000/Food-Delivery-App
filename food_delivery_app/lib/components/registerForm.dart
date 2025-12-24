@@ -51,6 +51,7 @@ class RegisterFormState extends State<RegisterForm> {
   Widget build(BuildContext context) {
     double width = ScreenSize.width(context);
     double height = ScreenSize.height(context);
+    bool isLandscape = ScreenSize.orientation(context);
     
     return Form(
       key: _formKey,
@@ -65,8 +66,6 @@ class RegisterFormState extends State<RegisterForm> {
               hintText: 'Username',
               labelText: 'Username',
               alignLabelWithHint: true,
-              hintStyle: TextStyle(fontSize: width * 0.04,),
-              labelStyle: TextStyle(fontSize: width * 0.04,),
               fillColor: Colors.white,
               filled: true,
               prefixIcon: const Icon(Icons.person_outlined),
@@ -103,7 +102,7 @@ class RegisterFormState extends State<RegisterForm> {
               }
             },
           ),
-          SizedBox(height: height * 0.02,),
+          SizedBox(height: height * 0.04,),
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
@@ -112,8 +111,6 @@ class RegisterFormState extends State<RegisterForm> {
               hintText: 'Email Address',
               labelText: 'Email Address',
               alignLabelWithHint: true,
-              hintStyle: TextStyle(fontSize: width * 0.04,),
-              labelStyle: TextStyle(fontSize: width * 0.04,),
               fillColor: Colors.white,
               filled: true,
               prefixIcon: const Icon(Icons.email_outlined),
@@ -150,7 +147,7 @@ class RegisterFormState extends State<RegisterForm> {
               });
             },
           ),
-          SizedBox(height: height * 0.02,),
+          SizedBox(height: height * 0.04,),
           TextFormField(
             controller: _passController,
             keyboardType: TextInputType.visiblePassword,
@@ -160,8 +157,6 @@ class RegisterFormState extends State<RegisterForm> {
                 hintText: 'Password',
                 labelText: 'Password',
                 alignLabelWithHint: true,
-                hintStyle: TextStyle(fontSize: width * 0.04,),
-                labelStyle: TextStyle(fontSize: width * 0.04,),
                 fillColor: Colors.white,
                 filled: true,
                 prefixIcon: const Icon(Icons.lock_outline),
@@ -212,7 +207,7 @@ class RegisterFormState extends State<RegisterForm> {
               });
             },
           ),
-          SizedBox(height: height * 0.03,),
+          SizedBox(height: height * 0.06,),
           Button(
             title: 'Sign Up',
             onPressed: () {
@@ -221,7 +216,8 @@ class RegisterFormState extends State<RegisterForm> {
               }
             },
             disable: false,
-            width: width * 0.9, height: height * 0.05,
+            width: isLandscape ? width * 0.98 : width * 0.9, 
+            height: isLandscape ? width * 0.05 : height * 0.05,
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:food_delivery_app/main.dart';
 import 'package:food_delivery_app/providers/alert_service.dart';
 
 class ShippingForm extends StatefulWidget {
@@ -62,6 +63,10 @@ class ShippingFormState extends State<ShippingForm> {
 
   @override
   Widget build(BuildContext context) {    
+    double width = ScreenSize.width(context);
+    double height = ScreenSize.height(context);
+    bool isLandscape = ScreenSize.orientation(context);
+    
     return Column(
       children: [
         BottomSheet(
@@ -87,7 +92,7 @@ class ShippingFormState extends State<ShippingForm> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[                    
-                    const SizedBox(height: 15),
+                    SizedBox(height: isLandscape ? width * 0.02 : height * 0.02,),
                     TextFormField(
                       controller: _addressController,
                       keyboardType: TextInputType.emailAddress,
@@ -120,7 +125,7 @@ class ShippingFormState extends State<ShippingForm> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: isLandscape ? width * 0.02 : height * 0.02,),
                     TextFormField(
                       controller: _cityController,
                       keyboardType: TextInputType.emailAddress,
@@ -153,12 +158,12 @@ class ShippingFormState extends State<ShippingForm> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: isLandscape ? width * 0.02 : height * 0.02,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: 170,
+                          width: isLandscape ? width * 0.37 : width * 0.44,
                           child: TextFormField(
                             controller: _stateController,
                             keyboardType: TextInputType.emailAddress,
@@ -194,7 +199,7 @@ class ShippingFormState extends State<ShippingForm> {
                           ),
                         ),
                         Container(
-                          width: 170,
+                          width: isLandscape ? width * 0.37 : width * 0.44,
                           child: TextFormField(
                             controller: _zipController,
                             keyboardType: TextInputType.number,
@@ -231,7 +236,7 @@ class ShippingFormState extends State<ShippingForm> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: isLandscape ? width * 0.02 : height * 0.02,),
                     TextFormField(
                       controller: _countryController,
                       keyboardType: TextInputType.emailAddress,
@@ -264,7 +269,7 @@ class ShippingFormState extends State<ShippingForm> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: isLandscape ? width * 0.02 : height * 0.02,),
                     Button(
                       title: 'Add Details',
                       onPressed: () {
@@ -273,9 +278,10 @@ class ShippingFormState extends State<ShippingForm> {
                         }                        
                       },
                       disable: false,
-                      width: double.infinity,
+                      width: isLandscape ? width * 0.95 : width * 0.9, 
+                      height: isLandscape ? width * 0.05 : height * 0.05,
                     ),
-                    const SizedBox(height: 9),
+                    SizedBox(height: isLandscape ? width * 0.02 : height * 0.02,),
                   ],
                 ),
               ),
