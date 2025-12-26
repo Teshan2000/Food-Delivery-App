@@ -25,14 +25,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.4.1"
-  animated_search_bar:
-    dependency: "direct main"
-    description:
-      name: animated_search_bar
-      sha256: "86bd5e22a92dd87a48f123b6965d798884d12c365aa7f94acb59ff97a2d2cb95"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.7.2"
   archive:
     dependency: transitive
     description:
@@ -201,14 +193,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-  easy_search_bar:
-    dependency: "direct main"
-    description:
-      name: easy_search_bar
-      sha256: b20343be8ab94ed9e1550cf8cbd5323c344bd9b58b9319fb6e62d75395c0bcaa
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.5.0"
   facebook_auth_desktop:
     dependency: transitive
     description:
@@ -545,7 +529,7 @@ packages:
     source: hosted
     version: "0.12.4+2"
   http:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: http
       sha256: b9c29a161230ee03d3ccf545097fccd9b87a5264228c5d348202e0f0c28f9010
