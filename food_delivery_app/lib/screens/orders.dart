@@ -32,7 +32,6 @@ class _OrdersState extends State<Orders> {
 
   @override
   Widget build(BuildContext context) {
-    double width = ScreenSize.width(context);
     double height = ScreenSize.height(context);
     bool isLandscape = ScreenSize.orientation(context);
     

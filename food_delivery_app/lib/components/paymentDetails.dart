@@ -1,7 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:food_delivery_app/providers/alert_service.dart';
 
 class PaymentDetails extends StatefulWidget {
   final String cardHolder;

@@ -27,11 +27,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin {
   bool _isSearching = false;
   String? userId;
 
-  Future<String?> _getUserId() async {
-    final preferences = await SharedPreferences.getInstance();
-    return preferences.getString('userId');
-  }
-
   Future<void> updateSearchResults(
       List<Map<String, dynamic>> results, bool searchingStatus) async {
     setState(() {

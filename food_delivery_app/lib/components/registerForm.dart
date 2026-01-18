@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:food_delivery_app/components/button.dart';
 import 'package:food_delivery_app/main.dart';
@@ -32,7 +31,6 @@ class RegisterFormState extends State<RegisterForm> {
   }
 
   void registerUser() async {
-    String username = _nameController.text;
     String email = _emailController.text;
     String password = _passController.text;
 
@@ -136,8 +134,8 @@ class RegisterFormState extends State<RegisterForm> {
             ),
             validator: (val) {
               return RegExp(
-                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                      .hasMatch(val!)
+                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                .hasMatch(val!)
                   ? null
                   : "Please enter a valid email";
             },
